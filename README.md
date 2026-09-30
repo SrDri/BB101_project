@@ -11,7 +11,7 @@ Cada corte de obra genera un certificado de avance (fotos geolocalizadas, medici
 - `docs/semana1/` — Propuestas individuales y Problem Brief
 
 ## Equipo
-- Juan Jose Carabali — [@SrDri]
+- Juan Jose Carabali — [@SrDri](https://github.com/SrDri)
 
 ## Licencia
 Todos los derechos reservados
