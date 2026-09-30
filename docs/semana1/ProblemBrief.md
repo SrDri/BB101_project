@@ -38,7 +38,7 @@ Las fiduciarias y los bancos liberan el dinero de los proyectos de vivienda seg�
 |---|---|---|
 | Juan Jose Carabali | [@SrDri](https://github.com/SrDri) | Líder del proyecto, visión artificial y validación con usuarios |
 
-- **Responsable de las entregas:** [Juan Jose Carabali]
+- **Responsable de las entregas:** [Juan Jose Carabali](https://github.com/SrDri)
 
 ### Problema y evidencia
 
