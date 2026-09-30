@@ -6,7 +6,7 @@
 
 Las fiduciarias y los bancos liberan el dinero de los proyectos de vivienda según un avance de obra que se verifica con visitas manuales esporádicas y certificaciones del propio constructor, sin una evidencia objetiva que todas las partes puedan comprobar.
 
-**Propuesto por:** [Juan Jose Carabali]([@SrDri])
+**Propuesto por:** [Juan Jose Carabali](https://github.com/SrDri)
 
 ### Por qué elegimos este
 
@@ -19,9 +19,9 @@ Las fiduciarias y los bancos liberan el dinero de los proyectos de vivienda seg�
 
 | Propuesta | Propuesta por | Motivo del descarte |
 |---|---|---|
-| Evidencia de "libre de deforestación" para exportaciones de café y cacao | [Juan Carabali] | Mercado concurrido, obligación legal en el importador europeo y alta incertidumbre regulatoria. |
-| Identidad biométrica del ganado para crédito y seguros | [Juan Carabali] | No se encontró disposición a pagar validada en Colombia y los Estados están estandarizando la identificación con chips. |
-| Verificación de toneladas recicladas para la ley de envases | [Juan Carabali] | La verificación ya la cubren certificadores acreditados y planes colectivos; la parte visual es secundaria. |
+| Evidencia de "libre de deforestación" para exportaciones de café y cacao | [Juan Carabali](https://github.com/SrDri) | Mercado concurrido, obligación legal en el importador europeo y alta incertidumbre regulatoria. |
+| Identidad biométrica del ganado para crédito y seguros | [Juan Carabali](https://github.com/SrDri) | No se encontró disposición a pagar validada en Colombia y los Estados están estandarizando la identificación con chips. |
+| Verificación de toneladas recicladas para la ley de envases | [Juan Carabali](https://github.com/SrDri) | La verificación ya la cubren certificadores acreditados y planes colectivos; la parte visual es secundaria. |
 
 ---
 
