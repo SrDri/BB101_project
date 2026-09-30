@@ -1,4 +1,4 @@
-# Propuesta individual — [Juan Carabali]
+# Propuesta individual — [Juan Carabali](https://github.com/SrDri)
 
 ## El problema
 
