@@ -746,7 +746,9 @@ class ProjectStore {
   isDark = $state<boolean>(true);
   
   // Usuario autenticado y Perfil activo en visualización
-  currentUser = $state<UserProfile>(AVAILABLE_PROFILES[0]); // Por defecto Admin
+  isAuthenticated = $state<boolean>(false);
+  authInitialized = $state<boolean>(false);
+  currentUser = $state<UserProfile>(AVAILABLE_PROFILES[0]);
   viewingAsRole = $state<UserRole>('admin');
   isConnectedToSupabase = $state<boolean>(false);
   isAccountModalOpen = $state<boolean>(false);
@@ -908,9 +910,49 @@ class ProjectStore {
     this.setTheme(!this.isDark);
   }
 
+  initAuth() {
+    if (typeof window !== 'undefined' && !this.authInitialized) {
+      try {
+        const saved = window.sessionStorage.getItem('tramo_corporate_session');
+        if (saved) {
+          const parsed = JSON.parse(saved) as UserProfile;
+          if (parsed && parsed.email && parsed.role) {
+            this.currentUser = parsed;
+            this.viewingAsRole = parsed.role;
+            this.isAuthenticated = true;
+          }
+        }
+      } catch {
+        // Ignorar errores de parseo en sessionStorage
+      }
+      this.authInitialized = true;
+    }
+  }
+
   loginWithProfile(profile: UserProfile) {
     this.currentUser = profile;
     this.viewingAsRole = profile.role;
+    this.isAuthenticated = true;
+    this.authInitialized = true;
+    if (typeof window !== 'undefined') {
+      try {
+        window.sessionStorage.setItem('tramo_corporate_session', JSON.stringify(profile));
+      } catch {
+        // Ignorar errores de almacenamiento
+      }
+    }
+  }
+
+  logout() {
+    this.isAuthenticated = false;
+    this.isAccountModalOpen = false;
+    if (typeof window !== 'undefined') {
+      try {
+        window.sessionStorage.removeItem('tramo_corporate_session');
+      } catch {
+        // Ignorar errores de almacenamiento
+      }
+    }
   }
 
   setViewingRole(role: UserRole) {

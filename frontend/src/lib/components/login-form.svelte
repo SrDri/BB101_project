@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { page } from '$app/state';
   import * as Card from '$lib/components/ui/card/index.js';
   import { Button } from '$lib/components/ui/button/index.js';
   import {
@@ -22,10 +23,12 @@
   let email = $state('fiduciaria@bancolombia.com.co');
   let password = $state('••••••••••••');
   let isLoading = $state(false);
+  let errorMessage = $state<string | null>(null);
 
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
     isLoading = true;
+    errorMessage = null;
     try {
       const res = await fetch('/api/auth', {
         method: 'POST',
@@ -33,17 +36,29 @@
         body: JSON.stringify({ email })
       });
       const data = await res.json();
-      if (data.profile) {
+      if (res.ok && data.profile) {
         selectAndRedirect(data.profile);
+      } else {
+        errorMessage =
+          data.error || 'No se pudo iniciar sesión. Verifica tus credenciales corporativas.';
       }
+    } catch {
+      errorMessage = 'Error de conexión al verificar credenciales.';
     } finally {
       isLoading = false;
     }
   }
 
   function selectAndRedirect(profile: UserProfile) {
+    errorMessage = null;
+    email = profile.email;
     projectStore.loginWithProfile(profile);
-    goto('/');
+    const redirectParam = page.url.searchParams.get('redirect');
+    const target =
+      redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('/login')
+        ? redirectParam
+        : '/';
+    goto(target);
   }
 </script>
 
@@ -61,9 +76,15 @@
               Iniciar sesión en Tramo
             </h1>
             <p class="text-xs text-muted-foreground">
-              Ingresa tus credenciales corporativas o selecciona un perfil de prueba.
+              Ingresa tus credenciales corporativas o selecciona un perfil de prueba para acceder a la consola.
             </p>
           </div>
+
+          {#if errorMessage}
+            <div class="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-[11px] text-red-600 dark:text-red-400">
+              {errorMessage}
+            </div>
+          {/if}
 
           <Field>
             <FieldLabel for="email-{id}" class="text-xs font-medium">Correo corporativo</FieldLabel>

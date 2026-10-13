@@ -70,6 +70,7 @@
 
   function handleLogout() {
     isUserMenuOpen = false;
+    projectStore.logout();
     goto('/login');
   }
 </script>
@@ -409,10 +410,7 @@
         <Button
           variant="outline"
           size="sm"
-          onclick={() => {
-            projectStore.closeAccountModal();
-            goto('/login');
-          }}
+          onclick={handleLogout}
           class="text-xs text-red-500 hover:text-red-600 cursor-pointer gap-1.5"
         >
           <LogOut class="w-3.5 h-3.5" />

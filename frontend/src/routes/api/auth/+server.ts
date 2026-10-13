@@ -42,10 +42,23 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   }
 
-  const matched =
-    AVAILABLE_PROFILES.find(p => p.email.toLowerCase() === email?.toLowerCase()) ||
-    AVAILABLE_PROFILES.find(p => p.role === role) ||
-    AVAILABLE_PROFILES[0];
+  const cleanEmail = email?.trim().toLowerCase();
+  const matched = cleanEmail
+    ? AVAILABLE_PROFILES.find(p => p.email.toLowerCase() === cleanEmail)
+    : role
+      ? AVAILABLE_PROFILES.find(p => p.role === role)
+      : undefined;
+
+  if (!matched) {
+    return json(
+      {
+        ok: false,
+        error:
+          'Correo corporativo no autorizado. Ingresa una cuenta institucional registrada o selecciona un perfil de demostración.'
+      },
+      { status: 401 }
+    );
+  }
 
   return json({ ok: true, profile: matched });
 };

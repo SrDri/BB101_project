@@ -1,6 +1,7 @@
 <script lang="ts">
   import './layout.css';
   import { page } from '$app/state';
+  import { goto } from '$app/navigation';
   import AppSidebar from '$lib/components/layout/AppSidebar.svelte';
   import PublicHeader from '$lib/components/layout/PublicHeader.svelte';
   import { Badge } from '$lib/components/ui/badge';
@@ -37,6 +38,19 @@
   const isIsolatedPublicRoute = $derived(
     page.url.pathname.startsWith('/verificar') || page.url.pathname.startsWith('/propietario')
   );
+  const isProtectedCorporateRoute = $derived(!isLoginRoute && !isIsolatedPublicRoute);
+
+  $effect(() => {
+    projectStore.initAuth();
+    if (projectStore.authInitialized && isProtectedCorporateRoute && !projectStore.isAuthenticated) {
+      const currentPath = page.url.pathname;
+      const targetUrl =
+        currentPath && currentPath !== '/'
+          ? `/login?redirect=${encodeURIComponent(currentPath)}`
+          : '/login';
+      goto(targetUrl, { replaceState: true });
+    }
+  });
 
   const activeProjectsForUser = $derived(
     projectStore.projects.filter((p) => {
@@ -211,8 +225,16 @@
       </div>
     </footer>
   </div>
+{:else if !projectStore.authInitialized || !projectStore.isAuthenticated}
+  <!-- 3. Guardia de autenticación corporativa (evita mostrar la consola sin sesión activa) -->
+  <div class="min-h-screen w-full flex flex-col items-center justify-center bg-background text-foreground font-sans p-6">
+    <div class="flex items-center gap-2.5 text-xs text-muted-foreground">
+      <span class="h-2 w-2 rounded-full bg-[#F5A400] animate-ping"></span>
+      <span>Redirigiendo al acceso corporativo de Tramo...</span>
+    </div>
+  </div>
 {:else}
-  <!-- 3. Plataforma corporativa con menú vertical y selector de proyecto en el Topbar -->
+  <!-- 4. Plataforma corporativa con menú vertical y selector de proyecto en el Topbar -->
   <div class="min-h-screen flex w-full bg-background text-foreground font-sans">
     <AppSidebar bind:isCollapsed={isSidebarCollapsed} />
 
