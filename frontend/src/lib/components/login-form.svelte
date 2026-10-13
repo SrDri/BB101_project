@@ -21,7 +21,7 @@
   const id = $props.id();
 
   let email = $state('fiduciaria@bancolombia.com.co');
-  let password = $state('••••••••••••');
+  let password = $state('Tramo2026*');
   let isLoading = $state(false);
   let errorMessage = $state<string | null>(null);
 
@@ -66,7 +66,7 @@
   <Card.Root class="overflow-hidden p-0 border-border shadow-lg">
     <Card.Content class="grid p-0 md:grid-cols-2">
       <!-- Columna izquierda: Formulario sobrio de banca institucional -->
-      <form class="p-7 md:p-10 flex flex-col justify-between" onsubmit={handleSubmit}>
+      <form class="p-5 sm:p-7 md:p-10 flex flex-col justify-between" onsubmit={handleSubmit}>
         <FieldGroup>
           <div class="flex flex-col items-start gap-1.5 text-left mb-3">
             <div class="mb-2 md:hidden">

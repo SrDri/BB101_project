@@ -622,23 +622,23 @@
         </div>
       </CardHeader>
 
-      <CardContent class="p-5 space-y-5 flex-1 flex flex-col justify-between">
-        <div class="grid grid-cols-3 gap-3 text-center">
-          <div class="p-3 rounded-xl bg-muted/30 border border-border">
-            <div class="text-2xl font-semibold text-foreground tabular-nums">{ficha.totalUnits}</div>
-            <div class="text-[11px] text-muted-foreground mt-0.5">Total unidades</div>
+      <CardContent class="p-4 sm:p-5 space-y-4 sm:space-y-5 flex-1 flex flex-col justify-between">
+        <div class="grid grid-cols-3 gap-2 sm:gap-3 text-center">
+          <div class="p-2 sm:p-3 rounded-xl bg-muted/30 border border-border">
+            <div class="text-xl sm:text-2xl font-semibold text-foreground tabular-nums">{ficha.totalUnits}</div>
+            <div class="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5">Total unidades</div>
           </div>
-          <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25">
-            <div class="text-2xl font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
+          <div class="p-2 sm:p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25">
+            <div class="text-xl sm:text-2xl font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">
               {ficha.soldUnits}
             </div>
-            <div class="text-[11px] text-muted-foreground mt-0.5">Vendidas ({ficha.currentSalesPercent}%)</div>
+            <div class="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 truncate">Vendidas ({ficha.currentSalesPercent}%)</div>
           </div>
-          <div class="p-3 rounded-xl bg-muted/30 border border-border">
-            <div class="text-2xl font-semibold text-foreground tabular-nums">
+          <div class="p-2 sm:p-3 rounded-xl bg-muted/30 border border-border">
+            <div class="text-xl sm:text-2xl font-semibold text-foreground tabular-nums">
               {ficha.availableUnits + ficha.reservedUnits}
             </div>
-            <div class="text-[11px] text-muted-foreground mt-0.5">
+            <div class="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 truncate">
               Disponibles ({ficha.reservedUnits} sep.)
             </div>
           </div>

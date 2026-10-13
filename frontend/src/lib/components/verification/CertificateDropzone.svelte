@@ -184,15 +184,15 @@
           loadSampleCertificate(
             'a7c93e41b2e8d7541f6e2983c48520d88b489920efbc756312a0f8d9b1c7849e'
           )}
-        class="w-full px-3.5 py-2.5 rounded-lg border border-border bg-muted/30 hover:bg-muted/70 text-left flex items-center justify-between transition-colors cursor-pointer"
+        class="w-full px-3.5 py-2.5 rounded-lg border border-border bg-muted/30 hover:bg-muted/70 text-left flex flex-col sm:flex-row sm:items-center justify-between gap-2 transition-colors cursor-pointer"
       >
-        <div>
-          <div class="text-xs font-medium text-foreground">Torre Alameda — Etapa 1 (Corte #4)</div>
+        <div class="min-w-0">
+          <div class="text-xs font-medium text-foreground truncate">Torre Alameda — Etapa 1 (Corte #4)</div>
           <div class="text-[11px] text-muted-foreground font-mono truncate max-w-xs">
             a7c93e41b2e8d7541f6e2983...b1c7849e
           </div>
         </div>
-        <span class="text-xs text-foreground bg-background px-2.5 py-1 rounded border border-border">
+        <span class="text-xs text-foreground bg-background px-2.5 py-1 rounded border border-border shrink-0 self-start sm:self-auto">
           Verificar muestra
         </span>
       </button>
@@ -203,15 +203,15 @@
           loadSampleCertificate(
             'f1e2d3c4b5a69788796a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e'
           )}
-        class="w-full px-3.5 py-2.5 rounded-lg border border-border bg-muted/30 hover:bg-muted/70 text-left flex items-center justify-between transition-colors cursor-pointer"
+        class="w-full px-3.5 py-2.5 rounded-lg border border-border bg-muted/30 hover:bg-muted/70 text-left flex flex-col sm:flex-row sm:items-center justify-between gap-2 transition-colors cursor-pointer"
       >
-        <div>
-          <div class="text-xs font-medium text-foreground">Mirador del Parque — Reservado (Corte #7)</div>
+        <div class="min-w-0">
+          <div class="text-xs font-medium text-foreground truncate">Mirador del Parque — Reservado (Corte #7)</div>
           <div class="text-[11px] text-muted-foreground font-mono truncate max-w-xs">
             f1e2d3c4b5a69788796a5b4c...b6c5d4e
           </div>
         </div>
-        <span class="text-xs text-foreground bg-background px-2.5 py-1 rounded border border-border">
+        <span class="text-xs text-foreground bg-background px-2.5 py-1 rounded border border-border shrink-0 self-start sm:self-auto">
           Verificar muestra
         </span>
       </button>

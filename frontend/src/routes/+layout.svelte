@@ -22,13 +22,15 @@
     Clock,
     CheckCheck,
     ArrowUpRight,
-    ShieldCheck
+    ShieldCheck,
+    Menu
   } from '@lucide/svelte';
   import type { LayoutProps } from './$types';
 
   let { children }: LayoutProps = $props();
 
   let isSidebarCollapsed = $state(false);
+  let isMobileSidebarOpen = $state(false);
   let isProjectMenuOpen = $state(false);
   let isNotificationsOpen = $state(false);
   let inboxTab = $state<'acciones' | 'actividad'>('acciones');
@@ -204,12 +206,12 @@
   <div class="min-h-screen flex flex-col bg-background text-foreground font-sans">
     <PublicHeader />
 
-    <main class="flex-1 w-full px-6 lg:px-10 py-6">
+    <main class="flex-1 w-full px-3.5 sm:px-6 lg:px-10 py-4 sm:py-6 overflow-x-hidden">
       {@render children()}
     </main>
 
     <footer class="border-t border-border bg-card/50 py-4 mt-8 text-xs text-muted-foreground">
-      <div class="w-full px-6 lg:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="w-full px-3.5 sm:px-6 lg:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-2">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
           <span class="text-foreground font-medium">tramo</span>
@@ -236,12 +238,23 @@
 {:else}
   <!-- 4. Plataforma corporativa con menú vertical y selector de proyecto en el Topbar -->
   <div class="min-h-screen flex w-full bg-background text-foreground font-sans">
-    <AppSidebar bind:isCollapsed={isSidebarCollapsed} />
+    <AppSidebar bind:isCollapsed={isSidebarCollapsed} bind:isMobileOpen={isMobileSidebarOpen} />
 
     <div class="flex-1 flex flex-col min-w-0">
       <!-- Barra contextual superior con Selector Rápido de Proyecto y Action Inbox -->
-      <header class="sticky top-0 z-30 h-14 border-b border-border bg-background/95 backdrop-blur-md px-6 flex items-center justify-between gap-4">
-        <div class="flex items-center gap-2.5 min-w-0">
+      <header class="sticky top-0 z-30 h-14 border-b border-border bg-background/95 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between gap-2.5 sm:gap-4">
+        <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+          <!-- Botón de menú hamburguesa exclusivo para celular (< md) -->
+          <button
+            type="button"
+            onclick={() => (isMobileSidebarOpen = true)}
+            class="md:hidden p-1.5 -ml-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer shrink-0"
+            aria-label="Abrir menú de navegación"
+            title="Abrir menú"
+          >
+            <Menu class="w-5 h-5" />
+          </button>
+
           <!-- Selector desplegable de proyecto activo en el Topbar -->
           <div class="relative">
             <button
@@ -250,11 +263,11 @@
                 isProjectMenuOpen = !isProjectMenuOpen;
                 isNotificationsOpen = false;
               }}
-              class="flex items-center gap-2 rounded-xl border border-border bg-card hover:bg-accent/60 px-3 py-1.5 text-left transition-all cursor-pointer shadow-2xs"
+              class="flex items-center gap-1.5 sm:gap-2 rounded-xl border border-border bg-card hover:bg-accent/60 px-2.5 sm:px-3 py-1.5 text-left transition-all cursor-pointer shadow-2xs"
               title="Cambiar proyecto activo"
             >
-              <div class="flex items-center gap-2 min-w-0">
-                <span class="text-xs font-semibold text-foreground truncate max-w-[180px] sm:max-w-[240px]">
+              <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                <span class="text-xs font-semibold text-foreground truncate max-w-[130px] xs:max-w-[170px] sm:max-w-[240px]">
                   {projectStore.activeCut.projectName}
                 </span>
                 <span class="hidden md:inline-flex items-center gap-1 rounded-md bg-muted px-1.5 py-0.5 font-mono text-[10px] font-medium text-muted-foreground tabular-nums">
@@ -273,7 +286,7 @@
                 role="presentation"
               ></div>
               <div
-                class="absolute left-0 top-full mt-2 w-84 sm:w-96 rounded-xl border border-border bg-popover text-popover-foreground shadow-2xl z-50 p-2 space-y-1.5"
+                class="fixed inset-x-3 top-15 sm:absolute sm:inset-x-auto sm:left-0 sm:top-full sm:mt-2 w-auto sm:w-96 rounded-xl border border-border bg-popover text-popover-foreground shadow-2xl z-50 p-2 space-y-1.5"
               >
                 <div class="px-2.5 py-1.5 flex items-center justify-between border-b border-border/60">
                   <span class="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -379,7 +392,7 @@
               ></div>
 
               <div
-                class="absolute right-0 top-full mt-2 w-88 sm:w-[420px] rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl z-50 overflow-hidden"
+                class="fixed inset-x-3 top-15 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-[420px] rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl z-50 overflow-hidden"
               >
                 <!-- Header del Action Inbox -->
                 <div class="flex items-center justify-between gap-2 border-b border-border bg-muted/30 px-4 py-3">
@@ -554,11 +567,11 @@
         </div>
       </header>
 
-      <main class="flex-1 w-full px-6 lg:px-8 py-6">
+      <main class="flex-1 w-full px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6 overflow-x-hidden">
         {@render children()}
       </main>
 
-      <footer class="border-t border-border bg-card/50 py-3.5 px-6 lg:px-8 text-xs text-muted-foreground">
+      <footer class="border-t border-border bg-card/50 py-3.5 px-3.5 sm:px-6 lg:px-8 text-xs text-muted-foreground">
         <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-3">
           <div class="flex items-center gap-2">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>

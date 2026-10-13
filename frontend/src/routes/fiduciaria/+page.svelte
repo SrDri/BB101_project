@@ -330,30 +330,30 @@
 	<!-- ========================================================================= -->
 	<div class="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
 		<!-- Barra superior con Pestañas de Vista y Filtros Rápidos -->
-		<div class="flex flex-col justify-between gap-3 border-b border-border bg-muted/15 px-6 py-4 lg:flex-row lg:items-center">
-			<div class="flex flex-wrap items-center gap-1.5 rounded-xl border border-border bg-background p-1">
+		<div class="flex flex-col justify-between gap-3 border-b border-border bg-muted/15 px-4 sm:px-6 py-3.5 sm:py-4 lg:flex-row lg:items-center">
+			<div class="w-full lg:w-auto grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap items-center gap-1 rounded-xl border border-border bg-background p-1 text-center">
 				<button
 					type="button"
 					onclick={() => (activeLedgerTab = 'hitos')}
-					class="cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all {activeLedgerTab === 'hitos'
+					class="cursor-pointer rounded-lg px-3 sm:px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all {activeLedgerTab === 'hitos'
 						? 'bg-foreground text-background shadow-2xs'
 						: 'text-muted-foreground hover:text-foreground'}"
 				>
-					Matriz de hitos y aprobaciones ({milestones.length})
+					Matriz de hitos ({milestones.length})
 				</button>
 				<button
 					type="button"
 					onclick={() => (activeLedgerTab = 'historial')}
-					class="cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all {activeLedgerTab === 'historial'
+					class="cursor-pointer rounded-lg px-3 sm:px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all {activeLedgerTab === 'historial'
 						? 'bg-foreground text-background shadow-2xs'
 						: 'text-muted-foreground hover:text-foreground'}"
 				>
-					Historial de giros ACH ({disbursedMilestones.length})
+					Giros ACH ({disbursedMilestones.length})
 				</button>
 				<button
 					type="button"
 					onclick={() => (activeLedgerTab = 'certificados')}
-					class="cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all {activeLedgerTab === 'certificados'
+					class="cursor-pointer rounded-lg px-3 sm:px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all {activeLedgerTab === 'certificados'
 						? 'bg-foreground text-background shadow-2xs'
 						: 'text-muted-foreground hover:text-foreground'}"
 				>
@@ -362,17 +362,17 @@
 				<button
 					type="button"
 					onclick={() => (activeLedgerTab = 'posventa')}
-					class="cursor-pointer rounded-lg px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all {activeLedgerTab === 'posventa'
+					class="cursor-pointer rounded-lg px-3 sm:px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all {activeLedgerTab === 'posventa'
 						? 'bg-foreground text-background shadow-2xs'
 						: 'text-muted-foreground hover:text-foreground'}"
 				>
-					Posventa y Retención 5% ({snagItems.length})
+					Posventa y Retención ({snagItems.length})
 				</button>
 			</div>
 
 			{#if activeLedgerTab === 'hitos'}
 				<div class="flex flex-wrap items-center gap-2">
-					<div class="inline-flex items-center gap-1 rounded-lg border border-border bg-background p-0.5 text-xs">
+					<div class="flex flex-wrap items-center gap-1 rounded-lg border border-border bg-background p-0.5 text-xs">
 						<button
 							type="button"
 							onclick={() => (milestoneFilter = 'todos')}
@@ -389,7 +389,7 @@
 								? 'bg-muted font-semibold text-foreground'
 								: 'text-muted-foreground hover:text-foreground'}"
 						>
-							En comité / ejecución ({milestones.filter((m) => m.status === 'listo_para_giro' || m.status === 'en_ejecucion').length})
+							En comité ({milestones.filter((m) => m.status === 'listo_para_giro' || m.status === 'en_ejecucion').length})
 						</button>
 						<button
 							type="button"

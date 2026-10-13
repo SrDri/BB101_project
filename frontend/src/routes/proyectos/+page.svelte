@@ -105,8 +105,8 @@
     </div>
 
     <!-- Indicadores consolidados + Botón de Constitución por Rol -->
-    <div class="flex flex-wrap items-center gap-3">
-      <div class="flex items-center gap-6 bg-card border border-border rounded-lg px-5 py-2.5">
+    <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+      <div class="flex items-center justify-between sm:justify-start gap-4 sm:gap-6 bg-card border border-border rounded-lg px-4 sm:px-5 py-2.5">
         <div>
           <div class="text-[11px] text-muted-foreground">Valor total del portafolio</div>
           <div class="text-base font-semibold text-foreground tabular-nums">
@@ -125,7 +125,7 @@
       {#if canCreateProject}
         <Button
           onclick={() => (isCreateModalOpen = true)}
-          class="h-10 bg-foreground text-background hover:bg-foreground/90 text-xs font-medium gap-1.5 cursor-pointer"
+          class="h-10 w-full sm:w-auto bg-foreground text-background hover:bg-foreground/90 text-xs font-medium gap-1.5 cursor-pointer"
         >
           <Plus class="w-4 h-4" />
           <span>Constituir proyecto y ficha</span>
@@ -135,8 +135,8 @@
   </div>
 
   <!-- Filtros por estado -->
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <div class="flex flex-wrap items-center gap-1 bg-muted/50 p-1 rounded-lg border border-border">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+    <div class="w-full sm:w-auto grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1 bg-muted/50 p-1 rounded-lg border border-border text-center">
       <button
         type="button"
         onclick={() => (filterStatus = 'all')}

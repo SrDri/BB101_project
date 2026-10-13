@@ -33,7 +33,13 @@
   import { projectStore, AVAILABLE_PROFILES } from '$lib/stores/projectState.svelte';
   import type { UserRole } from '$lib/types/twin';
 
-  let { isCollapsed = $bindable(false) }: { isCollapsed?: boolean } = $props();
+  let {
+    isCollapsed = $bindable(false),
+    isMobileOpen = $bindable(false)
+  }: {
+    isCollapsed?: boolean;
+    isMobileOpen?: boolean;
+  } = $props();
 
   let isUserMenuOpen = $state(false);
   let notificationsEnabled = $state(true);
@@ -67,20 +73,25 @@
     return items.filter((item) => item.roles.includes(role));
   });
 
+  function closeMobileNav() {
+    isMobileOpen = false;
+  }
 
   function handleLogout() {
     isUserMenuOpen = false;
+    isMobileOpen = false;
     projectStore.logout();
     goto('/login');
   }
 </script>
 
+<!-- 1. Menú lateral de escritorio (oculto en pantallas móviles < md) -->
 <aside
-  class="h-screen sticky top-0 z-40 flex flex-col border-r border-border bg-sidebar text-sidebar-foreground transition-all duration-200 select-none shrink-0 {isCollapsed
+  class="hidden md:flex h-screen sticky top-0 z-40 flex-col border-r border-border bg-sidebar text-sidebar-foreground transition-all duration-200 select-none shrink-0 {isCollapsed
     ? 'w-[68px]'
     : 'w-64'}"
 >
-  <!-- 1. Cabecera del menú lateral: Logo vectorial nítido expandido o Isotipo limpio al colapsar -->
+  <!-- Cabecera del menú lateral de escritorio -->
   <div class="h-14 px-3 border-b border-border flex items-center {isCollapsed ? 'justify-center' : 'justify-between'}">
     {#if isCollapsed}
       <a
@@ -119,7 +130,7 @@
     </div>
   {/if}
 
-  <!-- 2. Cuerpo del menú lateral (Módulos arriba y Portales Públicos + Rol abajo) -->
+  <!-- Cuerpo del menú lateral de escritorio -->
   <div class="flex-1 overflow-y-auto flex flex-col justify-between {isCollapsed ? 'px-2 py-2.5 gap-4' : 'px-3 py-3.5 gap-5'}">
     <!-- Parte superior: Navegación principal -->
     <div class="space-y-1">
@@ -334,6 +345,143 @@
     {/if}
   </div>
 </aside>
+
+<!-- 2. Cajón deslizante lateral exclusivo para celular y tablet (< md) -->
+{#if isMobileOpen}
+  <div
+    class="fixed inset-0 z-50 bg-black/65 backdrop-blur-xs md:hidden"
+    onclick={closeMobileNav}
+    role="presentation"
+  ></div>
+
+  <aside
+    class="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] flex flex-col border-r border-border bg-sidebar text-sidebar-foreground shadow-2xl md:hidden select-none animate-in slide-in-from-left duration-200"
+  >
+    <!-- Cabecera del cajón móvil con logo y botón cerrar -->
+    <div class="h-14 px-4 border-b border-border flex items-center justify-between">
+      <a href="/" onclick={closeMobileNav} class="flex items-center gap-2">
+        <TramoBrandLogo variant="full" isDark={projectStore.isDark} class="h-5 w-auto" />
+      </a>
+
+      <button
+        type="button"
+        onclick={closeMobileNav}
+        class="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer"
+        aria-label="Cerrar menú"
+      >
+        <X class="w-4 h-4" />
+      </button>
+    </div>
+
+    <!-- Navegación móvil -->
+    <div class="flex-1 overflow-y-auto px-3 py-3.5 flex flex-col justify-between gap-5">
+      <div class="space-y-1">
+        <div class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+          Módulos del proyecto
+        </div>
+        {#each platformNavItems as item (item.href)}
+          {@const isActive = page.url.pathname === item.href}
+          <a
+            href={item.href}
+            onclick={closeMobileNav}
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-colors {isActive
+              ? 'bg-foreground text-background font-semibold shadow-2xs'
+              : 'text-muted-foreground hover:text-foreground hover:bg-accent/60'}"
+          >
+            <item.icon class="w-4 h-4 shrink-0 {isActive ? 'text-background' : 'text-muted-foreground'}" />
+            <span class="truncate">{item.label}</span>
+          </a>
+        {/each}
+      </div>
+
+      <!-- Simulador de rol + Portales públicos en móvil -->
+      <div class="space-y-3 pt-2">
+        {#if projectStore.currentUser.role === 'admin'}
+          <div class="p-3 rounded-xl border border-border bg-muted/30 space-y-2">
+            <div class="flex items-center gap-1.5 text-[11px] font-medium text-foreground">
+              <UserCog class="w-3.5 h-3.5 text-muted-foreground" />
+              <span>Simulador de rol</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1">
+              {#each ['admin', 'fiduciaria', 'constructor', 'interventor'] as r (r)}
+                {@const roleKey = r as UserRole}
+                <button
+                  type="button"
+                  onclick={() => {
+                    projectStore.setViewingRole(roleKey);
+                    closeMobileNav();
+                  }}
+                  class="px-2 py-1.5 rounded-md text-[11px] capitalize text-left transition-all cursor-pointer {projectStore.viewingAsRole === roleKey
+                    ? 'bg-foreground text-background font-medium'
+                    : 'bg-background text-muted-foreground hover:text-foreground border border-border/60'}"
+                >
+                  {roleKey === 'admin' ? 'Admin' : roleKey}
+                </button>
+              {/each}
+            </div>
+          </div>
+        {/if}
+
+        <div class="space-y-1 pt-3 border-t border-border/60">
+          <div class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+            Portales públicos
+          </div>
+          <a
+            href="/propietario"
+            onclick={closeMobileNav}
+            class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
+          >
+            <span class="flex items-center gap-3 truncate">
+              <IdCard class="w-4 h-4 shrink-0" />
+              <span>Portal de propietarios</span>
+            </span>
+            <ExternalLink class="w-3 h-3 opacity-50 shrink-0" />
+          </a>
+
+          <a
+            href="/verificar"
+            onclick={closeMobileNav}
+            class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
+          >
+            <span class="flex items-center gap-3 truncate">
+              <ShieldCheck class="w-4 h-4 shrink-0" />
+              <span>Verificador público</span>
+            </span>
+            <ExternalLink class="w-3 h-3 opacity-50 shrink-0" />
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pie de usuario en móvil -->
+    <div class="p-3 border-t border-border">
+      <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-muted/30 border border-border">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-lg bg-muted border border-border text-foreground flex items-center justify-center text-xs font-semibold shrink-0">
+            {projectStore.currentUser.avatarInitials}
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs font-medium text-foreground truncate">
+              {projectStore.currentUser.fullName}
+            </div>
+            <div class="text-[11px] text-muted-foreground truncate">
+              {roleLabels[projectStore.effectiveRole].label}
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onclick={handleLogout}
+          title="Cerrar sesión"
+          class="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 cursor-pointer"
+        >
+          <LogOut class="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  </aside>
+{/if}
 
 <!-- Modal de detalles de cuenta -->
 {#if projectStore.isAccountModalOpen}

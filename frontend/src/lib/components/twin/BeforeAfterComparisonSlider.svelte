@@ -136,13 +136,13 @@
 			</p>
 		</div>
 
-		<!-- Selector de ambiente tipo control segmentado sobrio -->
-		<div class="inline-flex flex-wrap items-center gap-1 rounded-lg border border-border bg-muted/40 p-1">
+		<!-- Selector de ambiente tipo control segmentado sobrio (2x2 en móvil, fila en escritorio) -->
+		<div class="grid grid-cols-2 sm:inline-flex sm:flex-wrap items-center gap-1 rounded-lg border border-border bg-muted/40 p-1 w-full sm:w-auto">
 			{#each scenes as sc (sc.id)}
 				<button
 					type="button"
 					onclick={() => (selectedSceneId = sc.id)}
-					class="cursor-pointer rounded-md px-2.5 py-1 text-xs font-medium whitespace-nowrap transition-colors {selectedSceneId === sc.id
+					class="cursor-pointer rounded-md px-2 sm:px-2.5 py-1.5 sm:py-1 text-[11px] sm:text-xs font-medium truncate text-center transition-colors {selectedSceneId === sc.id
 						? 'bg-background text-foreground shadow-2xs border border-border/60'
 						: 'text-muted-foreground hover:text-foreground'}"
 				>
@@ -155,8 +155,8 @@
 	<!-- Lienzo comparador sin saturación ni elementos neón -->
 	<div
 		class="relative w-full select-none overflow-hidden bg-zinc-950 {compact
-			? 'h-[320px] sm:h-[380px]'
-			: 'h-[360px] sm:h-[440px]'}"
+			? 'h-[260px] sm:h-[380px]'
+			: 'h-[280px] sm:h-[440px]'}"
 	>
 		<!-- CAPA DERECHA (ESTADO ACTUAL - CORTE #4) -->
 		<img
@@ -168,8 +168,8 @@
 		/>
 
 		<!-- Etiqueta discreta superior derecha (Estado actual) -->
-		<div class="pointer-events-none absolute top-3.5 right-3.5 z-10">
-			<div class="inline-flex items-center gap-2 rounded-md border border-white/15 bg-zinc-950/75 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-md">
+		<div class="pointer-events-none absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 z-10">
+			<div class="inline-flex items-center gap-1.5 sm:gap-2 rounded-md border border-white/15 bg-zinc-950/75 px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-medium text-white backdrop-blur-md">
 				<span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
 				<span>{activeScene.afterCut}</span>
 				<span class="font-mono text-zinc-300 tabular-nums">{activeScene.afterPercent}%</span>
@@ -190,9 +190,8 @@
 			/>
 
 			<!-- Etiqueta discreta superior izquierda (Estado anterior) -->
-			<div class="
-				absolute top-3.5 left-3.5">
-				<div class="inline-flex items-center gap-2 rounded-md border border-white/15 bg-zinc-950/75 px-2.5 py-1 text-[11px] font-medium text-zinc-100 backdrop-blur-md">
+			<div class="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5">
+				<div class="inline-flex items-center gap-1.5 sm:gap-2 rounded-md border border-white/15 bg-zinc-950/75 px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-medium text-zinc-100 backdrop-blur-md">
 					<span class="h-1.5 w-1.5 rounded-full bg-zinc-400"></span>
 					<span>{activeScene.beforeCut}</span>
 					<span class="font-mono text-zinc-300 tabular-nums">{activeScene.beforePercent}%</span>
@@ -218,7 +217,7 @@
 			step="1"
 			bind:value={sliderPercent}
 			aria-label="Deslizador de comparación Antes vs Después"
-			class="absolute inset-0 z-30 h-full w-full cursor-ew-resize opacity-0"
+			class="absolute inset-0 z-30 h-full w-full cursor-ew-resize opacity-0 touch-pan-y"
 		/>
 	</div>
 

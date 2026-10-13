@@ -5,7 +5,7 @@
   import { projectStore } from '$lib/stores/projectState.svelte';
 </script>
 
-<div class="relative min-h-screen w-full flex flex-col items-center justify-center p-6 md:p-10 bg-background overflow-hidden">
+<div class="relative min-h-screen w-full flex flex-col items-center justify-center px-3.5 pt-14 pb-6 sm:p-6 md:p-10 bg-background overflow-hidden">
   <!-- Capa 1: Lienzo Mesh Aurora en movimiento continuo -->
   <div class="pointer-events-none absolute inset-0 ambient-aurora-canvas"></div>
 
@@ -31,13 +31,13 @@
   ></div>
 
   <!-- Botón discreto de tema Claro / Oscuro Gris -->
-  <div class=" absolute top-6 right-6 z-10">
+  <div class="absolute top-3.5 right-3.5 sm:top-6 sm:right-6 z-20">
     <Button
       variant="outline"
       size="icon"
       onclick={() => projectStore.toggleTheme()}
       title={projectStore.isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro gris'}
-      class="h-9 w-9 cursor-pointer bg-card/80 backdrop-blur-xs"
+      class="h-8 w-8 sm:h-9 sm:w-9 cursor-pointer bg-card/80 backdrop-blur-xs"
     >
       {#if projectStore.isDark}
         <Sun class="w-4 h-4 text-[#F5A400]" />

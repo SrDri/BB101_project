@@ -553,12 +553,12 @@
       </div>
 
       <!-- Barra de navegación de vistas para el propietario -->
-      <div class="relative z-10 px-5 sm:px-6 py-3 border-t border-border bg-muted/30 backdrop-blur-md flex flex-wrap items-center justify-between gap-3">
-        <div class="inline-flex flex-wrap items-center gap-1 rounded-lg border border-border bg-background/90 p-1">
+      <div class="relative z-10 px-4 sm:px-6 py-3 border-t border-border bg-muted/30 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="w-full sm:w-auto grid grid-cols-1 sm:inline-flex items-center gap-1 rounded-lg border border-border bg-background/90 p-1">
           <button
             type="button"
             onclick={() => (ownerPortalTab = 'mi_apartamento')}
-            class="px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors cursor-pointer {ownerPortalTab === 'mi_apartamento'
+            class="px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer {ownerPortalTab === 'mi_apartamento'
               ? 'bg-foreground text-background shadow-2xs'
               : 'text-muted-foreground hover:text-foreground'}"
           >
@@ -569,7 +569,7 @@
           <button
             type="button"
             onclick={() => (ownerPortalTab = 'ficha_proyecto')}
-            class="px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors cursor-pointer {ownerPortalTab === 'ficha_proyecto'
+            class="px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer {ownerPortalTab === 'ficha_proyecto'
               ? 'bg-foreground text-background shadow-2xs'
               : 'text-muted-foreground hover:text-foreground'}"
           >
@@ -580,7 +580,7 @@
           <button
             type="button"
             onclick={() => (ownerPortalTab = 'documentacion')}
-            class="px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors cursor-pointer {ownerPortalTab === 'documentacion'
+            class="px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer {ownerPortalTab === 'documentacion'
               ? 'bg-foreground text-background shadow-2xs'
               : 'text-muted-foreground hover:text-foreground'}"
           >
@@ -662,11 +662,11 @@
 
     <!-- SECCIÓN PRINCIPAL: Plano Arquitectónico Real del Apartamento con Puntos Estratégicos de Avance -->
     <Card class="bg-card border-border shadow-xs overflow-hidden">
-      <CardHeader class="px-6 py-4 border-b border-border bg-muted/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <CardHeader class="px-4 sm:px-6 py-4 border-b border-border bg-muted/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="space-y-0.5">
           <div class="flex items-center gap-2">
-            <Home class="w-4 h-4 text-[#F5A400]" />
-            <CardTitle class="text-base font-semibold text-foreground">
+            <Home class="w-4 h-4 text-[#F5A400] shrink-0" />
+            <CardTitle class="text-sm sm:text-base font-semibold text-foreground">
               Plano arquitectónico de tu {ownerUnit.unitNumber} y puntos estratégicos de avance
             </CardTitle>
           </div>
@@ -676,11 +676,11 @@
         </div>
 
         <!-- Selector entre Plano Arquitectónico de Mi Apartamento y Vista 3D/Render del Edificio -->
-        <div class="inline-flex items-center gap-1 bg-background p-1 rounded-lg border border-border shrink-0">
+        <div class="w-full sm:w-auto grid grid-cols-1 sm:inline-flex items-center gap-1 bg-background p-1 rounded-lg border border-border shrink-0">
           <button
             type="button"
             onclick={() => (explorerTab = 'my_apartment')}
-            class="px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer {explorerTab ===
+            class="px-3 py-1.5 rounded-md text-xs font-medium flex items-center justify-center sm:justify-start gap-1.5 transition-colors cursor-pointer {explorerTab ===
             'my_apartment'
               ? 'bg-foreground text-background'
               : 'text-muted-foreground hover:text-foreground'}"
@@ -691,7 +691,7 @@
           <button
             type="button"
             onclick={() => (explorerTab = 'building_3d')}
-            class="px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer {explorerTab ===
+            class="px-3 py-1.5 rounded-md text-xs font-medium flex items-center justify-center sm:justify-start gap-1.5 transition-colors cursor-pointer {explorerTab ===
             'building_3d'
               ? 'bg-foreground text-background'
               : 'text-muted-foreground hover:text-foreground'}"

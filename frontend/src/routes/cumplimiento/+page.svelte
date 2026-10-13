@@ -125,37 +125,37 @@
 			</p>
 		</div>
 
-		<div class="flex flex-wrap items-center gap-2">
+		<div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
 			<!-- Conmutador limpio entre Expediente Documental y Cumplimiento de Entidades -->
-			<div class="inline-flex rounded-xl border border-border bg-muted/40 p-1">
+			<div class="w-full sm:w-auto grid grid-cols-1 sm:inline-flex rounded-xl border border-border bg-muted/40 p-1">
 				<button
 					type="button"
 					onclick={() => (activeSectionTab = 'documentos')}
-					class="inline-flex cursor-pointer items-center gap-2 rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all {activeSectionTab === 'documentos'
+					class="inline-flex cursor-pointer items-center justify-center sm:justify-start gap-2 rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all {activeSectionTab === 'documentos'
 						? 'bg-foreground text-background shadow-2xs'
 						: 'text-muted-foreground hover:text-foreground'}"
 				>
-					<FileText class="h-3.5 w-3.5" />
+					<FileText class="h-3.5 w-3.5 shrink-0" />
 					<span>Documentos obligatorios ({docsList.length})</span>
 				</button>
 				<button
 					type="button"
 					onclick={() => (activeSectionTab = 'entidades')}
-					class="inline-flex cursor-pointer items-center gap-2 rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all {activeSectionTab === 'entidades'
+					class="inline-flex cursor-pointer items-center justify-center sm:justify-start gap-2 rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all {activeSectionTab === 'entidades'
 						? 'bg-foreground text-background shadow-2xs'
 						: 'text-muted-foreground hover:text-foreground'}"
 				>
-					<ShieldCheck class="h-3.5 w-3.5" />
-					<span>Cumplimiento constructora e interventor ({complianceList.length})</span>
+					<ShieldCheck class="h-3.5 w-3.5 shrink-0" />
+					<span>Cumplimiento entidades ({complianceList.length})</span>
 				</button>
 			</div>
 
 			<button
 				type="button"
 				onclick={() => (showUploadModal = true)}
-				class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-foreground px-3.5 py-2 text-xs font-medium text-background shadow-2xs transition-opacity hover:opacity-90"
+				class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-foreground px-3.5 py-2 text-xs font-medium text-background shadow-2xs transition-opacity hover:opacity-90"
 			>
-				<Plus class="h-3.5 w-3.5" />
+				<Plus class="h-3.5 w-3.5 shrink-0" />
 				<span>Radicar documento</span>
 			</button>
 		</div>

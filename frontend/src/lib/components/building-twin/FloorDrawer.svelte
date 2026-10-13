@@ -114,9 +114,9 @@
     onclick={(e) => e.stopPropagation()}
   >
     <!-- 1. Cabecera del modal con navegación rápida entre pisos -->
-    <div class="px-6 py-4 border-b border-border flex flex-wrap items-center justify-between gap-4 bg-muted/20 shrink-0">
+    <div class="px-3.5 py-3 sm:px-6 sm:py-4 border-b border-border flex flex-wrap items-center justify-between gap-3 bg-muted/20 shrink-0">
       <div class="space-y-1">
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <Badge variant="outline" class="text-[11px] font-medium bg-background text-foreground border-border gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full {meta.dot}"></span>
             <span>{meta.label}</span>
@@ -129,7 +129,7 @@
             {projectStore.activeCut.projectName}
           </span>
         </div>
-        <h2 class="text-lg sm:text-xl font-semibold text-foreground tracking-tight">
+        <h2 class="text-base sm:text-xl font-semibold text-foreground tracking-tight">
           {floor.name}
         </h2>
       </div>
@@ -141,7 +141,7 @@
             type="button"
             disabled={!prevFloor}
             onclick={() => prevFloor && projectStore.selectFloor(prevFloor.id)}
-            class="px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1 transition-colors disabled:opacity-40 disabled:pointer-events-none hover:bg-muted text-foreground cursor-pointer"
+            class="px-2 sm:px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1 transition-colors disabled:opacity-40 disabled:pointer-events-none hover:bg-muted text-foreground cursor-pointer"
             title="Ir al piso inferior"
           >
             <ChevronLeft class="w-3.5 h-3.5" />
@@ -152,7 +152,7 @@
             type="button"
             disabled={!nextFloor}
             onclick={() => nextFloor && projectStore.selectFloor(nextFloor.id)}
-            class="px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1 transition-colors disabled:opacity-40 disabled:pointer-events-none hover:bg-muted text-foreground cursor-pointer"
+            class="px-2 sm:px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1 transition-colors disabled:opacity-40 disabled:pointer-events-none hover:bg-muted text-foreground cursor-pointer"
             title="Ir al piso superior"
           >
             <span class="hidden sm:inline">Piso {floor.levelNumber + 1}</span>
@@ -164,7 +164,7 @@
           variant="outline"
           size="icon"
           onclick={onClose}
-          class="h-8 w-8 cursor-pointer"
+          class="h-8 w-8 cursor-pointer shrink-0"
           aria-label="Cerrar modal"
         >
           <X class="w-4 h-4" />
@@ -173,7 +173,7 @@
     </div>
 
     <!-- 2. Cuerpo del modal con scroll fluido -->
-    <div class="p-6 overflow-y-auto space-y-6">
+    <div class="p-3.5 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6">
       <!-- Franja superior de 4 KPIs del nivel -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         <Card class="bg-muted/25 border-border shadow-none">

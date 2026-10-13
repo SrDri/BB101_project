@@ -367,32 +367,32 @@
   <!-- MÓDULO DE INTELIGENCIA TÉCNICA EN PESTAÑAS DE ANCHO COMPLETO (NCR + ONAC) -->
   <!-- ========================================================================= -->
   <div class="overflow-hidden rounded-xl border border-border bg-card shadow-2xs">
-    <div class="flex flex-col justify-between gap-3 border-b border-border bg-muted/15 px-6 py-4 sm:flex-row sm:items-center">
-      <div class="flex flex-wrap items-center gap-1.5 rounded-xl border border-border bg-background p-1">
+    <div class="flex flex-col justify-between gap-3 border-b border-border bg-muted/15 px-4 sm:px-6 py-3.5 sm:py-4 lg:flex-row lg:items-center">
+      <div class="w-full sm:w-auto grid grid-cols-1 sm:inline-flex items-center gap-1 rounded-xl border border-border bg-background p-1">
         <button
           type="button"
           onclick={() => (activeQualityTab = 'hallazgos')}
-          class="inline-flex cursor-pointer items-center gap-2 rounded-lg px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all {activeQualityTab === 'hallazgos'
+          class="inline-flex cursor-pointer items-center justify-center sm:justify-start gap-2 rounded-lg px-3 sm:px-3.5 py-1.5 text-xs font-medium transition-all {activeQualityTab === 'hallazgos'
             ? 'bg-foreground text-background shadow-2xs'
             : 'text-muted-foreground hover:text-foreground'}"
         >
-          <AlertTriangle class="h-3.5 w-3.5" />
-          <span>Bitácora de hallazgos y no conformidades NCR ({findings.length})</span>
+          <AlertTriangle class="h-3.5 w-3.5 shrink-0" />
+          <span class="truncate">Bitácora de hallazgos NCR ({findings.length})</span>
         </button>
 
         <button
           type="button"
           onclick={() => (activeQualityTab = 'laboratorio')}
-          class="inline-flex cursor-pointer items-center gap-2 rounded-lg px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all {activeQualityTab === 'laboratorio'
+          class="inline-flex cursor-pointer items-center justify-center sm:justify-start gap-2 rounded-lg px-3 sm:px-3.5 py-1.5 text-xs font-medium transition-all {activeQualityTab === 'laboratorio'
             ? 'bg-foreground text-background shadow-2xs'
             : 'text-muted-foreground hover:text-foreground'}"
         >
-          <FlaskConical class="h-3.5 w-3.5" />
-          <span>Ensayos de laboratorio y calidad NSR-10 ({labTests.length})</span>
+          <FlaskConical class="h-3.5 w-3.5 shrink-0" />
+          <span class="truncate">Ensayos de laboratorio NSR-10 ({labTests.length})</span>
         </button>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         {#if activeQualityTab === 'hallazgos'}
           <span class="rounded-md border border-border bg-background px-2.5 py-1 font-mono text-xs font-medium whitespace-nowrap text-foreground">
             {findings.filter((f) => f.status === 'subsanado').length} de {findings.length} subsanados
