@@ -29,6 +29,7 @@
   } from '@lucide/svelte';
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
+  import TramoBrandLogo from '$lib/components/ui/TramoBrandLogo.svelte';
   import { projectStore, AVAILABLE_PROFILES } from '$lib/stores/projectState.svelte';
   import type { UserRole } from '$lib/types/twin';
 
@@ -78,7 +79,7 @@
     ? 'w-[68px]'
     : 'w-64'}"
 >
-  <!-- 1. Cabecera del menú lateral: Logo completo expandido o Isotipo limpio al colapsar -->
+  <!-- 1. Cabecera del menú lateral: Logo vectorial nítido expandido o Isotipo limpio al colapsar -->
   <div class="h-14 px-3 border-b border-border flex items-center {isCollapsed ? 'justify-center' : 'justify-between'}">
     {#if isCollapsed}
       <a
@@ -86,27 +87,11 @@
         class="flex items-center justify-center w-10 h-10 rounded-xl hover:bg-accent/60 transition-colors"
         title="tramo — Ir al inicio"
       >
-        <img
-          src="/isotipo_tramo.svg"
-          alt="tramo isotipo"
-          class="h-7 w-7 object-contain"
-        />
+        <TramoBrandLogo variant="isotipo" class="h-6 w-6" />
       </a>
     {:else}
       <a href="/" class="flex items-center gap-2.5 pl-1 overflow-hidden">
-        {#if projectStore.isDark}
-          <img
-            src="/white_logo_ui_v1.svg"
-            alt="tramo"
-            class="h-6 w-auto object-contain"
-          />
-        {:else}
-          <img
-            src="/black_logo_ui_v1.svg"
-            alt="tramo"
-            class="h-6 w-auto object-contain"
-          />
-        {/if}
+        <TramoBrandLogo variant="full" isDark={projectStore.isDark} class="h-5 w-auto" />
       </a>
 
       <button
@@ -133,9 +118,9 @@
     </div>
   {/if}
 
-  <!-- 2. Cuerpo del menú lateral -->
-  <div class="flex-1 overflow-y-auto {isCollapsed ? 'px-2 py-2.5 space-y-4' : 'px-3 py-3.5 space-y-5'}">
-    <!-- Navegación principal -->
+  <!-- 2. Cuerpo del menú lateral (Módulos arriba y Portales Públicos + Rol abajo) -->
+  <div class="flex-1 overflow-y-auto flex flex-col justify-between {isCollapsed ? 'px-2 py-2.5 gap-4' : 'px-3 py-3.5 gap-5'}">
+    <!-- Parte superior: Navegación principal -->
     <div class="space-y-1">
       {#if !isCollapsed}
         <div class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
@@ -165,73 +150,74 @@
       {/each}
     </div>
 
-    <!-- Accesos públicos aislados -->
-    <div class="space-y-1 pt-3 border-t border-border/60">
-      {#if !isCollapsed}
-        <div class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
-          Portales públicos
+    <!-- Parte inferior del menú vertical: Simulador de rol + Portales públicos (Propietario y Verificador) -->
+    <div class="space-y-3 pt-2">
+      {#if projectStore.currentUser.role === 'admin' && !isCollapsed}
+        <div class="p-3 rounded-xl border border-border bg-muted/30 space-y-2">
+          <div class="flex items-center gap-1.5 text-[11px] font-medium text-foreground">
+            <UserCog class="w-3.5 h-3.5 text-muted-foreground" />
+            <span>Simulador de rol</span>
+          </div>
+          <div class="grid grid-cols-2 gap-1">
+            {#each ['admin', 'fiduciaria', 'constructor', 'interventor'] as r (r)}
+              {@const roleKey = r as UserRole}
+              <button
+                type="button"
+                onclick={() => projectStore.setViewingRole(roleKey)}
+                class="px-2 py-1.5 rounded-md text-[11px] capitalize text-left transition-all cursor-pointer {projectStore.viewingAsRole === roleKey
+                  ? 'bg-foreground text-background font-medium'
+                  : 'bg-background text-muted-foreground hover:text-foreground border border-border/60'}"
+              >
+                {roleKey === 'admin' ? 'Admin' : roleKey}
+              </button>
+            {/each}
+          </div>
         </div>
       {/if}
-      <a
-        href="/propietario"
-        title="Portal de propietarios por cédula"
-        class="group flex items-center transition-colors {isCollapsed
-          ? 'justify-center w-10 h-10 mx-auto rounded-xl'
-          : 'justify-between gap-2 px-2.5 py-2 rounded-lg text-xs'} font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
-      >
-        <span class="flex items-center {isCollapsed ? 'justify-center' : 'gap-3 min-w-0'}">
-          <IdCard class="{isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4'} shrink-0" />
-          {#if !isCollapsed}
-            <span class="truncate">Portal de propietarios</span>
-          {/if}
-        </span>
-        {#if !isCollapsed}
-          <ExternalLink class="w-3 h-3 opacity-50 shrink-0" />
-        {/if}
-      </a>
 
-      <a
-        href="/verificar"
-        title="Verificador criptográfico público"
-        class="group flex items-center transition-colors {isCollapsed
-          ? 'justify-center w-10 h-10 mx-auto rounded-xl'
-          : 'justify-between gap-2 px-2.5 py-2 rounded-lg text-xs'} font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
-      >
-        <span class="flex items-center {isCollapsed ? 'justify-center' : 'gap-3 min-w-0'}">
-          <ShieldCheck class="{isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4'} shrink-0" />
-          {#if !isCollapsed}
-            <span class="truncate">Verificador público</span>
-          {/if}
-        </span>
+      <div class="space-y-1 pt-3 border-t border-border/60">
         {#if !isCollapsed}
-          <ExternalLink class="w-3 h-3 opacity-50 shrink-0" />
+          <div class="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+            Portales públicos
+          </div>
         {/if}
-      </a>
-    </div>
+        <a
+          href="/propietario"
+          title="Portal de propietarios por cédula"
+          class="group flex items-center transition-colors {isCollapsed
+            ? 'justify-center w-10 h-10 mx-auto rounded-xl'
+            : 'justify-between gap-2 px-2.5 py-2 rounded-lg text-xs'} font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
+        >
+          <span class="flex items-center {isCollapsed ? 'justify-center' : 'gap-3 min-w-0'}">
+            <IdCard class="{isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4'} shrink-0" />
+            {#if !isCollapsed}
+              <span class="truncate">Portal de propietarios</span>
+            {/if}
+          </span>
+          {#if !isCollapsed}
+            <ExternalLink class="w-3 h-3 opacity-50 shrink-0" />
+          {/if}
+        </a>
 
-    <!-- Selector de vista para el administrador -->
-    {#if projectStore.currentUser.role === 'admin' && !isCollapsed}
-      <div class="p-3 rounded-xl border border-border bg-muted/30 space-y-2">
-        <div class="flex items-center gap-1.5 text-[11px] font-medium text-foreground">
-          <UserCog class="w-3.5 h-3.5 text-muted-foreground" />
-          <span>Simulador de rol</span>
-        </div>
-        <div class="grid grid-cols-2 gap-1">
-          {#each ['admin', 'fiduciaria', 'constructor', 'interventor'] as r (r)}
-            {@const roleKey = r as UserRole}
-            <button
-              type="button"
-              onclick={() => projectStore.setViewingRole(roleKey)}
-              class="px-2 py-1.5 rounded-md text-[11px] capitalize text-left transition-all cursor-pointer {projectStore.viewingAsRole === roleKey
-                ? 'bg-foreground text-background font-medium'
-                : 'bg-background text-muted-foreground hover:text-foreground border border-border/60'}"
-            >
-              {roleKey === 'admin' ? 'Admin' : roleKey}
-            </button>
-          {/each}
-        </div>
+        <a
+          href="/verificar"
+          title="Verificador criptográfico público"
+          class="group flex items-center transition-colors {isCollapsed
+            ? 'justify-center w-10 h-10 mx-auto rounded-xl'
+            : 'justify-between gap-2 px-2.5 py-2 rounded-lg text-xs'} font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
+        >
+          <span class="flex items-center {isCollapsed ? 'justify-center' : 'gap-3 min-w-0'}">
+            <ShieldCheck class="{isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4'} shrink-0" />
+            {#if !isCollapsed}
+              <span class="truncate">Verificador público</span>
+            {/if}
+          </span>
+          {#if !isCollapsed}
+            <ExternalLink class="w-3 h-3 opacity-50 shrink-0" />
+          {/if}
+        </a>
       </div>
-    {/if}
+    </div>
   </div>
 
   <!-- 3. Pie del menú lateral: Cuenta de usuario y sesión -->

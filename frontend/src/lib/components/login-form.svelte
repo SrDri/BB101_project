@@ -9,6 +9,7 @@
     FieldSeparator,
   } from '$lib/components/ui/field/index.js';
   import { Input } from '$lib/components/ui/input/index.js';
+  import TramoBrandLogo from '$lib/components/ui/TramoBrandLogo.svelte';
   import { cn } from '$lib/utils.js';
   import { projectStore, AVAILABLE_PROFILES } from '$lib/stores/projectState.svelte';
   import type { UserProfile } from '$lib/types/twin';
@@ -54,11 +55,7 @@
         <FieldGroup>
           <div class="flex flex-col items-start gap-1.5 text-left mb-3">
             <div class="mb-2 md:hidden">
-              {#if projectStore.isDark}
-                <img src="/white_logo_ui_v1.svg" alt="tramo" class="h-6 w-auto" />
-              {:else}
-                <img src="/black_logo_ui_v1.svg" alt="tramo" class="h-6 w-auto" />
-              {/if}
+              <TramoBrandLogo variant="full" isDark={projectStore.isDark} class="h-5 w-auto" />
             </div>
             <h1 class="text-xl font-semibold tracking-tight text-foreground">
               Iniciar sesión en Tramo
@@ -168,7 +165,7 @@
 
         <!-- Logo superior -->
         <div class="relative z-10">
-          <img src="/white_logo_ui_v1.svg" alt="tramo" class="h-7 w-auto" />
+          <TramoBrandLogo variant="full" isDark={true} class="h-5.5 w-auto" />
         </div>
 
         <!-- Mensaje inferior conciso con ortografía natural en español -->

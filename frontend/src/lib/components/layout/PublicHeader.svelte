@@ -3,6 +3,7 @@
   import { page } from '$app/state';
   import { Sun, Moon } from '@lucide/svelte';
   import { Button } from '$lib/components/ui/button';
+  import TramoBrandLogo from '$lib/components/ui/TramoBrandLogo.svelte';
   import { projectStore } from '$lib/stores/projectState.svelte';
 
   onMount(() => {
@@ -15,11 +16,7 @@
     <!-- Identidad del portal público con heading normal -->
     <div class="flex items-center gap-4">
       <a href="/verificar" class="flex items-center gap-3">
-        {#if projectStore.isDark}
-          <img src="/white_logo_ui_v1.svg" alt="tramo" class="h-6 w-auto" />
-        {:else}
-          <img src="/black_logo_ui_v1.svg" alt="tramo" class="h-6 w-auto" />
-        {/if}
+        <TramoBrandLogo variant="full" isDark={projectStore.isDark} class="h-5 w-auto" />
       </a>
 
       <div class="hidden sm:flex items-center pl-4 border-l border-border">

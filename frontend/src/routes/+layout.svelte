@@ -228,13 +228,9 @@
                 isProjectMenuOpen = !isProjectMenuOpen;
                 isNotificationsOpen = false;
               }}
-              class="flex items-center gap-2.5 rounded-xl border border-border bg-card hover:bg-accent/60 px-3 py-1.5 text-left transition-all cursor-pointer shadow-2xs"
+              class="flex items-center gap-2 rounded-xl border border-border bg-card hover:bg-accent/60 px-3 py-1.5 text-left transition-all cursor-pointer shadow-2xs"
               title="Cambiar proyecto activo"
             >
-              <div class="w-6 h-6 rounded-lg bg-muted border border-border flex items-center justify-center shrink-0">
-                <Building2 class="w-3.5 h-3.5 text-foreground" />
-              </div>
-
               <div class="flex items-center gap-2 min-w-0">
                 <span class="text-xs font-semibold text-foreground truncate max-w-[180px] sm:max-w-[240px]">
                   {projectStore.activeCut.projectName}
@@ -332,11 +328,6 @@
               <span>Vista como: <strong class="font-medium capitalize">{projectStore.viewingAsRole}</strong></span>
             </Badge>
           {/if}
-
-          <Badge variant="outline" class="hidden md:inline-flex text-[11px] font-normal bg-muted/40 text-muted-foreground border-border gap-1.5 whitespace-nowrap">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>Soroban testnet</span>
-          </Badge>
 
           <!-- Centro de Notificaciones y Firma Pendiente (Action Inbox) -->
           <div class="relative">

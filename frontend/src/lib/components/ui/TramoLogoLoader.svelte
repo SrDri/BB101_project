@@ -9,6 +9,7 @@
     viewBox="0 0 80 64"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    shape-rendering="geometricPrecision"
     class="overflow-visible"
   >
     <g transform="translate(7 11)">

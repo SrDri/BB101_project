@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg width="78" height="60" viewBox="0 0 78 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="72" height="51" viewBox="3 4 72 51" fill="none" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
   <g transform="translate(6 7)">
     <g transform="matrix(1 0 0 1 0 11.268)">
       <rect width="19.317" height="16.098" fill="#FFFFFF" fill-rule="evenodd" stroke-width="3.5" stroke="#F5A400" stroke-linejoin="round" transform="matrix(1 0 0 1 0 17.707)" />
@@ -18,4 +18,3 @@
     <path d="M0 4.82927L4.42683 9.2561L11.2683 0" fill="none" stroke-width="3.5" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" transform="translate(42.659 21.732)" />
   </g>
 </svg>
-

@@ -27,15 +27,15 @@
     loadingProgress = 30;
     loadingStep = 'Calculando huella digital SHA-256 en el navegador...';
 
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 850));
     loadingProgress = 70;
     loadingStep = 'Consultando registro del contrato en Stellar Soroban...';
 
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 850));
     loadingProgress = 100;
     loadingStep = 'Comparando integridad bit a bit...';
 
-    await new Promise((r) => setTimeout(r, 300));
+    await new Promise((r) => setTimeout(r, 700));
     result = res;
     isVerifying = false;
   }

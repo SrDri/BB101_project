@@ -174,15 +174,15 @@
     loadingProgress = 25;
     loadingStep = 'Consultando titularidad en encargo fiduciario...';
 
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 850));
     loadingProgress = 65;
     loadingStep = `Localizando ${found.unitNumber} en el nivel ${found.floorLevel} y cargando plano arquitectónico...`;
 
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 850));
     loadingProgress = 100;
     loadingStep = 'Sincronizando puntos estratégicos y registro fotográfico de tu apartamento...';
 
-    await new Promise((r) => setTimeout(r, 300));
+    await new Promise((r) => setTimeout(r, 700));
     syncTwinForOwner(found);
     searchedCedula = clean;
     isSearching = false;
