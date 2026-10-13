@@ -23,7 +23,9 @@
     CheckCheck,
     ArrowUpRight,
     ShieldCheck,
-    Menu
+    Menu,
+    PanelLeftClose,
+    PanelLeftOpen
   } from '@lucide/svelte';
   import type { LayoutProps } from './$types';
 
@@ -253,6 +255,21 @@
             title="Abrir menú"
           >
             <Menu class="w-5 h-5" />
+          </button>
+
+          <!-- Botón para colapsar/expandir el menú lateral en escritorio (>= md) -->
+          <button
+            type="button"
+            onclick={() => (isSidebarCollapsed = !isSidebarCollapsed)}
+            class="hidden md:inline-flex p-1.5 -ml-1 sm:ml-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer shrink-0 transition-colors"
+            aria-label={isSidebarCollapsed ? 'Expandir menú lateral' : 'Contraer menú lateral'}
+            title={isSidebarCollapsed ? 'Expandir menú lateral' : 'Contraer menú lateral'}
+          >
+            {#if isSidebarCollapsed}
+              <PanelLeftOpen class="w-4 h-4" />
+            {:else}
+              <PanelLeftClose class="w-4 h-4" />
+            {/if}
           </button>
 
           <!-- Selector desplegable de proyecto activo en el Topbar -->

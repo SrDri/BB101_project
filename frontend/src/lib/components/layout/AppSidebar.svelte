@@ -17,8 +17,6 @@
     Settings,
     Bell,
     KeyRound,
-    PanelLeftClose,
-    PanelLeftOpen,
     ExternalLink,
     X,
     IdCard,
@@ -43,6 +41,37 @@
 
   let isUserMenuOpen = $state(false);
   let notificationsEnabled = $state(true);
+
+  let tooltipState = $state<{ text: string; top: number; visible: boolean }>({
+    text: '',
+    top: 0,
+    visible: false
+  });
+
+  function showTooltip(e: MouseEvent | FocusEvent, text: string) {
+    if (!isCollapsed) return;
+    const target = e.currentTarget as HTMLElement | null;
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    tooltipState = {
+      text,
+      top: rect.top + rect.height / 2,
+      visible: true
+    };
+  }
+
+  function hideTooltip() {
+    tooltipState.visible = false;
+  }
+
+  $effect(() => {
+    if (!isCollapsed) {
+      tooltipState.visible = false;
+    }
+    // Ocultar si cambia la ruta activa
+    page.url.pathname;
+    tooltipState.visible = false;
+  });
 
   const roleLabels: Record<UserRole, { label: string; dot: string }> = {
     admin: { label: 'Administrador', dot: 'bg-[#F5A400]' },
@@ -97,7 +126,11 @@
       <a
         href="/"
         class="flex items-center justify-center w-10 h-10 rounded-xl hover:bg-accent/60 transition-colors"
-        title="tramo — Ir al inicio"
+        aria-label="tramo — Ir al inicio"
+        onmouseenter={(e) => showTooltip(e, 'tramo — Inicio')}
+        onmouseleave={hideTooltip}
+        onfocus={(e) => showTooltip(e, 'tramo — Inicio')}
+        onblur={hideTooltip}
       >
         <TramoBrandLogo variant="isotipo" class="h-6 w-6" />
       </a>
@@ -105,33 +138,14 @@
       <a href="/" class="flex items-center gap-2.5 pl-1 overflow-hidden">
         <TramoBrandLogo variant="full" isDark={projectStore.isDark} class="h-5 w-auto" />
       </a>
-
-      <button
-        type="button"
-        onclick={() => (isCollapsed = true)}
-        title="Contraer menú lateral"
-        class="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors cursor-pointer"
-      >
-        <PanelLeftClose class="w-4 h-4" />
-      </button>
     {/if}
   </div>
 
-  {#if isCollapsed}
-    <div class="px-2 pt-2.5 pb-1 flex justify-center">
-      <button
-        type="button"
-        onclick={() => (isCollapsed = false)}
-        title="Expandir menú lateral"
-        class="w-10 h-8 rounded-lg border border-border/70 bg-background/60 text-muted-foreground hover:text-foreground hover:bg-accent flex items-center justify-center transition-colors cursor-pointer"
-      >
-        <PanelLeftOpen class="w-4 h-4" />
-      </button>
-    </div>
-  {/if}
-
   <!-- Cuerpo del menú lateral de escritorio -->
-  <div class="flex-1 overflow-y-auto flex flex-col justify-between {isCollapsed ? 'px-2 py-2.5 gap-4' : 'px-3 py-3.5 gap-5'}">
+  <div
+    class="flex-1 overflow-y-auto flex flex-col justify-between {isCollapsed ? 'px-2 py-2.5 gap-4' : 'px-3 py-3.5 gap-5'}"
+    onscroll={hideTooltip}
+  >
     <!-- Parte superior: Navegación principal -->
     <div class="space-y-1">
       {#if !isCollapsed}
@@ -143,7 +157,11 @@
         {@const isActive = page.url.pathname === item.href}
         <a
           href={item.href}
-          title={item.label}
+          aria-label={item.label}
+          onmouseenter={(e) => showTooltip(e, item.label)}
+          onmouseleave={hideTooltip}
+          onfocus={(e) => showTooltip(e, item.label)}
+          onblur={hideTooltip}
           class="relative group flex items-center transition-all {isCollapsed
             ? 'justify-center w-10 h-10 mx-auto rounded-xl'
             : 'gap-3 px-2.5 py-2 rounded-lg text-xs'} {isActive
@@ -195,7 +213,11 @@
         {/if}
         <a
           href="/propietario"
-          title="Portal de propietarios por cédula"
+          aria-label="Portal de propietarios"
+          onmouseenter={(e) => showTooltip(e, 'Portal de propietarios')}
+          onmouseleave={hideTooltip}
+          onfocus={(e) => showTooltip(e, 'Portal de propietarios')}
+          onblur={hideTooltip}
           class="group flex items-center transition-colors {isCollapsed
             ? 'justify-center w-10 h-10 mx-auto rounded-xl'
             : 'justify-between gap-2 px-2.5 py-2 rounded-lg text-xs'} font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
@@ -213,7 +235,11 @@
 
         <a
           href="/verificar"
-          title="Verificador criptográfico público"
+          aria-label="Verificador público"
+          onmouseenter={(e) => showTooltip(e, 'Verificador público')}
+          onmouseleave={hideTooltip}
+          onfocus={(e) => showTooltip(e, 'Verificador público')}
+          onblur={hideTooltip}
           class="group flex items-center transition-colors {isCollapsed
             ? 'justify-center w-10 h-10 mx-auto rounded-xl'
             : 'justify-between gap-2 px-2.5 py-2 rounded-lg text-xs'} font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
@@ -237,8 +263,12 @@
     <button
       type="button"
       onclick={() => (isUserMenuOpen = !isUserMenuOpen)}
+      aria-label="Opciones de cuenta y sesión"
+      onmouseenter={(e) => showTooltip(e, `${projectStore.currentUser.fullName} • ${projectStore.currentUser.companyName}`)}
+      onmouseleave={hideTooltip}
+      onfocus={(e) => showTooltip(e, `${projectStore.currentUser.fullName} • ${projectStore.currentUser.companyName}`)}
+      onblur={hideTooltip}
       class="w-full flex items-center {isCollapsed ? 'justify-center p-1.5' : 'justify-between gap-2.5 p-2'} rounded-xl hover:bg-accent transition-colors text-left cursor-pointer"
-      title="Opciones de cuenta y sesión ({projectStore.currentUser.fullName})"
     >
       <div class="flex items-center {isCollapsed ? 'justify-center' : 'gap-2.5 min-w-0'}">
         <div class="w-8 h-8 rounded-lg bg-muted border border-border text-foreground flex items-center justify-center text-xs font-semibold shrink-0">
@@ -345,6 +375,18 @@
     {/if}
   </div>
 </aside>
+
+<!-- Tooltip flotante al pasar sobre los iconos con el menú colapsado -->
+{#if isCollapsed && tooltipState.visible}
+  <div
+    role="tooltip"
+    class="pointer-events-none fixed left-[74px] -translate-y-1/2 z-50 px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-semibold shadow-xl border border-border whitespace-nowrap flex items-center select-none"
+    style="top: {tooltipState.top}px;"
+  >
+    <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-popover border-l border-b border-border"></div>
+    <span class="relative z-10">{tooltipState.text}</span>
+  </div>
+{/if}
 
 <!-- 2. Cajón deslizante lateral exclusivo para celular y tablet (< md) -->
 {#if isMobileOpen}
