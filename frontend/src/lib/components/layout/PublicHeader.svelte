@@ -1,14 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { page } from '$app/state';
   import { Sun, Moon } from '@lucide/svelte';
   import { Button } from '$lib/components/ui/button';
   import TramoBrandLogo from '$lib/components/ui/TramoBrandLogo.svelte';
   import { projectStore } from '$lib/stores/projectState.svelte';
-
-  onMount(() => {
-    projectStore.setTheme(false);
-  });
 </script>
 
 <header class="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-md">

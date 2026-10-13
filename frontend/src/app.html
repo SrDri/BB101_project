@@ -6,6 +6,16 @@
 		<link rel="shortcut icon" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>tramo — Certificación Criptográfica de Avance de Obra</title>
+		<script>
+			try {
+				const savedTheme = localStorage.getItem('tramo_theme_preference');
+				if (savedTheme === 'light') {
+					document.documentElement.classList.remove('dark');
+				} else {
+					document.documentElement.classList.add('dark');
+				}
+			} catch (_) {}
+		</script>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">

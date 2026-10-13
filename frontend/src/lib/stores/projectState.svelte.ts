@@ -904,6 +904,13 @@ class ProjectStore {
         document.documentElement.classList.remove('dark');
       }
     }
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem('tramo_theme_preference', dark ? 'dark' : 'light');
+      } catch {
+        // Ignorar errores de almacenamiento
+      }
+    }
   }
 
   toggleTheme() {
@@ -912,6 +919,19 @@ class ProjectStore {
 
   initAuth() {
     if (typeof window !== 'undefined' && !this.authInitialized) {
+      try {
+        const savedTheme = window.localStorage.getItem('tramo_theme_preference');
+        if (savedTheme === 'light') {
+          this.isDark = false;
+          document.documentElement.classList.remove('dark');
+        } else if (savedTheme === 'dark') {
+          this.isDark = true;
+          document.documentElement.classList.add('dark');
+        }
+      } catch {
+        // Ignorar errores de localStorage
+      }
+
       try {
         const saved = window.sessionStorage.getItem('tramo_corporate_session');
         if (saved) {
