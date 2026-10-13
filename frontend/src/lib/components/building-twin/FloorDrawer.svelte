@@ -359,6 +359,7 @@
                 <img
                   src={activePhoto.thumbnailUrl}
                   alt={activePhoto.title}
+                  referrerpolicy="no-referrer"
                   class="w-full h-full object-cover"
                 />
                 <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/30"></div>
@@ -433,6 +434,7 @@
                           <img
                             src={thumb.thumbnailUrl}
                             alt={thumb.title}
+                            referrerpolicy="no-referrer"
                             class="w-full h-full object-cover"
                           />
                           <div class="absolute inset-x-0 bottom-0 bg-black/65 px-1.5 py-0.5 text-[10px] text-white truncate">

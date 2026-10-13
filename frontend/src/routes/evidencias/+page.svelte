@@ -172,6 +172,7 @@
               <img
                 src={photo.thumbnailUrl}
                 alt={photo.title}
+                referrerpolicy="no-referrer"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/30"></div>
@@ -267,6 +268,7 @@
           <img
             src={activeModalPhoto.fullUrl}
             alt={activeModalPhoto.title}
+            referrerpolicy="no-referrer"
             class="w-full h-full object-cover"
           />
         </div>

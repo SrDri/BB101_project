@@ -64,8 +64,9 @@
     <!-- Capa 1: Imagen de Render Arquitectónico Fotorrealista de Torre Residencial -->
     <div class="absolute inset-0">
       <img
-        src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1400&q=85"
+        src="https://lh3.googleusercontent.com/d/1qPDWwRaYzdGqVI5eGi6y6d0kj9e3yGl3=w1600"
         alt="Render arquitectónico del proyecto"
+        referrerpolicy="no-referrer"
         class="w-full h-full object-cover object-center transition-all duration-500 {renderMode === 'hybrid'
           ? 'brightness-95 contrast-105'
           : 'brightness-100'}"

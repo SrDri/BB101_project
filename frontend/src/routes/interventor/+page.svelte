@@ -238,7 +238,7 @@
         <CardContent class="p-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div class="bg-muted/30 rounded-lg border border-border overflow-hidden">
             <div class="relative h-24 w-full">
-              <img src="https://images.unsplash.com/photo-1541888946425-d0fbb186156f?w=600&auto=format&fit=crop&q=80" alt="Losa" class="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/1SAE6L2P4x7HRsRt-xpLvXK84ZPjtaIyb=w800" alt="Losa" referrerpolicy="no-referrer" class="w-full h-full object-cover" />
             </div>
             <div class="p-2 text-[10px] font-mono text-muted-foreground">
               <div class="text-foreground font-semibold truncate">Losa Nivel 4</div>
@@ -248,7 +248,7 @@
 
           <div class="bg-muted/30 rounded-lg border border-border overflow-hidden">
             <div class="relative h-24 w-full">
-              <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80" alt="Mampostería" class="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/18yzfpifx9p7bLTnSbm3pnwFP4Xm9UW9L=w800" alt="Mampostería" referrerpolicy="no-referrer" class="w-full h-full object-cover" />
             </div>
             <div class="p-2 text-[10px] font-mono text-muted-foreground">
               <div class="text-foreground font-semibold truncate">Muros Eje C</div>
@@ -258,7 +258,7 @@
 
           <div class="bg-muted/30 rounded-lg border border-border overflow-hidden">
             <div class="relative h-24 w-full">
-              <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&auto=format&fit=crop&q=80" alt="Instalaciones" class="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/1f6yXglfQmH7HO-IwqQBCPylJEMpv4uMm=w800" alt="Instalaciones" referrerpolicy="no-referrer" class="w-full h-full object-cover" />
             </div>
             <div class="p-2 text-[10px] font-mono text-muted-foreground">
               <div class="text-foreground font-semibold truncate">Redes Nivel 4</div>

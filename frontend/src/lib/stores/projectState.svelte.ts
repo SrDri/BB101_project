@@ -121,22 +121,22 @@ export const INITIAL_ACTIVITIES: ActivityBreakdown[] = [
 function createFloorsForProject(totalFloors: number, certifiedCount: number, reviewingLevel: number | null): FloorData[] {
   const sampleConstructionPhotos = [
     {
-      url: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=900&auto=format&fit=crop&q=80',
+      url: 'https://lh3.googleusercontent.com/d/1SAE6L2P4x7HRsRt-xpLvXK84ZPjtaIyb=w1600',
       category: 'Estructura y placa',
       elements: ['Columnas en concreto', 'Fraguado de losa 100%', 'Acero de refuerzo']
     },
     {
-      url: 'https://images.unsplash.com/photo-1541888946425-d09bb18086f6?w=900&auto=format&fit=crop&q=80',
+      url: 'https://lh3.googleusercontent.com/d/18yzfpifx9p7bLTnSbm3pnwFP4Xm9UW9L=w1600',
       category: 'Mampostería y cerramientos',
       elements: ['Muros divisorios en bloque', 'Alineación láser verificada', 'Vanos de puertas']
     },
     {
-      url: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=900&auto=format&fit=crop&q=80',
+      url: 'https://lh3.googleusercontent.com/d/1f6yXglfQmH7HO-IwqQBCPylJEMpv4uMm=w1600',
       category: 'Redes hidrosanitarias y eléctricas',
       elements: ['Tubería PVC presión', 'Bandejas portacables', 'Pases estructurales']
     },
     {
-      url: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=900&auto=format&fit=crop&q=80',
+      url: 'https://lh3.googleusercontent.com/d/1JLkII_o4tLz5eekqWTHVGYrZEwfMywQy=w1600',
       category: 'Acabados y ventanería',
       elements: ['Estuco y pintura base', 'Marcos de aluminio', 'Nivelación de piso']
     }
@@ -424,8 +424,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Sala-comedor y balcón terraza',
         title: 'Apto 402 — Ventanería y área social con vista nororiental',
         timestamp: '2026-10-12 09:40 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1oSWKCAUAFG_-vb799986sVJn8RUldkeH=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1oSWKCAUAFG_-vb799986sVJn8RUldkeH=w1600',
         inspectorNote: 'Se verifica instalación de perfilería de aluminio y nivelación de mortero en sala-comedor del Apartamento 402.',
         aiDetectedElements: ['Ventanería piso-techo', 'Losa nivelada', 'Muros estucados'],
         gpsVerified: true
@@ -436,8 +436,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Cocina abierta y zona de ropas',
         title: 'Apto 402 — Puntos hidrosanitarios y eléctricos en cocina',
         timestamp: '2026-10-12 10:05 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1GUooP4imrAEbbtwbJlGRKJQNLyT5MJ36=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1GUooP4imrAEbbtwbJlGRKJQNLyT5MJ36=w1600',
         inspectorNote: 'Prueba hidrostática superada a 120 PSI en red de agua fría y caliente de cocina y lavandería del Apto 402.',
         aiDetectedElements: ['Tubería presión', 'Cajas eléctricas', 'Impermeabilización'],
         gpsVerified: true
@@ -448,8 +448,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Alcoba principal, vestier y baño privado',
         title: 'Apto 402 — Mampostería interior y baño de alcoba principal',
         timestamp: '2026-10-11 15:20 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1541888946425-d0fbb186156f?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1541888946425-d0fbb186156f?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1Ty59v8eJEM1bMhsCZWTiajyAT9WqjtoN=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1Ty59v8eJEM1bMhsCZWTiajyAT9WqjtoN=w1600',
         inspectorNote: 'Alineación láser aprobada en muros de alcoba principal y nicho de ducha impermeabilizado.',
         aiDetectedElements: ['Mampostería interna', 'Vano de puerta', 'Estuco primera capa'],
         gpsVerified: true
@@ -460,8 +460,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Alcobas auxiliares 2 y 3 + estudio',
         title: 'Apto 402 — Divisiones de estudio y habitaciones auxiliares',
         timestamp: '2026-10-10 11:30 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/14MMlPyfPwqLPV8csttqtQRSGtGqiQRgA=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/14MMlPyfPwqLPV8csttqtQRSGtGqiQRgA=w1600',
         inspectorNote: 'Tablero de distribución interno del Apto 402 cableado y puntos de datos en zona de estudio.',
         aiDetectedElements: ['Red eléctrica RETIE', 'Alistamiento de piso', 'Dinteles'],
         gpsVerified: true
@@ -474,8 +474,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Estructura general Torre A',
         title: 'Avance general de fachada y estructura — Torre Alameda',
         timestamp: '2026-10-12 08:30 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1qPDWwRaYzdGqVI5eGi6y6d0kj9e3yGl3=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1qPDWwRaYzdGqVI5eGi6y6d0kj9e3yGl3=w1600',
         inspectorNote: 'Vista exterior de la torre con los primeros 4 niveles certificados y estructura activa en niveles 5 y 6.',
         aiDetectedElements: ['Fachada general', 'Estructura aporticada', 'Grúa torre'],
         gpsVerified: true
@@ -486,8 +486,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Punto fijo y ascensores — Piso 4',
         title: 'Hall de circulación y foso de ascensores en tu Piso 4',
         timestamp: '2026-10-11 16:45 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1KGnnMVZn1PExaxZzqLHEXqDkLHwrgSWk=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1KGnnMVZn1PExaxZzqLHEXqDkLHwrgSWk=w1600',
         inspectorNote: 'Guías de ascensores instaladas en el Nivel 4 y escaleras presurizadas con baranda definitiva.',
         aiDetectedElements: ['Foso de ascensor', 'Hall Piso 4', 'Iluminación LED'],
         gpsVerified: true
@@ -498,8 +498,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Lobby y acceso peatonal',
         title: 'Avance de lobby doble altura y portería en Piso 1',
         timestamp: '2026-10-09 14:15 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1aVR1HNl9bm-qUkwf7jFL_7L4iqqBBxXi=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1aVR1HNl9bm-qUkwf7jFL_7L4iqqBBxXi=w1600',
         inspectorNote: 'Cerramiento en vidrio templado laminado y enchape de lobby principal en ejecución.',
         aiDetectedElements: ['Acceso principal', 'Doble altura', 'Acabados comunes'],
         gpsVerified: true
@@ -510,8 +510,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Sótano 1 — Parqueaderos y depósitos',
         title: 'Zona de parqueaderos asignados (Celdas #14 y #15)',
         timestamp: '2026-10-08 10:00 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1nkUzyN-QZzeF5QOr_i1PcsuBkbEz84HQ=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1nkUzyN-QZzeF5QOr_i1PcsuBkbEz84HQ=w1600',
         inspectorNote: 'Piso industrial endurecido al 100%, red contra incendios rociadores y demarcación de celdas.',
         aiDetectedElements: ['Piso industrial', 'Red RCI', 'Iluminación sótano'],
         gpsVerified: true
@@ -595,8 +595,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Sala-comedor y balcón terraza',
         title: 'Apto 201 — Acabados terminados en área social y balcón',
         timestamp: '2026-10-11 11:15 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/16CewcygKicogwmFq3_rDcFHiTHOZ3Fuo=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/16CewcygKicogwmFq3_rDcFHiTHOZ3Fuo=w1600',
         inspectorNote: 'Apartamento 201 con obra blanca, ventanería y pisos verificados al 100% en Nivel 2.',
         aiDetectedElements: ['Obra blanca 100%', 'Ventanería sellada', 'Piso terminado'],
         gpsVerified: true
@@ -607,8 +607,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Cocina abierta y zona de ropas',
         title: 'Apto 201 — Carpintería y mesón de cocina instalados',
         timestamp: '2026-10-10 14:20 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/174W9b_PF9xEMFKOmsdayd8WmDQg69etC=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/174W9b_PF9xEMFKOmsdayd8WmDQg69etC=w1600',
         inspectorNote: 'Revisión final de aparatos sanitarios, griferías y red de gas en cocina del Apto 201.',
         aiDetectedElements: ['Carpintería cocina', 'Aparatos instalados', 'Prueba presión OK'],
         gpsVerified: true
@@ -621,8 +621,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Estructura general Torre A',
         title: 'Estado general de Torre Alameda — Etapa 1',
         timestamp: '2026-10-12 08:30 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1qPDWwRaYzdGqVI5eGi6y6d0kj9e3yGl3=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1qPDWwRaYzdGqVI5eGi6y6d0kj9e3yGl3=w1600',
         inspectorNote: 'Avance global del edificio conforme al cronograma fiduciario.',
         aiDetectedElements: ['Fachada general', 'Niveles 1-4 certificados'],
         gpsVerified: true
@@ -706,8 +706,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Gran salón y terraza panorámica',
         title: 'Penthouse 701 — Terraza panorámica y ventanería piso-techo',
         timestamp: '2026-10-11 16:00 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1e0XI7KAf11XgbOsHWDYR2l6GuaQNUc9B=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1e0XI7KAf11XgbOsHWDYR2l6GuaQNUc9B=w1600',
         inspectorNote: 'Instalación de ventanería monumental y pruebas de estanqueidad en terraza del Penthouse 701.',
         aiDetectedElements: ['Ventanería acústica', 'Terraza Nivel 7', 'Impermeabilización'],
         gpsVerified: true
@@ -718,8 +718,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Suite principal + Walk-in closet',
         title: 'Penthouse 701 — Climatización y acabados en suite principal',
         timestamp: '2026-10-10 10:40 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1tQyxXb1CkWDG9bh3geqTtPfjl7TzSA_s=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1tQyxXb1CkWDG9bh3geqTtPfjl7TzSA_s=w1600',
         inspectorNote: 'Ductos de aire acondicionado ocultos en cielo raso y red de domótica KNX verificada.',
         aiDetectedElements: ['Climatización VRF', 'Domótica', 'Mampostería acústica'],
         gpsVerified: true
@@ -732,8 +732,8 @@ export const PROPERTY_OWNERS: PropertyOwnerUnit[] = [
         roomOrArea: 'Fachada general Mirador del Parque',
         title: 'Vista exterior de la torre en El Poblado',
         timestamp: '2026-10-12 09:00 COT',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80',
-        fullUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&auto=format&fit=crop&q=85',
+        thumbnailUrl: 'https://lh3.googleusercontent.com/d/1G5ZhYdXo3pK4OieWjID_0McvmO8jx1rB=w1000',
+        fullUrl: 'https://lh3.googleusercontent.com/d/1G5ZhYdXo3pK4OieWjID_0McvmO8jx1rB=w1600',
         inspectorNote: 'Avance general certificado al 81.5% con 8 pisos sellados en Stellar.',
         aiDetectedElements: ['Fachada terminada', '8 niveles sellados'],
         gpsVerified: true
