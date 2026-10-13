@@ -151,8 +151,9 @@
       <div class="relative hidden md:flex flex-col justify-between p-10 overflow-hidden bg-zinc-900 text-white">
         <!-- Fotografía arquitectónica de hogar contemporáneo -->
         <img
-          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=85"
+          src="https://lh3.googleusercontent.com/d/19fvcD9C5vOiJiz4zziXKQycwdFEigivc=w1600"
           alt="Hogar residencial moderno"
+          referrerpolicy="no-referrer"
           class="absolute inset-0 h-full w-full object-cover object-center scale-105"
         />
         <!-- Gradiente editorial cálido y oscuro para contraste limpio -->

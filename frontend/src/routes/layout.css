@@ -88,6 +88,104 @@
   animation: ledgerCommit 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes auroraMeshFlow {
+  0%, 100% {
+    background-position: 0% 20%, 100% 80%, 50% 50%;
+  }
+  33% {
+    background-position: 85% 60%, 15% 20%, 30% 80%;
+  }
+  66% {
+    background-position: 35% 90%, 75% 30%, 80% 20%;
+  }
+}
+
+@keyframes auroraRibbonOne {
+  0%, 100% {
+    transform: translate3d(-12%, -8%, 0) rotate(-8deg) scale(1, 1);
+    border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
+  }
+  33% {
+    transform: translate3d(16%, 10%, 0) rotate(14deg) scale(1.18, 0.9);
+    border-radius: 60% 40% 45% 55% / 55% 62% 38% 45%;
+  }
+  66% {
+    transform: translate3d(-6%, 16%, 0) rotate(-18deg) scale(0.92, 1.15);
+    border-radius: 38% 62% 52% 48% / 60% 35% 65% 40%;
+  }
+}
+
+@keyframes auroraRibbonTwo {
+  0%, 100% {
+    transform: translate3d(10%, 6%, 0) rotate(10deg) scale(1, 1);
+    border-radius: 55% 45% 40% 60% / 50% 60% 40% 50%;
+  }
+  40% {
+    transform: translate3d(-20%, -14%, 0) rotate(-16deg) scale(1.22, 0.92);
+    border-radius: 40% 60% 62% 38% / 42% 48% 52% 58%;
+  }
+  75% {
+    transform: translate3d(14%, -10%, 0) rotate(22deg) scale(0.9, 1.16);
+    border-radius: 62% 38% 48% 52% / 58% 40% 60% 42%;
+  }
+}
+
+@keyframes auroraRibbonThree {
+  0%, 100% {
+    transform: translate3d(0%, 12%, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate3d(-15%, -16%, 0) rotate(28deg) scale(1.25, 0.88);
+  }
+}
+
+@keyframes auroraLightSweep {
+  0%, 100% {
+    transform: translateX(-50%) rotate(-10deg) scaleY(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateX(-46%) rotate(10deg) scaleY(1.12);
+    opacity: 0.9;
+  }
+}
+
+.ambient-aurora-canvas {
+  background-image:
+    radial-gradient(ellipse 75% 55% at 20% 25%, rgba(245, 164, 0, 0.16), transparent 68%),
+    radial-gradient(ellipse 65% 55% at 82% 75%, rgba(16, 185, 129, 0.12), transparent 68%),
+    radial-gradient(ellipse 60% 50% at 60% 20%, rgba(99, 102, 241, 0.08), transparent 65%);
+  background-size: 200% 200%, 200% 200%, 180% 180%;
+  animation: auroraMeshFlow 14s ease-in-out infinite;
+}
+
+.dark .ambient-aurora-canvas {
+  background-image:
+    radial-gradient(ellipse 75% 55% at 20% 25%, rgba(245, 164, 0, 0.20), transparent 68%),
+    radial-gradient(ellipse 65% 55% at 82% 75%, rgba(16, 185, 129, 0.15), transparent 68%),
+    radial-gradient(ellipse 60% 50% at 60% 20%, rgba(99, 102, 241, 0.12), transparent 65%);
+}
+
+.animate-ambient-orb-a {
+  animation: auroraRibbonOne 12s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  will-change: transform, border-radius;
+}
+
+.animate-ambient-orb-b {
+  animation: auroraRibbonTwo 15s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  will-change: transform, border-radius;
+}
+
+.animate-ambient-orb-c {
+  animation: auroraRibbonThree 18s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  will-change: transform;
+}
+
+.animate-aurora-sweep {
+  animation: auroraLightSweep 10s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
 :root {
   --background: oklch(0.99 0 0);
   --foreground: oklch(0.145 0 0);
