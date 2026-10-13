@@ -4,10 +4,34 @@
   import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
-  import type { ProjectLifecycleStatus, ProjectCut } from '$lib/types/twin';
-  import { MapPin } from '@lucide/svelte';
+  import { Input } from '$lib/components/ui/input';
+  import type { ProjectLifecycleStatus, ProjectCut, ProjectFichaDetails } from '$lib/types/twin';
+  import { MapPin, Plus, Building2, X } from '@lucide/svelte';
 
   let filterStatus = $state<'all' | ProjectLifecycleStatus>('all');
+  let isCreateModalOpen = $state(false);
+
+  // Campos del formulario de constitución de proyecto y ficha inicial
+  let newProjectName = $state('Reserva del Poblado — Etapa 1');
+  let newCode = $state('TRM-2026-06');
+  let newCity = $state('Medellín, Antioquia');
+  let newAddress = $state('Transversal Superior # 10A-45');
+  let newFiduciaryTrustCode = $state('ENC-FID-9920-06');
+  let newPropertyType = $state<ProjectFichaDetails['propertyType']>('Apartamentos residenciales');
+  let newStratum = $state('Estrato 6');
+  let newTotalFloors = $state(12);
+  let newTotalUnits = $state(48);
+  let newTotalBudgetCOP = $state(28500000000);
+  let newEstimatedDelivery = $state('Noviembre 2028');
+  let newDescription = $state(
+    'Torre residencial bioclimática con certificación sostenible, estructurada bajo patrimonio autónomo fiduciario y trazabilidad de obra en Stellar Soroban.'
+  );
+
+  const canCreateProject = $derived(
+    projectStore.effectiveRole === 'admin' ||
+      projectStore.effectiveRole === 'fiduciaria' ||
+      projectStore.effectiveRole === 'constructor'
+  );
 
   let filteredProjects = $derived(
     filterStatus === 'all'
@@ -38,6 +62,27 @@
     projectStore.selectProject(proj.projectId);
     goto(targetRoute);
   }
+
+  function handleCreateProject(e: SubmitEvent) {
+    e.preventDefault();
+    if (!newProjectName.trim()) return;
+    projectStore.createProjectWithFicha({
+      projectName: newProjectName,
+      code: newCode,
+      city: newCity,
+      address: newAddress,
+      fiduciaryTrustCode: newFiduciaryTrustCode,
+      propertyType: newPropertyType,
+      stratum: newStratum,
+      totalFloors: Number(newTotalFloors),
+      totalUnits: Number(newTotalUnits),
+      totalBudgetCOP: Number(newTotalBudgetCOP),
+      estimatedDelivery: newEstimatedDelivery,
+      description: newDescription
+    });
+    isCreateModalOpen = false;
+    goto('/ficha-proyecto');
+  }
 </script>
 
 <div class="space-y-6 w-full">
@@ -59,21 +104,33 @@
       </p>
     </div>
 
-    <!-- Indicadores consolidados -->
-    <div class="flex items-center gap-6 bg-card border border-border rounded-lg px-5 py-3">
-      <div>
-        <div class="text-[11px] text-muted-foreground">Valor total del portafolio</div>
-        <div class="text-base font-semibold text-foreground tabular-nums">
-          ${(totalPortfolioBudget / 1000000000).toFixed(1)}B COP
+    <!-- Indicadores consolidados + Botón de Constitución por Rol -->
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="flex items-center gap-6 bg-card border border-border rounded-lg px-5 py-2.5">
+        <div>
+          <div class="text-[11px] text-muted-foreground">Valor total del portafolio</div>
+          <div class="text-base font-semibold text-foreground tabular-nums">
+            ${(totalPortfolioBudget / 1000000000).toFixed(1)}B COP
+          </div>
+        </div>
+        <div class="h-8 w-px bg-border"></div>
+        <div>
+          <div class="text-[11px] text-muted-foreground">Total desembolsado</div>
+          <div class="text-base font-semibold text-foreground tabular-nums">
+            ${(totalPortfolioDisbursed / 1000000000).toFixed(1)}B COP
+          </div>
         </div>
       </div>
-      <div class="h-8 w-px bg-border"></div>
-      <div>
-        <div class="text-[11px] text-muted-foreground">Total desembolsado</div>
-        <div class="text-base font-semibold text-foreground tabular-nums">
-          ${(totalPortfolioDisbursed / 1000000000).toFixed(1)}B COP
-        </div>
-      </div>
+
+      {#if canCreateProject}
+        <Button
+          onclick={() => (isCreateModalOpen = true)}
+          class="h-10 bg-foreground text-background hover:bg-foreground/90 text-xs font-medium gap-1.5 cursor-pointer"
+        >
+          <Plus class="w-4 h-4" />
+          <span>Constituir proyecto y ficha</span>
+        </Button>
+      {/if}
     </div>
   </div>
 
@@ -221,14 +278,23 @@
           <!-- Acciones -->
           <div class="pt-4 border-t border-border flex items-center gap-2">
             <Button
-              onclick={() => openProject(proj, '/gemelo')}
+              onclick={() => openProject(proj, '/ficha-proyecto')}
               variant={isSelected ? 'default' : 'outline'}
               size="sm"
               class="flex-1 h-8 text-xs cursor-pointer {isSelected
                 ? 'bg-foreground text-background hover:bg-foreground/90 font-medium'
                 : ''}"
             >
-              Ver gemelo 3D
+              Ficha integral
+            </Button>
+
+            <Button
+              onclick={() => openProject(proj, '/gemelo')}
+              variant="outline"
+              size="sm"
+              class="flex-1 h-8 text-xs cursor-pointer"
+            >
+              Vista 3D
             </Button>
 
             {#if projectStore.effectiveRole === 'interventor'}
@@ -238,7 +304,7 @@
                 size="sm"
                 class="flex-1 h-8 text-xs cursor-pointer"
               >
-                Calibrar corte
+                Calibrar
               </Button>
             {:else}
               <Button
@@ -247,7 +313,7 @@
                 size="sm"
                 class="flex-1 h-8 text-xs cursor-pointer"
               >
-                Ver giros
+                Giros
               </Button>
             {/if}
           </div>
@@ -256,3 +322,140 @@
     {/each}
   </div>
 </div>
+
+<!-- Modal de Constitución de Nuevo Proyecto y Ficha Integral -->
+{#if isCreateModalOpen}
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-xs p-4">
+    <div class="w-full max-w-2xl rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden">
+      <div class="p-5 border-b border-border flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-muted border border-border flex items-center justify-center">
+            <Building2 class="w-4 h-4 text-foreground" />
+          </div>
+          <div>
+            <h2 class="text-sm font-semibold text-foreground">
+              Constituir nuevo proyecto y Ficha Integral
+            </h2>
+            <p class="text-xs text-muted-foreground">
+              Radicación conjunta por <strong class="text-foreground">{projectStore.currentUser.companyName}</strong> ({projectStore.effectiveRole})
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onclick={() => (isCreateModalOpen = false)}
+          class="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer"
+        >
+          <X class="w-4 h-4" />
+        </button>
+      </div>
+
+      <form onsubmit={handleCreateProject} class="p-5 space-y-4 text-xs max-h-[80vh] overflow-y-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="space-y-1.5 sm:col-span-2">
+            <label for="np-name" class="font-medium text-foreground">Nombre comercial del proyecto</label>
+            <Input id="np-name" bind:value={newProjectName} class="h-9 text-xs" required />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="np-code" class="font-medium text-foreground">Código técnico Tramo</label>
+            <Input id="np-code" bind:value={newCode} class="h-9 text-xs font-mono" required />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="np-fid" class="font-medium text-foreground">Código de Encargo Fiduciario</label>
+            <Input id="np-fid" bind:value={newFiduciaryTrustCode} class="h-9 text-xs font-mono" required />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="np-city" class="font-medium text-foreground">Ciudad / Municipio</label>
+            <Input id="np-city" bind:value={newCity} class="h-9 text-xs" required />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="np-addr" class="font-medium text-foreground">Dirección del predio</label>
+            <Input id="np-addr" bind:value={newAddress} class="h-9 text-xs" required />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="np-type" class="font-medium text-foreground">Tipología inmobiliaria</label>
+            <select
+              id="np-type"
+              bind:value={newPropertyType}
+              class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs text-foreground"
+            >
+              <option value="Apartamentos residenciales">Apartamentos residenciales</option>
+              <option value="Vivienda VIS">Vivienda VIS</option>
+              <option value="Uso mixto y corporativo">Uso mixto y corporativo</option>
+              <option value="Casas en conjunto">Casas en conjunto</option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="np-stratum" class="font-medium text-foreground">Estrato socioeconómico</label>
+            <select
+              id="np-stratum"
+              bind:value={newStratum}
+              class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs text-foreground"
+            >
+              <option value="Estrato 3">Estrato 3</option>
+              <option value="Estrato 4">Estrato 4</option>
+              <option value="Estrato 5">Estrato 5</option>
+              <option value="Estrato 6">Estrato 6</option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="np-floors" class="font-medium text-foreground">Niveles / Pisos (Gemelo 3D)</label>
+            <Input id="np-floors" type="number" min="3" max="25" bind:value={newTotalFloors} class="h-9 text-xs" required />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="np-units" class="font-medium text-foreground">Total de unidades privadas</label>
+            <Input id="np-units" type="number" min="8" max="400" bind:value={newTotalUnits} class="h-9 text-xs" required />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="np-budget" class="font-medium text-foreground">Presupuesto fiduciario total (COP)</label>
+            <Input id="np-budget" type="number" step="500000000" bind:value={newTotalBudgetCOP} class="h-9 text-xs font-mono" required />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="np-deliv" class="font-medium text-foreground">Fecha estimada de entrega</label>
+            <Input id="np-deliv" bind:value={newEstimatedDelivery} class="h-9 text-xs" required />
+          </div>
+
+          <div class="space-y-1.5 sm:col-span-2">
+            <label for="np-desc" class="font-medium text-foreground">Descripción ejecutiva para la Ficha Integral</label>
+            <textarea
+              id="np-desc"
+              bind:value={newDescription}
+              rows="3"
+              class="w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground leading-relaxed"
+              required
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-border flex items-center justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onclick={() => (isCreateModalOpen = false)}
+            class="h-8 text-xs cursor-pointer"
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            size="sm"
+            class="h-8 bg-foreground text-background hover:bg-foreground/90 text-xs font-medium cursor-pointer"
+          >
+            Crear proyecto y abrir Ficha Integral
+          </Button>
+        </div>
+      </form>
+    </div>
+  </div>
+{/if}

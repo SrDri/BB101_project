@@ -1485,6 +1485,307 @@ class ProjectStore {
       signatureMethod: 'Multifirma Fiduciaria + Smart Contract Soroban'
     });
   }
+
+  createProjectWithFicha(payload: {
+    projectName: string;
+    code: string;
+    city: string;
+    address: string;
+    fiduciaryTrustCode: string;
+    propertyType: ProjectFichaDetails['propertyType'];
+    stratum: string;
+    totalFloors: number;
+    totalUnits: number;
+    totalBudgetCOP: number;
+    estimatedDelivery: string;
+    description: string;
+  }): string {
+    const newIndex = this.projects.length + 1;
+    const projectId = `PROJ-CUSTOM-0${newIndex}`;
+    const floorsCount = Math.max(3, Math.min(25, Number(payload.totalFloors) || 8));
+    const unitsCount = Math.max(8, Number(payload.totalUnits) || 32);
+
+    const newProject: ProjectCut = {
+      id: `cut-custom-0${newIndex}`,
+      projectId,
+      code: payload.code.trim() || `TRM-2026-0${newIndex}`,
+      city: payload.city.trim() || 'Medellín, Antioquia',
+      address: payload.address.trim() || 'Sector Residencial',
+      fiduciaryTrustCode: payload.fiduciaryTrustCode.trim() || `ENC-FID-9920-0${newIndex}`,
+      lifecycleStatus: 'in_progress',
+      number: 1,
+      totalCutsPlanned: 10,
+      projectName: payload.projectName.trim(),
+      developerName:
+        this.effectiveRole === 'constructor'
+          ? this.currentUser.companyName
+          : 'Constructora Urbana S.A.S.',
+      fiduciaryEntity:
+        this.effectiveRole === 'fiduciaria'
+          ? this.currentUser.companyName
+          : 'Fiduciaria Bancolombia S.A.',
+      interventorName: 'Ing. Juan Jose Carabali',
+      interventorId: '25202-99881 COPNIA',
+      status: 'in_review',
+      totalBudgetCOP: Number(payload.totalBudgetCOP) || 20000000000,
+      disbursedCOP: 0,
+      cutDisbursementCOP: Math.round((Number(payload.totalBudgetCOP) || 20000000000) * 0.1),
+      scheduledPhysicalProgress: 10.0,
+      certifiedPhysicalProgress: 0.0,
+      floors: createFloorsForProject(floorsCount, 0, 1)
+    };
+
+    const baseFicha = this.projectFichas['PROJ-ALAMEDA-01'];
+    const newFicha: ProjectFichaDetails = {
+      ...baseFicha,
+      description: payload.description.trim() || baseFicha.description,
+      propertyType: payload.propertyType,
+      stratum: payload.stratum,
+      totalTowers: 1,
+      totalUnits: unitsCount,
+      soldUnits: 0,
+      reservedUnits: 4,
+      availableUnits: Math.max(0, unitsCount - 4),
+      equilibriumPointPercent: 65,
+      currentSalesPercent: Math.round((4 / unitsCount) * 100),
+      startDate: 'Octubre 2026',
+      estimatedDelivery: payload.estimatedDelivery.trim() || 'Diciembre 2028',
+      amenities: baseFicha.amenities.map((a) => ({
+        ...a,
+        progressPercent: 0,
+        status: 'proyectado'
+      })),
+      typologies: [
+        {
+          id: `typ-${projectId}-a`,
+          code: 'Tipo A',
+          name: 'Apartamento Familiar Estándar',
+          areaBuiltM2: 88,
+          areaPrivateM2: 80.5,
+          bedrooms: 3,
+          bathrooms: 2,
+          parkingSpots: 1,
+          totalUnits: Math.ceil(unitsCount * 0.6),
+          soldUnits: 0,
+          priceFromCOP: 540000000,
+          floorRange: `Pisos 2 al ${floorsCount - 1}`,
+          features: ['Balcón social', 'Cocina abierta', 'Zona de ropas independiente']
+        },
+        {
+          id: `typ-${projectId}-b`,
+          code: 'Tipo B',
+          name: 'Suite Ejecutiva',
+          areaBuiltM2: 68,
+          areaPrivateM2: 61.5,
+          bedrooms: 2,
+          bathrooms: 2,
+          parkingSpots: 1,
+          totalUnits: Math.floor(unitsCount * 0.4),
+          soldUnits: 0,
+          priceFromCOP: 430000000,
+          floorRange: `Pisos 1 al ${floorsCount}`,
+          features: ['Ventanería acústica', 'Cocina tipo isla', 'Estudio integrado']
+        }
+      ]
+    };
+
+    this.projects = [newProject, ...this.projects];
+    this.projectFichas = {
+      ...this.projectFichas,
+      [projectId]: newFicha
+    };
+    this.selectedProjectId = projectId;
+
+    const randomHash =
+      Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
+    this.auditLogs.unshift({
+      id: `AUD-2026-00${this.auditLogs.length + 1}`,
+      timestamp: '2026-10-13 01:50:00',
+      category: 'cumplimiento_legal',
+      severity: 'alta',
+      actionTitle: `Constitución de Proyecto y Ficha Integral — ${newProject.projectName}`,
+      summary: `Se registró el nuevo fideicomiso ${newProject.fiduciaryTrustCode} (${floorsCount} niveles, ${unitsCount} unidades) con presupuesto base de ${formatCOP(newProject.totalBudgetCOP)}.`,
+      actorName: this.currentUser.fullName,
+      actorRole: this.effectiveRole,
+      actorCompany: this.currentUser.companyName,
+      actorDocument: newProject.fiduciaryTrustCode,
+      moduleRoute: '/proyectos',
+      previousState: 'Sin registro en portafolio',
+      newState: `Activo (${newProject.code} • ${newProject.fiduciaryTrustCode})`,
+      amountCOP: newProject.totalBudgetCOP,
+      sha256Hash: randomHash,
+      geofenceOrIp: `${newProject.city} • Consola Corporativa`,
+      signatureMethod: 'Radicación Institucional de Fideicomiso'
+    });
+
+    return projectId;
+  }
+
+  updateProjectFichaCommercial(
+    projectId: string,
+    payload: {
+      description: string;
+      estimatedDelivery: string;
+      soldUnits: number;
+      reservedUnits: number;
+      propertyType: ProjectFichaDetails['propertyType'];
+      stratum: string;
+    }
+  ) {
+    const current = this.projectFichas[projectId];
+    if (!current) return;
+
+    const sold = Math.max(0, Math.min(current.totalUnits, Number(payload.soldUnits) || 0));
+    const reserved = Math.max(
+      0,
+      Math.min(current.totalUnits - sold, Number(payload.reservedUnits) || 0)
+    );
+    const available = Math.max(0, current.totalUnits - sold - reserved);
+    const salesPercent = Math.min(100, Math.round(((sold + reserved) / current.totalUnits) * 100));
+
+    this.projectFichas = {
+      ...this.projectFichas,
+      [projectId]: {
+        ...current,
+        description: payload.description.trim() || current.description,
+        estimatedDelivery: payload.estimatedDelivery.trim() || current.estimatedDelivery,
+        propertyType: payload.propertyType,
+        stratum: payload.stratum,
+        soldUnits: sold,
+        reservedUnits: reserved,
+        availableUnits: available,
+        currentSalesPercent: salesPercent
+      }
+    };
+
+    const randomHash =
+      Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
+    this.auditLogs.unshift({
+      id: `AUD-2026-00${this.auditLogs.length + 1}`,
+      timestamp: '2026-10-13 01:51:00',
+      category: 'cumplimiento_legal',
+      severity: 'media',
+      actionTitle: `Actualización de Ficha Comercial y Ventas — ${this.activeCut.projectName}`,
+      summary: `${this.currentUser.companyName} actualizó la ficha integral: ${sold} unidades vendidas, ${reserved} separadas (${salesPercent}% absorción comercial) y entrega estimada ${payload.estimatedDelivery}.`,
+      actorName: this.currentUser.fullName,
+      actorRole: this.effectiveRole,
+      actorCompany: this.currentUser.companyName,
+      actorDocument: this.currentUser.licenseNumber,
+      moduleRoute: '/ficha-proyecto',
+      previousState: `Ventas: ${current.soldUnits} vendidas (${current.currentSalesPercent}%)`,
+      newState: `Ventas: ${sold} vendidas, ${reserved} separadas (${salesPercent}%)`,
+      sha256Hash: randomHash,
+      geofenceOrIp: 'Consola Constructora • Registro Comercial',
+      signatureMethod: 'Actualización Autorizada por Promotor'
+    });
+  }
+
+  updateAmenityProgress(projectId: string, amenityId: string, progressPercent: number) {
+    const current = this.projectFichas[projectId];
+    if (!current) return;
+
+    const cleanPercent = Math.max(0, Math.min(100, Math.round(Number(progressPercent) || 0)));
+    const targetAmenity = current.amenities.find((a) => a.id === amenityId);
+    if (!targetAmenity) return;
+
+    const newStatus =
+      cleanPercent >= 100 ? 'completado' : cleanPercent > 0 ? 'en_obra' : 'proyectado';
+
+    this.projectFichas = {
+      ...this.projectFichas,
+      [projectId]: {
+        ...current,
+        amenities: current.amenities.map((a) =>
+          a.id === amenityId
+            ? { ...a, progressPercent: cleanPercent, status: newStatus }
+            : a
+        )
+      }
+    };
+
+    const randomHash =
+      Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
+    this.auditLogs.unshift({
+      id: `AUD-2026-00${this.auditLogs.length + 1}`,
+      timestamp: '2026-10-13 01:52:00',
+      category: 'corte_interventoria',
+      severity: 'media',
+      actionTitle: `Certificación de Avance en Zona Común — ${targetAmenity.name}`,
+      summary: `Interventoría Técnica certificó un avance físico del ${cleanPercent}% para la zona común "${targetAmenity.name}" en ${this.activeCut.projectName}.`,
+      actorName: this.currentUser.fullName,
+      actorRole: this.effectiveRole,
+      actorCompany: this.currentUser.companyName,
+      actorDocument: this.currentUser.licenseNumber,
+      moduleRoute: '/ficha-proyecto',
+      previousState: `${targetAmenity.name}: ${targetAmenity.progressPercent}%`,
+      newState: `${targetAmenity.name}: ${cleanPercent}% (${newStatus})`,
+      sha256Hash: randomHash,
+      geofenceOrIp: `${this.activeCut.city} • Inspección COPNIA`,
+      signatureMethod: 'Certificación Técnica de Interventoría'
+    });
+  }
+
+  updateProjectFiduciaryParams(
+    projectId: string,
+    payload: {
+      fiduciaryTrustCode: string;
+      totalBudgetCOP: number;
+      lifecycleStatus: ProjectLifecycleStatus;
+      equilibriumPointPercent: number;
+    }
+  ) {
+    const projectTarget = this.projects.find((p) => p.projectId === projectId);
+    const currentFicha = this.projectFichas[projectId];
+    if (!projectTarget || !currentFicha) return;
+
+    const cleanBudget = Math.max(1000000000, Number(payload.totalBudgetCOP) || projectTarget.totalBudgetCOP);
+    const cleanEq = Math.max(30, Math.min(95, Number(payload.equilibriumPointPercent) || 70));
+
+    this.projects = this.projects.map((p) =>
+      p.projectId === projectId
+        ? {
+            ...p,
+            fiduciaryTrustCode: payload.fiduciaryTrustCode.trim() || p.fiduciaryTrustCode,
+            totalBudgetCOP: cleanBudget,
+            lifecycleStatus: payload.lifecycleStatus
+          }
+        : p
+    );
+
+    this.projectFichas = {
+      ...this.projectFichas,
+      [projectId]: {
+        ...currentFicha,
+        equilibriumPointPercent: cleanEq
+      }
+    };
+
+    const randomHash =
+      Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
+    this.auditLogs.unshift({
+      id: `AUD-2026-00${this.auditLogs.length + 1}`,
+      timestamp: '2026-10-13 01:53:00',
+      category: 'cumplimiento_legal',
+      severity: 'alta',
+      actionTitle: `Actualización de Parámetros Fiduciarios — ${projectTarget.projectName}`,
+      summary: `Fiduciaria actualizó los parámetros del fideicomiso ${payload.fiduciaryTrustCode}: presupuesto autorizado ${formatCOP(cleanBudget)} y punto de equilibrio en ${cleanEq}%.`,
+      actorName: this.currentUser.fullName,
+      actorRole: this.effectiveRole,
+      actorCompany: this.currentUser.companyName,
+      actorDocument: payload.fiduciaryTrustCode,
+      moduleRoute: '/ficha-proyecto',
+      previousState: `Presupuesto: ${formatCOP(projectTarget.totalBudgetCOP)} • P.E: ${currentFicha.equilibriumPointPercent}%`,
+      newState: `Presupuesto: ${formatCOP(cleanBudget)} • P.E: ${cleanEq}%`,
+      amountCOP: cleanBudget,
+      sha256Hash: randomHash,
+      geofenceOrIp: 'Comité Fiduciario • Consola Institucional',
+      signatureMethod: 'Autorización Vocera Fiduciaria'
+    });
+  }
 }
 
 

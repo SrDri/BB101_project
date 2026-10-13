@@ -368,6 +368,79 @@
   const activeHeroImage = $derived(
     PROJECT_HERO_RENDERS[cut.projectId] || PROJECT_HERO_RENDERS['PROJ-ALAMEDA-01']
   );
+
+  // Permisos de edición por rol según modelo de Fiducia Inmobiliaria (Ley 1796)
+  const canEditCommercial = $derived(
+    projectStore.effectiveRole === 'constructor' || projectStore.effectiveRole === 'admin'
+  );
+  const canEditFiduciary = $derived(
+    projectStore.effectiveRole === 'fiduciaria' || projectStore.effectiveRole === 'admin'
+  );
+  const canCertifyAmenities = $derived(
+    projectStore.effectiveRole === 'interventor' || projectStore.effectiveRole === 'admin'
+  );
+
+  let isCommercialModalOpen = $state(false);
+  let editDescription = $state('');
+  let editEstimatedDelivery = $state('');
+  let editPropertyType = $state<typeof ficha.propertyType>('Apartamentos residenciales');
+  let editStratum = $state('');
+  let editSoldUnits = $state(0);
+  let editReservedUnits = $state(0);
+
+  let isFiduciaryModalOpen = $state(false);
+  let editFiduciaryTrustCode = $state('');
+  let editTotalBudgetCOP = $state(0);
+  let editEquilibriumPercent = $state(70);
+  let editLifecycleStatus = $state<typeof cut.lifecycleStatus>('in_progress');
+
+  let saveFeedbackBanner = $state<string | null>(null);
+
+  function openCommercialModal() {
+    editDescription = ficha.description;
+    editEstimatedDelivery = ficha.estimatedDelivery;
+    editPropertyType = ficha.propertyType;
+    editStratum = ficha.stratum;
+    editSoldUnits = ficha.soldUnits;
+    editReservedUnits = ficha.reservedUnits;
+    isCommercialModalOpen = true;
+  }
+
+  function handleSaveCommercial(e: SubmitEvent) {
+    e.preventDefault();
+    projectStore.updateProjectFichaCommercial(cut.projectId, {
+      description: editDescription,
+      estimatedDelivery: editEstimatedDelivery,
+      soldUnits: Number(editSoldUnits),
+      reservedUnits: Number(editReservedUnits),
+      propertyType: editPropertyType,
+      stratum: editStratum
+    });
+    isCommercialModalOpen = false;
+    saveFeedbackBanner = 'Ficha comercial e inventario de ventas actualizados y registrados en bitácora de auditoría.';
+    setTimeout(() => (saveFeedbackBanner = null), 4500);
+  }
+
+  function openFiduciaryModal() {
+    editFiduciaryTrustCode = cut.fiduciaryTrustCode;
+    editTotalBudgetCOP = cut.totalBudgetCOP;
+    editEquilibriumPercent = ficha.equilibriumPointPercent;
+    editLifecycleStatus = cut.lifecycleStatus;
+    isFiduciaryModalOpen = true;
+  }
+
+  function handleSaveFiduciary(e: SubmitEvent) {
+    e.preventDefault();
+    projectStore.updateProjectFiduciaryParams(cut.projectId, {
+      fiduciaryTrustCode: editFiduciaryTrustCode,
+      totalBudgetCOP: Number(editTotalBudgetCOP),
+      lifecycleStatus: editLifecycleStatus,
+      equilibriumPointPercent: Number(editEquilibriumPercent)
+    });
+    isFiduciaryModalOpen = false;
+    saveFeedbackBanner = 'Parámetros del fideicomiso actualizados por Fiduciaria y registrados en bitácora.';
+    setTimeout(() => (saveFeedbackBanner = null), 4500);
+  }
 </script>
 
 <div class="space-y-6 w-full max-w-[1440px] mx-auto">
@@ -412,6 +485,30 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2 shrink-0">
+        {#if canEditCommercial}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onclick={openCommercialModal}
+            class="h-8 border-border bg-background/90 text-xs backdrop-blur-md hover:bg-background cursor-pointer"
+          >
+            Editar ficha comercial
+          </Button>
+        {/if}
+
+        {#if canEditFiduciary}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onclick={openFiduciaryModal}
+            class="h-8 border-border bg-background/90 text-xs backdrop-blur-md hover:bg-background cursor-pointer"
+          >
+            Parámetros fiduciarios
+          </Button>
+        {/if}
+
         <Button
           href="/cumplimiento"
           variant="outline"
@@ -428,6 +525,33 @@
           Abrir Vista 3D
         </Button>
       </div>
+    </div>
+  </div>
+
+  {#if saveFeedbackBanner}
+    <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-xs text-emerald-600 dark:text-emerald-400 flex items-center justify-between">
+      <span>{saveFeedbackBanner}</span>
+      <button type="button" onclick={() => (saveFeedbackBanner = null)} class="text-xs underline cursor-pointer">Cerrar</button>
+    </div>
+  {/if}
+
+  <!-- Barra de atribuciones del rol activo sobre la Ficha Integral -->
+  <div class="rounded-xl border border-border bg-muted/25 px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+    <div class="flex flex-wrap items-center gap-2">
+      <Badge variant="outline" class="bg-background text-[11px] font-medium border-border capitalize">
+        Rol activo: {projectStore.effectiveRole}
+      </Badge>
+      <span class="text-muted-foreground">
+        {#if projectStore.effectiveRole === 'constructor'}
+          Atribución: Puedes editar la <strong>ficha comercial, fechas de entrega y absorción de ventas</strong>. El avance físico de obra y zonas comunes solo lo certifica Interventoría.
+        {:else if projectStore.effectiveRole === 'fiduciaria'}
+          Atribución: Puedes administrar los <strong>parámetros del fideicomiso, presupuesto aprobado y punto de equilibrio</strong>, o constituir nuevos proyectos en <a href="/proyectos" class="underline text-foreground">Portafolio</a>.
+        {:else if projectStore.effectiveRole === 'interventor'}
+          Atribución: Puedes <strong>certificar el porcentaje de avance físico real de las amenidades y zonas comunes</strong> (sección inferior) bajo firma COPNIA.
+        {:else}
+          Atribución Administrador: Tienes permisos completos para editar la ficha comercial (Constructora), parámetros del fideicomiso (Fiduciaria) y certificar zonas comunes (Interventoría).
+        {/if}
+      </span>
     </div>
   </div>
 
@@ -901,6 +1025,9 @@
         </CardTitle>
         <p class="text-xs text-muted-foreground mt-0.5">
           Estado constructivo real de cada amenidad social, recreativa y de infraestructura del edificio.
+          {#if canCertifyAmenities}
+            <strong class="text-foreground"> • Modo Interventoría COPNIA activo: puedes calibrar el % físico de cada zona común.</strong>
+          {/if}
         </p>
       </div>
       <Badge variant="outline" class="text-xs font-normal bg-muted/50 border-border tabular-nums">
@@ -935,10 +1062,10 @@
               </p>
             </div>
 
-            <div class="space-y-1.5 pt-2 border-t border-border/60">
+            <div class="space-y-2 pt-2 border-t border-border/60">
               <div class="w-full h-1.5 bg-muted rounded-full overflow-hidden">
                 <div
-                  class="h-full rounded-full {amenity.status === 'completado'
+                  class="h-full rounded-full transition-all {amenity.status === 'completado'
                     ? 'bg-emerald-500'
                     : amenity.status === 'en_obra'
                       ? 'bg-[#F5A400]'
@@ -956,6 +1083,29 @@
                 </span>
                 <span class="tabular-nums">{amenity.progressPercent}%</span>
               </div>
+
+              {#if canCertifyAmenities}
+                <div class="pt-1.5 border-t border-border/50 flex items-center justify-between gap-1.5">
+                  <span class="text-[10px] font-medium text-muted-foreground">Certificar COPNIA:</span>
+                  <div class="flex items-center gap-1">
+                    {#each [0, 50, 75, 100] as pct (pct)}
+                      <button
+                        type="button"
+                        onclick={() => {
+                          projectStore.updateAmenityProgress(cut.projectId, amenity.id, pct);
+                          saveFeedbackBanner = `Avance físico de "${amenity.name}" certificado al ${pct}% por Interventoría.`;
+                          setTimeout(() => (saveFeedbackBanner = null), 4000);
+                        }}
+                        class="rounded px-1.5 py-0.5 text-[10px] font-mono transition-colors cursor-pointer {amenity.progressPercent === pct
+                          ? 'bg-foreground text-background font-semibold'
+                          : 'border border-border bg-background text-muted-foreground hover:text-foreground'}"
+                      >
+                        {pct}%
+                      </button>
+                    {/each}
+                  </div>
+                </div>
+              {/if}
             </div>
           </div>
         {/each}
@@ -973,6 +1123,233 @@
     />
   </div>
 </div>
+
+<!-- MODAL DE EDICIÓN COMERCIAL (CONSTRUCTORA / ADMIN) -->
+{#if isCommercialModalOpen}
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-xs p-4">
+    <div class="w-full max-w-xl rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden">
+      <div class="p-5 border-b border-border flex items-center justify-between">
+        <div>
+          <h3 class="text-sm font-semibold text-foreground">
+            Editar ficha comercial y absorción de ventas
+          </h3>
+          <p class="text-xs text-muted-foreground">
+            Atribución de <strong class="text-foreground">{projectStore.currentUser.companyName}</strong> ({projectStore.effectiveRole})
+          </p>
+        </div>
+        <button
+          type="button"
+          onclick={() => (isCommercialModalOpen = false)}
+          class="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer"
+        >
+          <X class="w-4 h-4" />
+        </button>
+      </div>
+
+      <form onsubmit={handleSaveCommercial} class="p-5 space-y-4 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="space-y-1.5">
+            <label for="ed-type" class="font-medium text-foreground">Tipología inmobiliaria</label>
+            <select
+              id="ed-type"
+              bind:value={editPropertyType}
+              class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs text-foreground"
+            >
+              <option value="Apartamentos residenciales">Apartamentos residenciales</option>
+              <option value="Vivienda VIS">Vivienda VIS</option>
+              <option value="Uso mixto y corporativo">Uso mixto y corporativo</option>
+              <option value="Casas en conjunto">Casas en conjunto</option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="ed-stratum" class="font-medium text-foreground">Estrato socioeconómico</label>
+            <select
+              id="ed-stratum"
+              bind:value={editStratum}
+              class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs text-foreground"
+            >
+              <option value="Estrato 3">Estrato 3</option>
+              <option value="Estrato 4">Estrato 4</option>
+              <option value="Estrato 5">Estrato 5</option>
+              <option value="Estrato 6">Estrato 6</option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="ed-sold" class="font-medium text-foreground">
+              Unidades escrituradas / vendidas (de {ficha.totalUnits})
+            </label>
+            <input
+              id="ed-sold"
+              type="number"
+              min="0"
+              max={ficha.totalUnits}
+              bind:value={editSoldUnits}
+              class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground"
+              required
+            />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="ed-res" class="font-medium text-foreground">
+              Unidades en encargo / separadas
+            </label>
+            <input
+              id="ed-res"
+              type="number"
+              min="0"
+              max={Math.max(0, ficha.totalUnits - editSoldUnits)}
+              bind:value={editReservedUnits}
+              class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground"
+              required
+            />
+          </div>
+
+          <div class="space-y-1.5 sm:col-span-2">
+            <label for="ed-deliv" class="font-medium text-foreground">Fecha estimada de entrega a propietarios</label>
+            <input
+              id="ed-deliv"
+              type="text"
+              bind:value={editEstimatedDelivery}
+              class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs text-foreground"
+              required
+            />
+          </div>
+
+          <div class="space-y-1.5 sm:col-span-2">
+            <label for="ed-desc" class="font-medium text-foreground">Descripción general del desarrollo</label>
+            <textarea
+              id="ed-desc"
+              bind:value={editDescription}
+              rows="4"
+              class="w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground leading-relaxed"
+              required
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-border flex items-center justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onclick={() => (isCommercialModalOpen = false)}
+            class="h-8 text-xs cursor-pointer"
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            size="sm"
+            class="h-8 bg-foreground text-background hover:bg-foreground/90 text-xs font-medium cursor-pointer"
+          >
+            Guardar cambios comerciales
+          </Button>
+        </div>
+      </form>
+    </div>
+  </div>
+{/if}
+
+<!-- MODAL DE PARÁMETROS DEL FIDEICOMISO (FIDUCIARIA / ADMIN) -->
+{#if isFiduciaryModalOpen}
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-xs p-4">
+    <div class="w-full max-w-lg rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden">
+      <div class="p-5 border-b border-border flex items-center justify-between">
+        <div>
+          <h3 class="text-sm font-semibold text-foreground">
+            Parámetros del Fideicomiso y Punto de Equilibrio
+          </h3>
+          <p class="text-xs text-muted-foreground">
+            Administración fiduciaria por <strong class="text-foreground">{projectStore.currentUser.companyName}</strong>
+          </p>
+        </div>
+        <button
+          type="button"
+          onclick={() => (isFiduciaryModalOpen = false)}
+          class="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer"
+        >
+          <X class="w-4 h-4" />
+        </button>
+      </div>
+
+      <form onsubmit={handleSaveFiduciary} class="p-5 space-y-4 text-xs">
+        <div class="space-y-3.5">
+          <div class="space-y-1.5">
+            <label for="fid-code" class="font-medium text-foreground">Código del Encargo Fiduciario / Patrimonio Autónomo</label>
+            <input
+              id="fid-code"
+              type="text"
+              bind:value={editFiduciaryTrustCode}
+              class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground"
+              required
+            />
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="fid-budget" class="font-medium text-foreground">Presupuesto fiduciario total autorizado (COP)</label>
+            <input
+              id="fid-budget"
+              type="number"
+              step="100000000"
+              bind:value={editTotalBudgetCOP}
+              class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground"
+              required
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div class="space-y-1.5">
+              <label for="fid-eq" class="font-medium text-foreground">Meta de Punto de Equilibrio (%)</label>
+              <input
+                id="fid-eq"
+                type="number"
+                min="30"
+                max="95"
+                bind:value={editEquilibriumPercent}
+                class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground"
+                required
+              />
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="fid-status" class="font-medium text-foreground">Estado del fideicomiso</label>
+              <select
+                id="fid-status"
+                bind:value={editLifecycleStatus}
+                class="w-full h-9 rounded-md border border-input bg-background px-3 text-xs text-foreground"
+              >
+                <option value="in_progress">En ejecución activa</option>
+                <option value="upcoming">Preventas / Por iniciar</option>
+                <option value="completed">Obra finalizada / Liquidación</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-border flex items-center justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onclick={() => (isFiduciaryModalOpen = false)}
+            class="h-8 text-xs cursor-pointer"
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            size="sm"
+            class="h-8 bg-foreground text-background hover:bg-foreground/90 text-xs font-medium cursor-pointer"
+          >
+            Guardar parámetros fiduciarios
+          </Button>
+        </div>
+      </form>
+    </div>
+  </div>
+{/if}
 
 <!-- MODAL AMPLIO DE PLANO ARQUITECTÓNICO DE TIPOLOGÍA -->
 {#if isBlueprintModalOpen}
