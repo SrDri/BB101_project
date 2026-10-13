@@ -356,37 +356,78 @@
         return 'Infraestructura y seguridad';
     }
   }
+
+  const PROJECT_HERO_RENDERS: Record<string, string> = {
+    'PROJ-ALAMEDA-01': 'https://lh3.googleusercontent.com/d/19fvcD9C5vOiJiz4zziXKQycwdFEigivc=w1600',
+    'PROJ-MIRADOR-02': 'https://lh3.googleusercontent.com/d/1G5ZhYdXo3pK4OieWjID_0McvmO8jx1rB=w1600',
+    'PROJ-SIETEMARES-03': 'https://lh3.googleusercontent.com/d/1UjtYmN90iQvI0AbL2OcfD3AcwrGh02AP=w1600',
+    'PROJ-CERROS-04': 'https://lh3.googleusercontent.com/d/1iP1fWrvjH93sZq7NJmrAdcB2dVh5ZN3i=w1600',
+    'PROJ-CASTELLANA-05': 'https://lh3.googleusercontent.com/d/1bUpsrIGIITWHnh9VWI6OiDuvO2XvnLNV=w1600'
+  };
+
+  const activeHeroImage = $derived(
+    PROJECT_HERO_RENDERS[cut.projectId] || PROJECT_HERO_RENDERS['PROJ-ALAMEDA-01']
+  );
 </script>
 
 <div class="space-y-6 w-full max-w-[1440px] mx-auto">
-  <!-- Cabecera de la Ficha del Proyecto -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
-    <div class="space-y-1">
-      <div class="flex flex-wrap items-center gap-2">
-        <Badge variant="outline" class="text-[11px] font-medium bg-muted/60 text-foreground border-border gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-          <span>{ficha.propertyType} • {ficha.stratum}</span>
-        </Badge>
-        <span class="text-xs text-muted-foreground tabular-nums">
-          {cut.code} • {cut.fiduciaryTrustCode} • {cut.city}
-        </span>
-      </div>
-
-      <h1 class="text-2xl font-semibold text-foreground tracking-tight">
-        Ficha integral del proyecto — {cut.projectName}
-      </h1>
-      <p class="text-xs text-muted-foreground">
-        Descripción arquitectónica, inventario de ventas, planos de tipologías de apartamentos y amenidades.
-      </p>
+  <!-- Hero Cabecera de la Ficha del Proyecto con Render Arquitectónico y Gradiente -->
+  <div class="relative overflow-hidden rounded-xl border border-border bg-card shadow-2xs">
+    <!-- Imagen de render arquitectónico posicionada a la derecha con fusión por gradiente -->
+    <div class="pointer-events-none absolute inset-y-0 right-0 w-full md:w-[65%]">
+      <img
+        src={activeHeroImage}
+        alt="Render arquitectónico {cut.projectName}"
+        referrerpolicy="no-referrer"
+        class="h-full w-full object-cover object-center transition-all duration-300"
+      />
+      <!-- Gradiente horizontal principal para fundir el texto de la izquierda con el render -->
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-card via-card/90 to-card/15 md:from-card md:via-card/65 md:to-transparent"
+      ></div>
+      <!-- Sutil viñeta vertical para integrar bordes e iluminar los botones inferiores -->
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-card/85 via-transparent to-card/20"
+      ></div>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2">
-      <Button href="/cumplimiento" variant="outline" size="sm" class="h-8 text-xs">
-        Cumplimiento y documentos
-      </Button>
-      <Button href="/gemelo" size="sm" class="h-8 text-xs bg-foreground text-background hover:bg-foreground/90">
-        Abrir Vista 3D
-      </Button>
+    <div class="relative z-10 flex min-h-[175px] flex-col justify-between gap-5 p-6 sm:p-7 lg:flex-row lg:items-end">
+      <div class="max-w-2xl space-y-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <Badge variant="outline" class="gap-1.5 border-border bg-background/85 text-[11px] font-medium text-foreground backdrop-blur-xs">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            <span>{ficha.propertyType} • {ficha.stratum}</span>
+          </Badge>
+          <span class="rounded-md border border-border/60 bg-background/75 px-2 py-0.5 text-xs text-muted-foreground tabular-nums backdrop-blur-xs">
+            {cut.code} • {cut.fiduciaryTrustCode} • {cut.city}
+          </span>
+        </div>
+
+        <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-[26px]">
+          Ficha integral del proyecto — {cut.projectName}
+        </h1>
+        <p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+          Descripción arquitectónica, inventario de ventas, planos de tipologías de apartamentos y amenidades.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 shrink-0">
+        <Button
+          href="/cumplimiento"
+          variant="outline"
+          size="sm"
+          class="h-8 border-border bg-background/90 text-xs backdrop-blur-md hover:bg-background"
+        >
+          Cumplimiento y documentos
+        </Button>
+        <Button
+          href="/gemelo"
+          size="sm"
+          class="h-8 bg-foreground text-xs text-background shadow-xs hover:bg-foreground/90"
+        >
+          Abrir Vista 3D
+        </Button>
+      </div>
     </div>
   </div>
 
