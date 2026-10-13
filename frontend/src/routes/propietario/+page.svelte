@@ -46,12 +46,20 @@
   let newSnagTitle = $state('');
   let newSnagDesc = $state('');
 
+  // Pestaña activa en el portal del propietario autenticado
+  let ownerPortalTab = $state<'mi_apartamento' | 'ficha_proyecto' | 'documentacion'>('mi_apartamento');
+
   // Modo del visor para el propietario: 'my_apartment' (plano arquitectónico real de su apto) o 'building_3d' (torre general)
   let explorerTab = $state<'my_apartment' | 'building_3d'>('my_apartment');
   // Filtro de galería fotográfica: 'unit' (mi apartamento), 'project' (edificio general), 'all' (todas)
   let photoScopeFilter = $state<'unit' | 'project' | 'all'>('unit');
   let selectedRoomIndex = $state<number>(0);
   let activeModalPhotoIndex = $state<number | null>(null);
+
+  // Estado para exploración de documentos del proyecto por parte del propietario
+  let ownerDocCategory = $state<'todos' | 'licencias' | 'polizas' | 'fiduciarios' | 'tecnicos'>('todos');
+  let ownerDocSearch = $state('');
+  let selectedOwnerDocId = $state<string>('DOC-LIC-001');
 
   const ownerUnit = $derived<PropertyOwnerUnit | null>(
     searchedCedula ? projectStore.findOwnerByCedula(searchedCedula) : null
@@ -122,6 +130,53 @@
       : null
   );
 
+  const ownerFicha = $derived(
+    ownerProject
+      ? projectStore.projectFichas[ownerProject.projectId] || projectStore.projectFichas['PROJ-ALAMEDA-01']
+      : projectStore.projectFichas['PROJ-ALAMEDA-01']
+  );
+
+  const PROJECT_HERO_RENDERS: Record<string, string> = {
+    'PROJ-ALAMEDA-01': 'https://lh3.googleusercontent.com/d/19fvcD9C5vOiJiz4zziXKQycwdFEigivc=w1600',
+    'PROJ-MIRADOR-02': 'https://lh3.googleusercontent.com/d/1G5ZhYdXo3pK4OieWjID_0McvmO8jx1rB=w1600',
+    'PROJ-SIETEMARES-03': 'https://lh3.googleusercontent.com/d/1UjtYmN90iQvI0AbL2OcfD3AcwrGh02AP=w1600',
+    'PROJ-CERROS-04': 'https://lh3.googleusercontent.com/d/1iP1fWrvjH93sZq7NJmrAdcB2dVh5ZN3i=w1600',
+    'PROJ-CASTELLANA-05': 'https://lh3.googleusercontent.com/d/1bUpsrIGIITWHnh9VWI6OiDuvO2XvnLNV=w1600'
+  };
+
+  const ownerHeroImage = $derived(
+    ownerProject
+      ? PROJECT_HERO_RENDERS[ownerProject.projectId] || PROJECT_HERO_RENDERS['PROJ-ALAMEDA-01']
+      : PROJECT_HERO_RENDERS['PROJ-ALAMEDA-01']
+  );
+
+  const filteredOwnerDocs = $derived(
+    projectStore.mandatoryDocs.filter((doc) => {
+      if (ownerDocCategory !== 'todos' && doc.category !== ownerDocCategory) return false;
+      if (ownerDocSearch.trim() !== '') {
+        const q = ownerDocSearch.toLowerCase();
+        return (
+          doc.title.toLowerCase().includes(q) ||
+          doc.issuer.toLowerCase().includes(q) ||
+          doc.documentNumber.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    })
+  );
+
+  const inspectedOwnerDoc = $derived(
+    filteredOwnerDocs.find((d) => d.id === selectedOwnerDocId) ||
+      filteredOwnerDocs[0] ||
+      projectStore.mandatoryDocs[0]
+  );
+
+  function getDocCategoryLabel(cat: string): string {
+    if (cat === 'licencias') return 'Licencia urbanística';
+    if (cat === 'polizas') return 'Póliza y garantías';
+    if (cat === 'fiduciarios') return 'Contrato fiduciario';
+    return 'Estudio y norma técnica';
+  }
 
   const ownerFloorData = $derived(
     ownerProject && ownerUnit
@@ -154,6 +209,7 @@
     projectStore.selectedFloorId = unit.floorLevel;
     projectStore.activeOwnerCedula = unit.cedula;
     projectStore.isDrawerOpen = false;
+    ownerPortalTab = 'mi_apartamento';
     explorerTab = 'my_apartment';
     photoScopeFilter = 'unit';
     selectedRoomIndex = 0;
@@ -252,9 +308,19 @@
 </script>
 
 {#if isSearching}
-  <!-- Estado 2: Animación de carga centrada con el isotipo de Tramo -->
-  <div class="min-h-[calc(100vh-180px)] w-full flex flex-col items-center justify-center px-4">
-    <Card class="w-full max-w-md bg-card border-border shadow-sm">
+  <!-- Estado 2: Animación de carga centrada con fondo de gradiente animado -->
+  <div class="relative min-h-[calc(100vh-150px)] w-full flex flex-col items-center justify-center px-4 overflow-hidden rounded-2xl border border-border/50 bg-card/20">
+    <div
+      class="pointer-events-none absolute -top-28 left-1/2 -translate-x-1/2 h-[420px] w-[680px] rounded-full bg-[#F5A400]/12 dark:bg-[#F5A400]/16 blur-[100px] animate-ambient-orb-a"
+    ></div>
+    <div
+      class="pointer-events-none absolute -bottom-32 right-[-8%] h-[380px] w-[560px] rounded-full bg-emerald-500/8 dark:bg-emerald-500/12 blur-[100px] animate-ambient-orb-b"
+    ></div>
+    <div
+      class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(120,120,128,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,120,128,0.035)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_65%_55%_at_50%_45%,#000_40%,transparent_100%)]"
+    ></div>
+
+    <Card class="relative z-10 w-full max-w-md bg-card/95 backdrop-blur-md border-border shadow-md">
       <CardContent class="p-8 flex flex-col items-center text-center space-y-5">
         <TramoLogoLoader size={68} />
 
@@ -274,85 +340,155 @@
           ></div>
         </div>
 
-        <span class="text-[11px] text-muted-foreground tabular-nums">
-          Cédula consultada: {cedulaInput}
+        <span class="text-[11px] font-mono text-muted-foreground tabular-nums">
+          Documento consultado: CC {cedulaInput}
         </span>
       </CardContent>
     </Card>
   </div>
 {:else if !ownerUnit || !ownerProject}
-  <!-- Estado 1: Buscador centrado sin cédula por defecto -->
-  <div class="min-h-[calc(100vh-180px)] w-full flex flex-col items-center justify-center px-4 py-8">
-    <div class="w-full max-w-lg space-y-6">
-      <div class="text-center space-y-2">
+  <!-- Estado 1: Login / Consulta por cédula con gradiente aurora multicapa animado y diseño editorial -->
+  <div class="relative min-h-[calc(100vh-150px)] w-full flex flex-col items-center justify-center px-4 py-10 overflow-hidden rounded-2xl border border-border/50 bg-card/20">
+    <!-- Capa 1: Lienzo Mesh Aurora en movimiento continuo -->
+    <div class="pointer-events-none absolute inset-0 ambient-aurora-canvas"></div>
+
+    <!-- Capa 2: Haz de luz volumétrico superior con barrido suave -->
+    <div
+      class="pointer-events-none absolute -top-44 left-1/2 h-[500px] w-[1050px] bg-[conic-gradient(from_180deg_at_50%_0%,transparent_32%,rgba(245,164,0,0.22)_47%,rgba(16,185,129,0.16)_53%,transparent_68%)] dark:bg-[conic-gradient(from_180deg_at_50%_0%,transparent_30%,rgba(245,164,0,0.28)_47%,rgba(16,185,129,0.20)_53%,transparent_70%)] blur-[75px] animate-aurora-sweep"
+    ></div>
+
+    <!-- Capa 3: Cintas orgánicas mórficas en órbita (Ámbar Fiduciario, Esmeralda y Platino/Índigo) -->
+    <div
+      class="pointer-events-none absolute -top-24 left-[6%] h-[420px] w-[600px] bg-gradient-to-br from-[#F5A400]/22 via-amber-500/14 to-transparent dark:from-[#F5A400]/26 dark:via-amber-500/16 blur-[85px] animate-ambient-orb-a"
+    ></div>
+    <div
+      class="pointer-events-none absolute -bottom-28 right-[4%] h-[400px] w-[580px] bg-gradient-to-tl from-emerald-500/18 via-teal-500/12 to-transparent dark:from-emerald-500/22 dark:via-teal-500/14 blur-[90px] animate-ambient-orb-b"
+    ></div>
+    <div
+      class="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 h-[340px] w-[520px] rounded-full bg-gradient-to-r from-indigo-500/10 via-[#F5A400]/12 to-emerald-500/10 dark:from-indigo-500/15 dark:via-[#F5A400]/15 dark:to-emerald-500/14 blur-[95px] animate-ambient-orb-c"
+    ></div>
+
+    <!-- Capa 4: Retícula arquitectónica minimalista con máscara elíptica -->
+    <div
+      class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(120,120,128,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,120,128,0.055)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_45%,#000_35%,transparent_100%)]"
+    ></div>
+
+    <div class="relative z-10 w-full max-w-xl space-y-6">
+      <!-- Encabezado editorial centrado -->
+      <div class="text-center space-y-2.5">
         <div class="inline-flex justify-center">
-          <Badge variant="outline" class="text-[11px] font-normal bg-muted/60 text-foreground border-border gap-1.5">
+          <Badge variant="outline" class="text-[11px] font-medium bg-background/85 backdrop-blur-xs text-foreground border-border px-3 py-1 gap-1.5 shadow-2xs">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>Portal de propietarios</span>
+            <span>Portal privado de propietarios y adquirentes</span>
           </Badge>
         </div>
-        <h1 class="text-2xl font-semibold text-foreground tracking-tight">
-          Consulta el avance de tu apartamento
+
+        <h1 class="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
+          Seguimiento técnico y fiduciario de tu inmueble
         </h1>
-        <p class="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
-          Ingresa tu número de documento para explorar el plano arquitectónico de tu apartamento con sus puntos estratégicos de avance y fotografías reales de obra.
+
+        <p class="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
+          Ingresa tu documento de identidad para consultar el plano arquitectónico de tu unidad, el avance real certificado, tu estado de cuenta fiduciario y las licencias del proyecto.
         </p>
+
+        <!-- Píldoras de valor para el propietario -->
+        <div class="pt-1 flex flex-wrap items-center justify-center gap-2 text-[11px] text-muted-foreground">
+          <span class="inline-flex items-center gap-1.5 rounded-md border border-border/70 bg-background/70 px-2.5 py-1 whitespace-nowrap backdrop-blur-xs">
+            <Compass class="w-3.5 h-3.5 text-foreground" />
+            <span>Plano CAD y Vista 3D</span>
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-md border border-border/70 bg-background/70 px-2.5 py-1 whitespace-nowrap backdrop-blur-xs">
+            <Camera class="w-3.5 h-3.5 text-foreground" />
+            <span>Registro fotográfico de obra</span>
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-md border border-border/70 bg-background/70 px-2.5 py-1 whitespace-nowrap backdrop-blur-xs">
+            <Landmark class="w-3.5 h-3.5 text-foreground" />
+            <span>Encargo fiduciario y DIAN</span>
+          </span>
+        </div>
       </div>
 
-      <Card class="bg-card border-border shadow-sm">
-        <CardContent class="p-6 space-y-5">
+      <!-- Tarjeta principal de acceso por cédula -->
+      <Card class="bg-card/95 backdrop-blur-md border-border shadow-md overflow-hidden">
+        <CardContent class="p-6 sm:p-7 space-y-6">
           <form onsubmit={handleSearch} class="space-y-3">
-            <div class="space-y-1.5">
-              <label for="cedula-input" class="text-xs font-medium text-foreground block">
-                Número de cédula del titular
-              </label>
-              <div class="flex flex-col sm:flex-row gap-2">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <label for="cedula-input" class="text-xs font-semibold text-foreground">
+                  Documento de identidad del titular fiduciario
+                </label>
+                <span class="text-[11px] text-muted-foreground">Consulta protegida</span>
+              </div>
+              <div class="flex flex-col sm:flex-row gap-2.5">
                 <Input
                   id="cedula-input"
                   type="text"
                   bind:value={cedulaInput}
-                  placeholder="Ingresa tu cédula sin puntos"
-                  class="h-9 text-xs tabular-nums flex-1"
+                  placeholder="Ej. 1020784512 (sin puntos ni guiones)"
+                  class="h-10 text-xs sm:text-sm font-mono tabular-nums flex-1 bg-background"
                   required
                 />
                 <Button
                   type="submit"
                   disabled={!cedulaInput.trim()}
-                  class="h-9 px-4 bg-foreground text-background hover:bg-foreground/90 font-medium text-xs gap-1.5 cursor-pointer shrink-0"
+                  class="h-10 px-5 bg-foreground text-background hover:bg-foreground/90 font-medium text-xs gap-2 cursor-pointer shrink-0 shadow-xs"
                 >
                   <Search class="w-3.5 h-3.5" />
-                  <span>Consultar</span>
+                  <span>Consultar expediente</span>
                 </Button>
               </div>
             </div>
           </form>
 
           {#if errorMsg}
-            <div class="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-xs text-red-500">
+            <div class="p-3.5 rounded-lg bg-red-500/10 border border-red-500/30 text-xs text-red-500">
               {errorMsg}
             </div>
           {/if}
 
-          <div class="pt-4 border-t border-border space-y-2.5">
-            <span class="text-[11px] text-muted-foreground block">
-              Selecciona una cédula de prueba para evaluar la vista privada de propietario:
-            </span>
+          <!-- Selector de titulares de demostración con badges en 1 sola fila -->
+          <div class="pt-5 border-t border-border space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[11px] font-medium text-muted-foreground">
+                Accesos rápidos de demostración (3 inmuebles vinculados):
+              </span>
+              <span class="text-[10px] font-mono text-muted-foreground whitespace-nowrap shrink-0">Clic para ingresar</span>
+            </div>
+
             <div class="grid grid-cols-1 gap-2">
               {#each PROPERTY_OWNERS as demo}
+                {@const initials = demo.ownerName
+                  .split(' ')
+                  .slice(0, 2)
+                  .map((n) => n[0])
+                  .join('')}
                 <button
                   type="button"
                   onclick={() => selectDemoCedula(demo.cedula)}
-                  class="w-full px-3.5 py-2.5 rounded-lg border border-border bg-muted/30 hover:bg-muted/70 text-left flex items-center justify-between transition-colors cursor-pointer"
+                  class="group w-full px-3.5 py-2.5 rounded-xl border border-border bg-muted/25 hover:bg-muted/60 hover:border-foreground/25 text-left flex items-center justify-between gap-3 transition-all cursor-pointer"
                 >
-                  <div>
-                    <div class="text-xs font-medium text-foreground">{demo.ownerName}</div>
-                    <div class="text-[11px] text-muted-foreground">
-                      {demo.unitNumber} (Piso {demo.floorLevel}) • {demo.projectName}
+                  <div class="flex items-center gap-3 min-w-0 flex-1">
+                    <div class="w-8 h-8 rounded-lg bg-background border border-border flex items-center justify-center text-xs font-semibold text-foreground shrink-0 group-hover:border-foreground/30 transition-colors">
+                      {initials}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="text-xs font-semibold text-foreground truncate">
+                        {demo.ownerName}
+                      </div>
+                      <div class="text-[11px] text-muted-foreground truncate">
+                        {demo.unitNumber} (Piso {demo.floorLevel}) • {demo.projectName}
+                      </div>
                     </div>
                   </div>
-                  <span class="text-xs font-mono tabular-nums text-foreground bg-background px-2 py-1 rounded border border-border">
-                    CC {demo.cedula}
-                  </span>
+
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="hidden sm:inline-flex items-center rounded-md bg-background px-2 py-1 text-[11px] font-mono font-medium text-muted-foreground border border-border whitespace-nowrap shrink-0 tabular-nums">
+                      {demo.unitProgressPercent}%
+                    </span>
+                    <span class="inline-flex items-center text-xs font-mono font-medium tabular-nums text-foreground bg-background px-2.5 py-1 rounded-md border border-border whitespace-nowrap shrink-0 group-hover:bg-foreground group-hover:text-background group-hover:border-foreground transition-colors">
+                      CC {demo.cedula}
+                    </span>
+                  </div>
                 </button>
               {/each}
             </div>
@@ -362,43 +498,104 @@
     </div>
   </div>
 {:else}
-  <!-- Estado 3: Expediente privado con bienvenida cálida y plano arquitectónico real del apartamento -->
-  <div class="space-y-6 w-full">
-    <!-- Banner de bienvenida personalizada al propietario -->
-    <div class="p-5 sm:p-6 rounded-xl border border-border bg-card shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div class="space-y-1.5">
-        <div class="flex flex-wrap items-center gap-2">
-          <Badge variant="outline" class="text-[11px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/25 gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>Titular fiduciario verificado</span>
-          </Badge>
-          <span class="text-xs text-muted-foreground tabular-nums">
-            Encargo {ownerUnit.fiduciaryEncargoCode} • {ownerUnit.fiduciaryEntity}
-          </span>
-        </div>
-
-        <h1 class="text-2xl font-semibold text-foreground tracking-tight">
-          {getCourtesyGreeting(ownerUnit.ownerName)}
-        </h1>
-
-        <p class="text-xs text-muted-foreground max-w-3xl leading-relaxed">
-          Bienvenido al seguimiento técnico de tu <strong class="text-foreground font-medium">{ownerUnit.unitNumber}</strong> ubicado en el <strong class="text-foreground font-medium">Piso {ownerUnit.floorLevel}</strong> de <strong class="text-foreground font-medium">{ownerUnit.projectName}</strong>. Aquí puedes inspeccionar el plano arquitectónico real de tu hogar, sus puntos estratégicos de obra y las fotografías certificadas por interventoría.
-        </p>
+  <!-- Estado 3: Expediente privado con Hero Arquitectónico y navegación integral -->
+  <div class="space-y-6 w-full max-w-[1440px] mx-auto">
+    <!-- Hero de bienvenida del propietario con el render del edificio fundido en gradiente -->
+    <div class="relative rounded-xl border border-border bg-card shadow-2xs overflow-hidden">
+      <!-- Render arquitectónico sutil a la derecha del encabezado -->
+      <div class="pointer-events-none absolute inset-y-0 right-0 w-full md:w-[58%]">
+        <img
+          src={ownerHeroImage}
+          alt="Render {ownerProject.projectName}"
+          referrerpolicy="no-referrer"
+          class="h-full w-full object-cover object-center opacity-85"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-card via-card/92 to-card/25 md:from-card md:via-card/75 md:to-transparent"
+        ></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-card/25"
+        ></div>
       </div>
 
-      <div class="flex items-center gap-2 self-start md:self-center shrink-0">
-        <Button
-          variant="outline"
-          size="sm"
-          onclick={resetSearch}
-          class="h-8 text-xs gap-1.5 cursor-pointer"
-        >
-          <ArrowLeft class="w-3.5 h-3.5" />
-          <span>Cambiar de titular</span>
-        </Button>
+      <div class="relative z-10 p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="space-y-1.5 max-w-2xl">
+          <div class="flex flex-wrap items-center gap-2">
+            <Badge variant="outline" class="text-[11px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/25 gap-1.5 backdrop-blur-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span>Titular fiduciario verificado</span>
+            </Badge>
+            <span class="rounded-md border border-border/60 bg-background/80 px-2 py-0.5 text-xs text-muted-foreground tabular-nums backdrop-blur-xs">
+              Encargo {ownerUnit.fiduciaryEncargoCode} • {ownerUnit.fiduciaryEntity}
+            </span>
+          </div>
+
+          <h1 class="text-2xl font-semibold text-foreground tracking-tight">
+            {getCourtesyGreeting(ownerUnit.ownerName)}
+          </h1>
+
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            Seguimiento técnico de tu <strong class="text-foreground font-medium">{ownerUnit.unitNumber}</strong> en el <strong class="text-foreground font-medium">Piso {ownerUnit.floorLevel}</strong> de <strong class="text-foreground font-medium">{ownerUnit.projectName}</strong> ({ownerUnit.city}). Explora el plano arquitectónico de tu unidad, la ficha del proyecto y las licencias vigentes.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2 self-start md:self-center shrink-0">
+          <Button
+            variant="outline"
+            size="sm"
+            onclick={resetSearch}
+            class="h-8 text-xs gap-1.5 bg-background/90 backdrop-blur-md hover:bg-background cursor-pointer"
+          >
+            <ArrowLeft class="w-3.5 h-3.5" />
+            <span>Cambiar de titular</span>
+          </Button>
+        </div>
+      </div>
+
+      <!-- Barra de navegación de vistas para el propietario -->
+      <div class="relative z-10 px-5 sm:px-6 py-3 border-t border-border bg-muted/30 backdrop-blur-md flex flex-wrap items-center justify-between gap-3">
+        <div class="inline-flex flex-wrap items-center gap-1 rounded-lg border border-border bg-background/90 p-1">
+          <button
+            type="button"
+            onclick={() => (ownerPortalTab = 'mi_apartamento')}
+            class="px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors cursor-pointer {ownerPortalTab === 'mi_apartamento'
+              ? 'bg-foreground text-background shadow-2xs'
+              : 'text-muted-foreground hover:text-foreground'}"
+          >
+            <Home class="w-3.5 h-3.5" />
+            <span>Mi {ownerUnit.unitNumber} y avance</span>
+          </button>
+
+          <button
+            type="button"
+            onclick={() => (ownerPortalTab = 'ficha_proyecto')}
+            class="px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors cursor-pointer {ownerPortalTab === 'ficha_proyecto'
+              ? 'bg-foreground text-background shadow-2xs'
+              : 'text-muted-foreground hover:text-foreground'}"
+          >
+            <Building2 class="w-3.5 h-3.5" />
+            <span>Ficha integral del proyecto</span>
+          </button>
+
+          <button
+            type="button"
+            onclick={() => (ownerPortalTab = 'documentacion')}
+            class="px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors cursor-pointer {ownerPortalTab === 'documentacion'
+              ? 'bg-foreground text-background shadow-2xs'
+              : 'text-muted-foreground hover:text-foreground'}"
+          >
+            <FileText class="w-3.5 h-3.5" />
+            <span>Documentación y licencias ({projectStore.mandatoryDocs.length})</span>
+          </button>
+        </div>
+
+        <span class="text-[11px] text-muted-foreground tabular-nums">
+          Proyecto: <strong class="text-foreground font-medium">{ownerProject.projectName}</strong> ({ownerProject.code})
+        </span>
       </div>
     </div>
 
+    {#if ownerPortalTab === 'mi_apartamento'}
     <!-- Franja de 4 KPIs del propietario -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
       <Card class="bg-card border-border shadow-none">
@@ -1114,6 +1311,7 @@
                   <img
                     src={photo.thumbnailUrl}
                     alt={photo.title}
+                    referrerpolicy="no-referrer"
                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/25"></div>
@@ -1531,6 +1729,397 @@
         />
       </div>
     </div>
+
+    {:else if ownerPortalTab === 'ficha_proyecto'}
+      <!-- ======================================================================= -->
+      <!-- PESTAÑA 2 DEL PROPIETARIO: FICHA INTEGRAL DEL PROYECTO                  -->
+      <!-- ======================================================================= -->
+      <div class="space-y-6">
+        <!-- Encabezado compacto de sección (sin duplicar el Hero superior) -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-border bg-card px-5 py-4">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <Badge variant="outline" class="gap-1.5 border-border bg-muted/40 text-[11px] font-medium text-foreground">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                <span>{ownerFicha.propertyType} • {ownerFicha.stratum}</span>
+              </Badge>
+              <span class="text-xs text-muted-foreground tabular-nums">
+                {ownerProject.code} • {ownerProject.fiduciaryTrustCode} • {ownerProject.city}
+              </span>
+            </div>
+            <h2 class="text-base sm:text-lg font-semibold tracking-tight text-foreground">
+              Ficha integral del proyecto — {ownerProject.projectName}
+            </h2>
+            <p class="text-xs text-muted-foreground">
+              Especificaciones arquitectónicas, respaldo empresarial, tipologías y avance de zonas comunes del edificio donde se ubica tu {ownerUnit.unitNumber}.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <Button
+              variant="outline"
+              size="sm"
+              onclick={() => (ownerPortalTab = 'documentacion')}
+              class="h-8 border-border bg-background text-xs hover:bg-muted/50 cursor-pointer"
+            >
+              Ver licencias y documentos
+            </Button>
+            <Button
+              size="sm"
+              onclick={() => {
+                ownerPortalTab = 'mi_apartamento';
+                explorerTab = 'building_3d';
+              }}
+              class="h-8 bg-foreground text-xs text-background shadow-xs hover:bg-foreground/90 cursor-pointer"
+            >
+              Abrir Vista 3D del edificio
+            </Button>
+          </div>
+        </div>
+
+        <!-- Descripción ejecutiva + Inventario de unidades -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
+          <Card class="xl:col-span-7 bg-card border-border shadow-none flex flex-col justify-between">
+            <CardHeader class="pb-3 border-b border-border">
+              <div class="flex items-center justify-between">
+                <CardTitle class="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Building2 class="w-4 h-4 text-muted-foreground" />
+                  <span>Descripción general del desarrollo inmobiliario</span>
+                </CardTitle>
+                <span class="text-xs text-muted-foreground tabular-nums">
+                  Entrega estimada: <strong class="text-foreground">{ownerFicha.estimatedDelivery}</strong>
+                </span>
+              </div>
+            </CardHeader>
+
+            <CardContent class="p-5 space-y-5 flex-1 flex flex-col justify-between">
+              <p class="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                {ownerFicha.description}
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border">
+                <div class="p-3.5 rounded-xl bg-muted/25 border border-border space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-medium text-muted-foreground">Constructora responsable</span>
+                    <Badge variant="outline" class="text-[10px] font-medium bg-background border-border">
+                      {ownerFicha.developerProfile.creditRating}
+                    </Badge>
+                  </div>
+                  <div class="text-sm font-semibold text-foreground">{ownerFicha.developerProfile.name}</div>
+                  <div class="text-[11px] text-muted-foreground space-y-0.5 tabular-nums">
+                    <div>NIT: <strong class="text-foreground font-medium">{ownerFicha.developerProfile.nit}</strong></div>
+                    <div>Rep. legal: {ownerFicha.developerProfile.legalRepresentative}</div>
+                    <div>Trayectoria: {ownerFicha.developerProfile.experienceYears} años • {ownerFicha.developerProfile.completedProjectsCount} obras entregadas</div>
+                  </div>
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-muted/25 border border-border space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-medium text-muted-foreground">Supervisión técnica e interventoría</span>
+                    <Badge variant="outline" class="text-[10px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/25">
+                      Independiente Ley 1796
+                    </Badge>
+                  </div>
+                  <div class="text-sm font-semibold text-foreground">{ownerFicha.supervisorProfile.name}</div>
+                  <div class="text-[11px] text-muted-foreground space-y-0.5 tabular-nums">
+                    <div>Firma: {ownerFicha.supervisorProfile.companyName}</div>
+                    <div>Matrícula: <strong class="text-foreground font-medium">{ownerFicha.supervisorProfile.copniaLicense}</strong></div>
+                    <div>Póliza RC: {ownerFicha.supervisorProfile.rcPolicyNumber}</div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card class="xl:col-span-5 bg-card border-border shadow-none flex flex-col justify-between">
+            <CardHeader class="pb-3 border-b border-border">
+              <div class="flex items-center justify-between">
+                <CardTitle class="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Home class="w-4 h-4 text-muted-foreground" />
+                  <span>Respaldo comercial y punto de equilibrio</span>
+                </CardTitle>
+                <Badge variant="outline" class="text-[11px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/25">
+                  Punto de equilibrio certificado
+                </Badge>
+              </div>
+            </CardHeader>
+
+            <CardContent class="p-5 space-y-5 flex-1 flex flex-col justify-between">
+              <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="p-3 rounded-lg bg-muted/30 border border-border">
+                  <div class="text-lg font-bold text-foreground tabular-nums">{ownerFicha.totalUnits}</div>
+                  <div class="text-[11px] text-muted-foreground">Unidades totales</div>
+                </div>
+                <div class="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                  <div class="text-lg font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">{ownerFicha.soldUnits}</div>
+                  <div class="text-[11px] text-muted-foreground">Vinculadas en fiducia</div>
+                </div>
+                <div class="p-3 rounded-lg bg-muted/30 border border-border">
+                  <div class="text-lg font-bold text-foreground tabular-nums">{ownerFicha.availableUnits}</div>
+                  <div class="text-[11px] text-muted-foreground">Disponibles</div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-muted-foreground">Comercialización acumulada</span>
+                  <span class="font-mono font-semibold text-foreground tabular-nums">
+                    {ownerFicha.currentSalesPercent}% (Meta equilibrio: {ownerFicha.equilibriumPointPercent}%)
+                  </span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-muted overflow-hidden">
+                  <div
+                    class="h-full bg-emerald-500 rounded-full"
+                    style="width: {ownerFicha.currentSalesPercent}%"
+                  ></div>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-muted/20 border border-border text-xs space-y-1">
+                <div class="font-semibold text-foreground">Tu unidad dentro del proyecto</div>
+                <div class="text-muted-foreground">
+                  <strong class="text-foreground">{ownerUnit.unitNumber}</strong> • Piso {ownerUnit.floorLevel} ({ownerUnit.areaM2} m² • {ownerUnit.typology})
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <!-- Tipologías arquitectónicas del edificio -->
+        <Card class="bg-card border-border shadow-none">
+          <CardHeader class="pb-3 border-b border-border">
+            <CardTitle class="text-sm font-semibold text-foreground">
+              Tipologías arquitectónicas del proyecto ({ownerFicha.typologies.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent class="p-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {#each ownerFicha.typologies as typ (typ.id)}
+              {@const isOwnerTyp = Math.abs(typ.areaBuiltM2 - ownerUnit.areaM2) < 1}
+              <div
+                class="rounded-xl border p-4 flex flex-col justify-between gap-3 {isOwnerTyp
+                  ? 'border-foreground bg-muted/25'
+                  : 'border-border bg-card'}"
+              >
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="font-mono text-[11px] font-semibold text-muted-foreground">{typ.code}</span>
+                    {#if isOwnerTyp}
+                      <Badge variant="outline" class="text-[10px] bg-foreground text-background border-foreground">
+                        Tu tipología
+                      </Badge>
+                    {/if}
+                  </div>
+                  <div class="text-sm font-semibold text-foreground">{typ.name}</div>
+                  <div class="text-xs text-muted-foreground tabular-nums">
+                    Área construida: <strong class="text-foreground">{typ.areaBuiltM2} m²</strong> (Privada: {typ.areaPrivateM2} m²)
+                  </div>
+                </div>
+
+                <div class="pt-3 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground tabular-nums">
+                  <span>{typ.bedrooms} Alcobas • {typ.bathrooms} Baños</span>
+                  <span>{typ.parkingSpots} Parq.</span>
+                </div>
+              </div>
+            {/each}
+          </CardContent>
+        </Card>
+
+        <!-- Avance de amenidades y zonas comunes -->
+        <Card class="bg-card border-border shadow-none">
+          <CardHeader class="pb-3 border-b border-border">
+            <div class="flex items-center justify-between">
+              <CardTitle class="text-sm font-semibold text-foreground">
+                Estado de ejecución de zonas comunes y amenidades ({ownerFicha.amenities.length})
+              </CardTitle>
+              <span class="text-xs text-muted-foreground">Inspeccionado por interventoría</span>
+            </div>
+          </CardHeader>
+          <CardContent class="p-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {#each ownerFicha.amenities as am (am.id)}
+              <div class="p-4 rounded-xl border border-border bg-muted/15 flex flex-col justify-between gap-3">
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-semibold text-foreground">{am.name}</span>
+                    <span class="font-mono text-xs font-semibold text-foreground tabular-nums">{am.progressPercent}%</span>
+                  </div>
+                  <p class="text-[11px] text-muted-foreground leading-relaxed">{am.description}</p>
+                </div>
+
+                <div class="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+                  <div
+                    class="h-full rounded-full {am.progressPercent >= 100 ? 'bg-emerald-500' : 'bg-foreground'}"
+                    style="width: {am.progressPercent}%"
+                  ></div>
+                </div>
+              </div>
+            {/each}
+          </CardContent>
+        </Card>
+      </div>
+
+    {:else if ownerPortalTab === 'documentacion'}
+      <!-- ======================================================================= -->
+      <!-- PESTAÑA 3 DEL PROPIETARIO: EXPEDIENTE DOCUMENTAL Y LICENCIAS            -->
+      <!-- ======================================================================= -->
+      <div class="space-y-6">
+        <!-- Cinta de respaldo jurídico del proyecto -->
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div class="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5">
+            <div class="min-w-0">
+              <div class="text-[11px] text-muted-foreground">Constructora titular</div>
+              <div class="truncate text-xs font-semibold text-foreground">{ownerFicha.developerProfile.name}</div>
+            </div>
+            <span class="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+              <CheckCircle2 class="h-3.5 w-3.5" />
+              SARLAFT y pólizas al día
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5">
+            <div class="min-w-0">
+              <div class="text-[11px] text-muted-foreground">Supervisor técnico Ley 1796</div>
+              <div class="truncate text-xs font-semibold text-foreground">{ownerFicha.supervisorProfile.companyName}</div>
+            </div>
+            <span class="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+              <CheckCircle2 class="h-3.5 w-3.5" />
+              COPNIA vigente
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5">
+            <div class="min-w-0">
+              <div class="text-[11px] text-muted-foreground">Sociedad fiduciaria vocera</div>
+              <div class="truncate text-xs font-semibold text-foreground">{ownerUnit.fiduciaryEntity}</div>
+            </div>
+            <span class="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-muted/50 px-2.5 py-1 font-mono text-[11px] font-medium text-foreground">
+              {ownerProject.fiduciaryTrustCode}
+            </span>
+          </div>
+        </div>
+
+        <!-- Explorador Master-Detail de Documentos Obligatorios -->
+        <Card class="bg-card border-border shadow-none overflow-hidden">
+          <CardHeader class="px-6 py-4 border-b border-border bg-muted/15 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div class="space-y-0.5">
+              <CardTitle class="text-base font-semibold text-foreground">
+                Expediente documental y licencias del proyecto — {ownerProject.projectName}
+              </CardTitle>
+              <p class="text-xs text-muted-foreground">
+                Documentos públicos y fiduciarios radicados bajo la Ley 1796 de 2016 (Ley de Vivienda Segura) con huella criptográfica SHA-256 en Stellar.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              {#each [
+                { id: 'todos', label: 'Todos' },
+                { id: 'licencias', label: 'Licencias' },
+                { id: 'polizas', label: 'Pólizas' },
+                { id: 'fiduciarios', label: 'Fiduciarios' },
+                { id: 'tecnicos', label: 'Técnicos' }
+              ] as cat (cat.id)}
+                <button
+                  type="button"
+                  onclick={() => (ownerDocCategory = cat.id as typeof ownerDocCategory)}
+                  class="px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer {ownerDocCategory === cat.id
+                    ? 'bg-foreground text-background'
+                    : 'bg-background border border-border text-muted-foreground hover:text-foreground'}"
+                >
+                  {cat.label}
+                </button>
+              {/each}
+            </div>
+          </CardHeader>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-border">
+            <!-- Lista izquierda de documentos -->
+            <div class="lg:col-span-5 divide-y divide-border max-h-[520px] overflow-y-auto">
+              {#each filteredOwnerDocs as doc (doc.id)}
+                {@const isSelected = inspectedOwnerDoc?.id === doc.id}
+                <button
+                  type="button"
+                  onclick={() => (selectedOwnerDocId = doc.id)}
+                  class="w-full text-left p-4 transition-colors flex items-start justify-between gap-3 cursor-pointer {isSelected
+                    ? 'bg-muted/40'
+                    : 'hover:bg-muted/20'}"
+                >
+                  <div class="space-y-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="rounded border border-border bg-background px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                        {getDocCategoryLabel(doc.category)}
+                      </span>
+                      <span class="font-mono text-[10px] text-muted-foreground truncate">
+                        {doc.documentNumber}
+                      </span>
+                    </div>
+                    <div class="text-xs font-semibold text-foreground">{doc.title}</div>
+                    <div class="text-[11px] text-muted-foreground truncate">{doc.issuer}</div>
+                  </div>
+
+                  <span class="inline-flex shrink-0 items-center gap-1 rounded bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                    Vigente
+                  </span>
+                </button>
+              {/each}
+            </div>
+
+            <!-- Panel derecho de detalle del documento seleccionado -->
+            <div class="lg:col-span-7 p-6">
+              {#if inspectedOwnerDoc}
+                <div class="space-y-5">
+                  <div class="space-y-2 border-b border-border pb-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                      <Badge variant="outline" class="text-[11px] font-medium bg-muted/50 border-border">
+                        {getDocCategoryLabel(inspectedOwnerDoc.category)}
+                      </Badge>
+                      <span class="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                        <CheckCircle2 class="w-3.5 h-3.5" />
+                        Radicado y vigente
+                      </span>
+                    </div>
+                    <h3 class="text-base font-semibold text-foreground">{inspectedOwnerDoc.title}</h3>
+                    <p class="text-xs text-muted-foreground leading-relaxed">
+                      {inspectedOwnerDoc.summary}
+                    </p>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div class="p-3 rounded-lg bg-muted/25 border border-border">
+                      <span class="text-[11px] text-muted-foreground block">Entidad emisora / Autoridad</span>
+                      <span class="font-medium text-foreground mt-0.5 block">{inspectedOwnerDoc.issuer}</span>
+                    </div>
+                    <div class="p-3 rounded-lg bg-muted/25 border border-border">
+                      <span class="text-[11px] text-muted-foreground block">Número de radicado / Póliza</span>
+                      <span class="font-mono font-semibold text-foreground mt-0.5 block">{inspectedOwnerDoc.documentNumber}</span>
+                    </div>
+                    <div class="p-3 rounded-lg bg-muted/25 border border-border">
+                      <span class="text-[11px] text-muted-foreground block">Fecha de expedición</span>
+                      <span class="font-mono text-foreground mt-0.5 block">{inspectedOwnerDoc.issueDate}</span>
+                    </div>
+                    <div class="p-3 rounded-lg bg-muted/25 border border-border">
+                      <span class="text-[11px] text-muted-foreground block">Vigencia certificada hasta</span>
+                      <span class="font-mono text-foreground mt-0.5 block">{inspectedOwnerDoc.expiryDate}</span>
+                    </div>
+                  </div>
+
+                  <div class="p-4 rounded-xl bg-muted/20 border border-border space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="font-medium text-foreground flex items-center gap-1.5">
+                        <ShieldCheck class="w-4 h-4 text-emerald-500" />
+                        Huella de integridad documental SHA-256 (Stellar Soroban)
+                      </span>
+                      <span class="font-mono text-[11px] text-emerald-600 dark:text-emerald-400">Inmutable</span>
+                    </div>
+                    <div class="font-mono text-[11px] text-muted-foreground break-all">
+                      {inspectedOwnerDoc.sha256Hash}
+                    </div>
+                  </div>
+                </div>
+              {/if}
+            </div>
+          </div>
+        </Card>
+      </div>
+    {/if}
   </div>
 {/if}
 
@@ -1604,6 +2193,7 @@
           <img
             src={activeModalPhoto.fullUrl}
             alt={activeModalPhoto.title}
+            referrerpolicy="no-referrer"
             class="w-full h-full object-cover"
           />
           <div class="absolute bottom-3 left-3 flex flex-wrap gap-1.5">
