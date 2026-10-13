@@ -42,37 +42,6 @@
   let isUserMenuOpen = $state(false);
   let notificationsEnabled = $state(true);
 
-  let tooltipState = $state<{ text: string; top: number; visible: boolean }>({
-    text: '',
-    top: 0,
-    visible: false
-  });
-
-  function showTooltip(e: MouseEvent | FocusEvent, text: string) {
-    if (!isCollapsed) return;
-    const target = e.currentTarget as HTMLElement | null;
-    if (!target) return;
-    const rect = target.getBoundingClientRect();
-    tooltipState = {
-      text,
-      top: rect.top + rect.height / 2,
-      visible: true
-    };
-  }
-
-  function hideTooltip() {
-    tooltipState.visible = false;
-  }
-
-  $effect(() => {
-    if (!isCollapsed) {
-      tooltipState.visible = false;
-    }
-    // Ocultar si cambia la ruta activa
-    page.url.pathname;
-    tooltipState.visible = false;
-  });
-
   const roleLabels: Record<UserRole, { label: string; dot: string }> = {
     admin: { label: 'Administrador', dot: 'bg-[#F5A400]' },
     fiduciaria: { label: 'Fiduciaria', dot: 'bg-emerald-500' },
@@ -117,23 +86,31 @@
 <!-- 1. Menú lateral de escritorio (oculto en pantallas móviles < md) -->
 <aside
   class="hidden md:flex h-screen sticky top-0 z-40 flex-col border-r border-border bg-sidebar text-sidebar-foreground transition-all duration-200 select-none shrink-0 {isCollapsed
-    ? 'w-[68px]'
-    : 'w-64'}"
+    ? 'w-[68px] overflow-visible'
+    : 'w-64 overflow-hidden'}"
 >
   <!-- Cabecera del menú lateral de escritorio -->
   <div class="h-14 px-3 border-b border-border flex items-center {isCollapsed ? 'justify-center' : 'justify-between'}">
     {#if isCollapsed}
-      <a
-        href="/"
-        class="flex items-center justify-center w-10 h-10 rounded-xl hover:bg-accent/60 transition-colors"
-        aria-label="tramo — Ir al inicio"
-        onmouseenter={(e) => showTooltip(e, 'tramo — Inicio')}
-        onmouseleave={hideTooltip}
-        onfocus={(e) => showTooltip(e, 'tramo — Inicio')}
-        onblur={hideTooltip}
-      >
-        <TramoBrandLogo variant="isotipo" class="h-6 w-6" />
-      </a>
+      <div class="relative group/tip flex items-center justify-center">
+        <a
+          href="/"
+          title="tramo — Ir al inicio"
+          aria-label="tramo — Ir al inicio"
+          class="flex items-center justify-center w-10 h-10 rounded-xl hover:bg-accent/60 transition-colors"
+        >
+          <TramoBrandLogo variant="isotipo" class="h-6 w-6" />
+        </a>
+
+        <!-- Tooltip -->
+        <div
+          role="tooltip"
+          class="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 hidden group-hover/tip:flex items-center px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-semibold shadow-xl border border-border whitespace-nowrap"
+        >
+          <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-popover border-l border-b border-border"></div>
+          <span class="relative z-10">tramo — Ir al inicio</span>
+        </div>
+      </div>
     {:else}
       <a href="/" class="flex items-center gap-2.5 pl-1 overflow-hidden">
         <TramoBrandLogo variant="full" isDark={projectStore.isDark} class="h-5 w-auto" />
@@ -143,8 +120,7 @@
 
   <!-- Cuerpo del menú lateral de escritorio -->
   <div
-    class="flex-1 overflow-y-auto flex flex-col justify-between {isCollapsed ? 'px-2 py-2.5 gap-4' : 'px-3 py-3.5 gap-5'}"
-    onscroll={hideTooltip}
+    class="flex-1 {isCollapsed ? 'overflow-visible' : 'overflow-y-auto'} flex flex-col justify-between {isCollapsed ? 'px-2 py-2.5 gap-4' : 'px-3 py-3.5 gap-5'}"
   >
     <!-- Parte superior: Navegación principal -->
     <div class="space-y-1">
@@ -155,28 +131,47 @@
       {/if}
       {#each platformNavItems as item (item.href)}
         {@const isActive = page.url.pathname === item.href}
-        <a
-          href={item.href}
-          aria-label={item.label}
-          onmouseenter={(e) => showTooltip(e, item.label)}
-          onmouseleave={hideTooltip}
-          onfocus={(e) => showTooltip(e, item.label)}
-          onblur={hideTooltip}
-          class="relative group flex items-center transition-all {isCollapsed
-            ? 'justify-center w-10 h-10 mx-auto rounded-xl'
-            : 'gap-3 px-2.5 py-2 rounded-lg text-xs'} {isActive
-            ? 'bg-foreground text-background font-semibold shadow-2xs'
-            : 'text-muted-foreground hover:text-foreground hover:bg-accent/60 font-medium'}"
-        >
-          <item.icon
-            class="{isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4'} shrink-0 transition-transform group-hover:scale-105 {isActive
-              ? 'text-background'
-              : 'text-muted-foreground group-hover:text-foreground'}"
-          />
-          {#if !isCollapsed}
+        {#if isCollapsed}
+          <div class="relative group/tip flex items-center justify-center">
+            <a
+              href={item.href}
+              title={item.label}
+              aria-label={item.label}
+              class="relative flex items-center justify-center w-10 h-10 rounded-xl transition-all {isActive
+                ? 'bg-foreground text-background font-semibold shadow-2xs'
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent/60 font-medium'}"
+            >
+              <item.icon
+                class="w-[18px] h-[18px] shrink-0 transition-transform group-hover/tip:scale-105 {isActive
+                  ? 'text-background'
+                  : 'text-muted-foreground group-hover/tip:text-foreground'}"
+              />
+            </a>
+
+            <!-- Tooltip con título del módulo -->
+            <div
+              role="tooltip"
+              class="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 hidden group-hover/tip:flex items-center px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-semibold shadow-xl border border-border whitespace-nowrap"
+            >
+              <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-popover border-l border-b border-border"></div>
+              <span class="relative z-10">{item.label}</span>
+            </div>
+          </div>
+        {:else}
+          <a
+            href={item.href}
+            class="flex items-center gap-3 px-2.5 py-2 rounded-lg text-xs transition-all {isActive
+              ? 'bg-foreground text-background font-semibold shadow-2xs'
+              : 'text-muted-foreground hover:text-foreground hover:bg-accent/60 font-medium'}"
+          >
+            <item.icon
+              class="w-4 h-4 shrink-0 transition-transform group-hover:scale-105 {isActive
+                ? 'text-background'
+                : 'text-muted-foreground group-hover:text-foreground'}"
+            />
             <span class="truncate">{item.label}</span>
-          {/if}
-        </a>
+          </a>
+        {/if}
       {/each}
     </div>
 
@@ -211,70 +206,103 @@
             Portales públicos
           </div>
         {/if}
-        <a
-          href="/propietario"
-          aria-label="Portal de propietarios"
-          onmouseenter={(e) => showTooltip(e, 'Portal de propietarios')}
-          onmouseleave={hideTooltip}
-          onfocus={(e) => showTooltip(e, 'Portal de propietarios')}
-          onblur={hideTooltip}
-          class="group flex items-center transition-colors {isCollapsed
-            ? 'justify-center w-10 h-10 mx-auto rounded-xl'
-            : 'justify-between gap-2 px-2.5 py-2 rounded-lg text-xs'} font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
-        >
-          <span class="flex items-center {isCollapsed ? 'justify-center' : 'gap-3 min-w-0'}">
-            <IdCard class="{isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4'} shrink-0" />
-            {#if !isCollapsed}
-              <span class="truncate">Portal de propietarios</span>
-            {/if}
-          </span>
-          {#if !isCollapsed}
-            <ExternalLink class="w-3 h-3 opacity-50 shrink-0" />
-          {/if}
-        </a>
+        {#if isCollapsed}
+          <div class="relative group/tip flex items-center justify-center">
+            <a
+              href="/propietario"
+              title="Portal de propietarios"
+              aria-label="Portal de propietarios"
+              class="flex items-center justify-center w-10 h-10 rounded-xl font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors"
+            >
+              <IdCard class="w-[18px] h-[18px] shrink-0" />
+            </a>
+            <div
+              role="tooltip"
+              class="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 hidden group-hover/tip:flex items-center px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-semibold shadow-xl border border-border whitespace-nowrap"
+            >
+              <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-popover border-l border-b border-border"></div>
+              <span class="relative z-10">Portal de propietarios</span>
+            </div>
+          </div>
 
-        <a
-          href="/verificar"
-          aria-label="Verificador público"
-          onmouseenter={(e) => showTooltip(e, 'Verificador público')}
-          onmouseleave={hideTooltip}
-          onfocus={(e) => showTooltip(e, 'Verificador público')}
-          onblur={hideTooltip}
-          class="group flex items-center transition-colors {isCollapsed
-            ? 'justify-center w-10 h-10 mx-auto rounded-xl'
-            : 'justify-between gap-2 px-2.5 py-2 rounded-lg text-xs'} font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60"
-        >
-          <span class="flex items-center {isCollapsed ? 'justify-center' : 'gap-3 min-w-0'}">
-            <ShieldCheck class="{isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4'} shrink-0" />
-            {#if !isCollapsed}
-              <span class="truncate">Verificador público</span>
-            {/if}
-          </span>
-          {#if !isCollapsed}
+          <div class="relative group/tip flex items-center justify-center">
+            <a
+              href="/verificar"
+              title="Verificador público"
+              aria-label="Verificador público"
+              class="flex items-center justify-center w-10 h-10 rounded-xl font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors"
+            >
+              <ShieldCheck class="w-[18px] h-[18px] shrink-0" />
+            </a>
+            <div
+              role="tooltip"
+              class="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 hidden group-hover/tip:flex items-center px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-semibold shadow-xl border border-border whitespace-nowrap"
+            >
+              <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-popover border-l border-b border-border"></div>
+              <span class="relative z-10">Verificador público</span>
+            </div>
+          </div>
+        {:else}
+          <a
+            href="/propietario"
+            class="group flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors"
+          >
+            <span class="flex items-center gap-3 min-w-0">
+              <IdCard class="w-4 h-4 shrink-0" />
+              <span class="truncate">Portal de propietarios</span>
+            </span>
             <ExternalLink class="w-3 h-3 opacity-50 shrink-0" />
-          {/if}
-        </a>
+          </a>
+
+          <a
+            href="/verificar"
+            class="group flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors"
+          >
+            <span class="flex items-center gap-3 min-w-0">
+              <ShieldCheck class="w-4 h-4 shrink-0" />
+              <span class="truncate">Verificador público</span>
+            </span>
+            <ExternalLink class="w-3 h-3 opacity-50 shrink-0" />
+          </a>
+        {/if}
       </div>
     </div>
   </div>
 
   <!-- 3. Pie del menú lateral: Cuenta de usuario y sesión -->
   <div class="p-2.5 border-t border-border relative">
-    <button
-      type="button"
-      onclick={() => (isUserMenuOpen = !isUserMenuOpen)}
-      aria-label="Opciones de cuenta y sesión"
-      onmouseenter={(e) => showTooltip(e, `${projectStore.currentUser.fullName} • ${projectStore.currentUser.companyName}`)}
-      onmouseleave={hideTooltip}
-      onfocus={(e) => showTooltip(e, `${projectStore.currentUser.fullName} • ${projectStore.currentUser.companyName}`)}
-      onblur={hideTooltip}
-      class="w-full flex items-center {isCollapsed ? 'justify-center p-1.5' : 'justify-between gap-2.5 p-2'} rounded-xl hover:bg-accent transition-colors text-left cursor-pointer"
-    >
-      <div class="flex items-center {isCollapsed ? 'justify-center' : 'gap-2.5 min-w-0'}">
-        <div class="w-8 h-8 rounded-lg bg-muted border border-border text-foreground flex items-center justify-center text-xs font-semibold shrink-0">
-          {projectStore.currentUser.avatarInitials}
+    {#if isCollapsed}
+      <div class="relative group/tip flex items-center justify-center">
+        <button
+          type="button"
+          onclick={() => (isUserMenuOpen = !isUserMenuOpen)}
+          title="{projectStore.currentUser.fullName} • {projectStore.currentUser.companyName}"
+          aria-label="Opciones de cuenta y sesión"
+          class="flex items-center justify-center p-1.5 rounded-xl hover:bg-accent transition-colors cursor-pointer"
+        >
+          <div class="w-8 h-8 rounded-lg bg-muted border border-border text-foreground flex items-center justify-center text-xs font-semibold shrink-0">
+            {projectStore.currentUser.avatarInitials}
+          </div>
+        </button>
+
+        <div
+          role="tooltip"
+          class="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 hidden group-hover/tip:flex items-center px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-semibold shadow-xl border border-border whitespace-nowrap"
+        >
+          <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-popover border-l border-b border-border"></div>
+          <span class="relative z-10">{projectStore.currentUser.fullName} • {projectStore.currentUser.companyName}</span>
         </div>
-        {#if !isCollapsed}
+      </div>
+    {:else}
+      <button
+        type="button"
+        onclick={() => (isUserMenuOpen = !isUserMenuOpen)}
+        class="w-full flex items-center justify-between gap-2.5 p-2 rounded-xl hover:bg-accent transition-colors text-left cursor-pointer"
+      >
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-lg bg-muted border border-border text-foreground flex items-center justify-center text-xs font-semibold shrink-0">
+            {projectStore.currentUser.avatarInitials}
+          </div>
           <div class="min-w-0 flex-1">
             <div class="text-xs font-medium text-foreground truncate">
               {projectStore.currentUser.fullName}
@@ -283,12 +311,10 @@
               {projectStore.currentUser.companyName}
             </div>
           </div>
-        {/if}
-      </div>
-      {#if !isCollapsed}
+        </div>
         <ChevronsUpDown class="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-      {/if}
-    </button>
+      </button>
+    {/if}
 
     {#if isUserMenuOpen}
       <div
@@ -375,18 +401,6 @@
     {/if}
   </div>
 </aside>
-
-<!-- Tooltip flotante al pasar sobre los iconos con el menú colapsado -->
-{#if isCollapsed && tooltipState.visible}
-  <div
-    role="tooltip"
-    class="pointer-events-none fixed left-[74px] -translate-y-1/2 z-50 px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-semibold shadow-xl border border-border whitespace-nowrap flex items-center select-none"
-    style="top: {tooltipState.top}px;"
-  >
-    <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-popover border-l border-b border-border"></div>
-    <span class="relative z-10">{tooltipState.text}</span>
-  </div>
-{/if}
 
 <!-- 2. Cajón deslizante lateral exclusivo para celular y tablet (< md) -->
 {#if isMobileOpen}
