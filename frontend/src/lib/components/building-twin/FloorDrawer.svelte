@@ -105,16 +105,16 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-  class="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-xs p-2 sm:p-5 overflow-y-auto"
+  class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/65 backdrop-blur-xs p-0 sm:p-4 overflow-y-auto"
   onclick={onClose}
 >
   <!-- Contenedor principal del modal amplio de inspección de piso -->
   <div
-    class="bg-card border border-border rounded-xl max-w-[1440px] w-[96vw] xl:w-[92vw] max-h-[92vh] flex flex-col overflow-hidden shadow-2xl my-auto"
+    class="bg-card border border-border rounded-t-2xl sm:rounded-xl max-w-[1440px] w-full sm:w-[96vw] xl:w-[92vw] max-h-[94dvh] sm:max-h-[92vh] flex flex-col overflow-hidden shadow-2xl my-0 sm:my-auto"
     onclick={(e) => e.stopPropagation()}
   >
     <!-- 1. Cabecera del modal con navegación rápida entre pisos -->
-    <div class="px-3.5 py-3 sm:px-6 sm:py-4 border-b border-border flex flex-wrap items-center justify-between gap-3 bg-muted/20 shrink-0">
+    <div class="px-4 py-3 sm:px-6 sm:py-4 border-b border-border flex flex-wrap items-center justify-between gap-3 bg-muted/20 shrink-0">
       <div class="space-y-1">
         <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <Badge variant="outline" class="text-[11px] font-medium bg-background text-foreground border-border gap-1.5">

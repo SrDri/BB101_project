@@ -615,12 +615,12 @@
 <!-- MODAL PARA PROGRAMAR NUEVA ACTIVIDAD EN EL CALENDARIO -->
 {#if showCreateModal}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
+		class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-xs overflow-y-auto"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="flex w-[95vw] max-w-lg flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
-			<div class="flex items-center justify-between border-b border-border px-6 py-4">
+		<div class="flex w-full sm:max-w-lg max-h-[92dvh] sm:max-h-none flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
+			<div class="flex items-center justify-between border-b border-border px-4 sm:px-6 py-3.5 sm:py-4 shrink-0">
 				<div>
 					<h3 class="font-display text-base font-bold text-foreground">
 						Programar actividad en el calendario
@@ -632,85 +632,87 @@
 				<button
 					type="button"
 					onclick={() => (showCreateModal = false)}
-					class="cursor-pointer rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted"
+					class="cursor-pointer rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted shrink-0"
 				>
 					<X class="h-4 w-4" />
 				</button>
 			</div>
 
-			<form onsubmit={handleCreateEvent} class="space-y-4 p-6 text-xs">
-				<div>
-					<label for="evt-title" class="block font-semibold text-foreground">
-						Título de la actividad o hito *
-					</label>
-					<input
-						id="evt-title"
-						type="text"
-						required
-						bind:value={newEvtTitle}
-						placeholder="Ej. Ensayo de esclerometría y núcleos Piso 5"
-						class="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none"
-					/>
-				</div>
-
-				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+			<form onsubmit={handleCreateEvent} class="space-y-4 p-4 sm:p-6 text-xs overflow-y-auto flex-1 flex flex-col justify-between">
+				<div class="space-y-4">
 					<div>
-						<label for="evt-date" class="block font-semibold text-foreground">
-							Fecha programada *
+						<label for="evt-title" class="block font-semibold text-foreground">
+							Título de la actividad o hito *
 						</label>
 						<input
-							id="evt-date"
-							type="date"
+							id="evt-title"
+							type="text"
 							required
-							bind:value={newEvtDate}
-							class="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm text-foreground focus:outline-none"
+							bind:value={newEvtTitle}
+							placeholder="Ej. Ensayo de esclerometría y núcleos Piso 5"
+							class="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none"
+						/>
+					</div>
+
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+						<div>
+							<label for="evt-date" class="block font-semibold text-foreground">
+								Fecha programada *
+							</label>
+							<input
+								id="evt-date"
+								type="date"
+								required
+								bind:value={newEvtDate}
+								class="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm text-foreground focus:outline-none"
+							/>
+						</div>
+
+						<div>
+							<label for="evt-cat" class="block font-semibold text-foreground">
+								Tipo de evento
+							</label>
+							<select
+								id="evt-cat"
+								bind:value={newEvtCategory}
+								class="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none"
+							>
+								<option value="inspeccion">Inspección interventoría</option>
+								<option value="corte_obra">Corte de obra</option>
+								<option value="desembolso">Comité y desembolso</option>
+								<option value="legal">Cumplimiento legal</option>
+								<option value="entrega">Entrega de unidades</option>
+							</select>
+						</div>
+					</div>
+
+					<div>
+						<label for="evt-resp" class="block font-semibold text-foreground">
+							Entidad / Profesional responsable
+						</label>
+						<input
+							id="evt-resp"
+							type="text"
+							bind:value={newEvtResponsible}
+							class="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none"
 						/>
 					</div>
 
 					<div>
-						<label for="evt-cat" class="block font-semibold text-foreground">
-							Tipo de evento
+						<label for="evt-desc" class="block font-semibold text-foreground">
+							Descripción y alcance técnico
 						</label>
-						<select
-							id="evt-cat"
-							bind:value={newEvtCategory}
+						<textarea
+							id="evt-desc"
+							rows="3"
+							bind:value={newEvtDescription}
+							placeholder="Detalle las pruebas, actas o revisiones a realizar..."
 							class="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none"
-						>
-							<option value="inspeccion">Inspección interventoría</option>
-							<option value="corte_obra">Corte de obra</option>
-							<option value="desembolso">Comité y desembolso</option>
-							<option value="legal">Cumplimiento legal</option>
-							<option value="entrega">Entrega de unidades</option>
-						</select>
+						></textarea>
 					</div>
 				</div>
 
-				<div>
-					<label for="evt-resp" class="block font-semibold text-foreground">
-						Entidad / Profesional responsable
-					</label>
-					<input
-						id="evt-resp"
-						type="text"
-						bind:value={newEvtResponsible}
-						class="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none"
-					/>
-				</div>
-
-				<div>
-					<label for="evt-desc" class="block font-semibold text-foreground">
-						Descripción y alcance técnico
-					</label>
-					<textarea
-						id="evt-desc"
-						rows="3"
-						bind:value={newEvtDescription}
-						placeholder="Detalle las pruebas, actas o revisiones a realizar..."
-						class="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none"
-					></textarea>
-				</div>
-
-				<div class="flex items-center justify-end gap-2 border-t border-border pt-4">
+				<div class="flex items-center justify-end gap-2 border-t border-border pt-4 shrink-0">
 					<button
 						type="button"
 						onclick={() => (showCreateModal = false)}

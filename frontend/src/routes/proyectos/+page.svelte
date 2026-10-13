@@ -325,11 +325,11 @@
 
 <!-- Modal de Constitución de Nuevo Proyecto y Ficha Integral -->
 {#if isCreateModalOpen}
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-xs p-4">
-    <div class="w-full max-w-2xl rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden">
-      <div class="p-5 border-b border-border flex items-center justify-between">
+  <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/65 backdrop-blur-xs p-0 sm:p-4 overflow-y-auto">
+    <div class="w-full max-w-2xl max-h-[92dvh] flex flex-col rounded-t-2xl sm:rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden my-0 sm:my-auto">
+      <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between shrink-0">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-muted border border-border flex items-center justify-center">
+          <div class="w-9 h-9 rounded-lg bg-muted border border-border flex items-center justify-center shrink-0">
             <Building2 class="w-4 h-4 text-foreground" />
           </div>
           <div>
@@ -350,7 +350,7 @@
         </button>
       </div>
 
-      <form onsubmit={handleCreateProject} class="p-5 space-y-4 text-xs max-h-[80vh] overflow-y-auto">
+      <form onsubmit={handleCreateProject} class="p-4 sm:p-5 space-y-4 text-xs overflow-y-auto flex-1">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div class="space-y-1.5 sm:col-span-2">
             <label for="np-name" class="font-medium text-foreground">Nombre comercial del proyecto</label>
@@ -437,7 +437,7 @@
           </div>
         </div>
 
-        <div class="pt-3 border-t border-border flex items-center justify-end gap-2">
+        <div class="pt-3 border-t border-border flex items-center justify-end gap-2 shrink-0">
           <Button
             type="button"
             variant="outline"

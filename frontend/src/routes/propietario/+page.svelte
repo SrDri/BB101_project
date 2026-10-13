@@ -2128,14 +2128,14 @@
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-3 sm:p-6"
+    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/75 backdrop-blur-xs p-0 sm:p-4 overflow-y-auto"
     onclick={() => (activeModalPhotoIndex = null)}
   >
     <div
-      class="w-[96vw] xl:w-[90vw] max-w-[1360px] rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden"
+      class="w-full sm:w-[96vw] xl:w-[90vw] max-w-[1360px] max-h-[94dvh] flex flex-col rounded-t-2xl sm:rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden my-0 sm:my-auto"
       onclick={(e) => e.stopPropagation()}
     >
-      <div class="px-6 py-4 border-b border-border flex flex-wrap items-center justify-between gap-4 bg-muted/20">
+      <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-border flex flex-wrap items-center justify-between gap-3 bg-muted/20 shrink-0">
         <div class="space-y-0.5">
           <div class="flex items-center gap-2">
             <Badge variant="outline" class="text-[11px] font-medium bg-background border-border">
@@ -2157,10 +2157,10 @@
                 activeModalPhotoIndex !== null &&
                 activeModalPhotoIndex > 0 &&
                 (activeModalPhotoIndex -= 1)}
-              class="px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1 disabled:opacity-40 hover:bg-muted cursor-pointer"
+              class="px-2 sm:px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1 disabled:opacity-40 hover:bg-muted cursor-pointer"
             >
               <ChevronLeft class="w-3.5 h-3.5" />
-              <span>Anterior</span>
+              <span class="hidden sm:inline">Anterior</span>
             </button>
             <span class="text-border px-1 text-xs">|</span>
             <button
@@ -2170,9 +2170,9 @@
                 activeModalPhotoIndex !== null &&
                 activeModalPhotoIndex < filteredPhotos.length - 1 &&
                 (activeModalPhotoIndex += 1)}
-              class="px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1 disabled:opacity-40 hover:bg-muted cursor-pointer"
+              class="px-2 sm:px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1 disabled:opacity-40 hover:bg-muted cursor-pointer"
             >
-              <span>Siguiente</span>
+              <span class="hidden sm:inline">Siguiente</span>
               <ChevronRight class="w-3.5 h-3.5" />
             </button>
           </div>
@@ -2188,8 +2188,8 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12">
-        <div class="lg:col-span-8 bg-zinc-950 flex items-center justify-center max-h-[540px] overflow-hidden relative">
+      <div class="grid grid-cols-1 lg:grid-cols-12 overflow-y-auto flex-1">
+        <div class="lg:col-span-8 bg-zinc-950 flex items-center justify-center max-h-[300px] sm:max-h-[540px] overflow-hidden relative">
           <img
             src={activeModalPhoto.fullUrl}
             alt={activeModalPhoto.title}
@@ -2274,14 +2274,14 @@
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4"
+    class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto"
     onclick={() => (showAddSnagModal = false)}
   >
     <div
-      class="bg-card border border-border rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden"
+      class="bg-card border border-border rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[92dvh] flex flex-col shadow-2xl overflow-hidden my-0 sm:my-auto"
       onclick={(e) => e.stopPropagation()}
     >
-      <div class="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/20">
+      <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-border flex items-center justify-between bg-muted/20 shrink-0">
         <div>
           <h3 class="text-sm font-bold text-foreground">
             Reportar detalle de pre-entrega — Apto {ownerUnit.unitNumber}
@@ -2299,7 +2299,7 @@
         </button>
       </div>
 
-      <form onsubmit={handleAddOwnerSnag} class="p-6 space-y-4 text-xs">
+      <form onsubmit={handleAddOwnerSnag} class="p-4 sm:p-6 space-y-4 text-xs overflow-y-auto flex-1">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label for="snag-room" class="block font-semibold text-foreground">Espacio del apartamento</label>
@@ -2378,27 +2378,27 @@
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4"
+    class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto"
     onclick={() => (showTaxCertModal = false)}
   >
     <div
-      class="bg-card border border-border rounded-xl max-w-2xl w-full shadow-2xl overflow-hidden"
+      class="bg-card border border-border rounded-t-2xl sm:rounded-xl max-w-2xl w-full max-h-[92dvh] flex flex-col shadow-2xl overflow-hidden my-0 sm:my-auto"
       onclick={(e) => e.stopPropagation()}
     >
-      <div class="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/20">
+      <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-muted/20 shrink-0">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-lg bg-muted border border-border flex items-center justify-center text-foreground">
+          <div class="w-9 h-9 rounded-lg bg-muted border border-border flex items-center justify-center text-foreground shrink-0">
             <FileText class="w-4 h-4" />
           </div>
           <div>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <Badge variant="outline" class="text-[10px] font-mono">CERT-DIAN-2026-{ownerUnit.unitNumber}</Badge>
               <Badge variant="outline" class="text-[10px] text-emerald-500 border-emerald-500/30 bg-emerald-500/10">Firmado Fiduciaria</Badge>
             </div>
-            <h3 class="text-sm font-semibold text-foreground mt-0.5">Certificación de Aportes a Encargo Fiduciario Inmobiliario</h3>
+            <h3 class="text-xs sm:text-sm font-semibold text-foreground mt-0.5">Certificación de Aportes a Encargo Fiduciario</h3>
           </div>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 self-end sm:self-auto">
           <Button
             variant="outline"
             size="sm"
@@ -2406,7 +2406,7 @@
             class="h-8 text-xs gap-1.5 cursor-pointer"
           >
             <Printer class="w-3.5 h-3.5" />
-            Imprimir / Guardar PDF
+            <span>Imprimir / PDF</span>
           </Button>
           <button
             onclick={() => (showTaxCertModal = false)}
@@ -2417,7 +2417,7 @@
         </div>
       </div>
 
-      <div class="p-6 space-y-5 max-h-[80vh] overflow-y-auto text-xs">
+      <div class="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto flex-1 text-xs">
         <div class="p-4 rounded-xl bg-muted/20 border border-border space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
             <div>

@@ -878,12 +878,12 @@
 <!-- MODAL AMPLIO DE COMITÉ FIDUCIARIO PARA REVISAR Y APROBAR UN HITO -->
 {#if reviewingMilestone}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
+		class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-xs overflow-y-auto"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="flex max-h-[92vh] w-[96vw] max-w-5xl flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
-			<div class="flex items-center justify-between border-b border-border px-6 py-4">
+		<div class="flex max-h-[94dvh] w-full sm:w-[96vw] max-w-5xl flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-0 sm:my-auto">
+			<div class="flex items-center justify-between border-b border-border px-4 sm:px-6 py-3.5 sm:py-4 shrink-0">
 				<div>
 					<div class="flex items-center gap-2">
 						<span class="rounded-md bg-foreground px-2.5 py-0.5 font-mono text-xs font-bold text-background">
@@ -894,7 +894,7 @@
 							Comité fiduciario de desembolso
 						</span>
 					</div>
-					<h3 class="mt-1 font-display text-lg font-bold text-foreground">
+					<h3 class="mt-1 font-display text-sm sm:text-lg font-bold text-foreground">
 						Revisión y aprobación fiduciaria — {reviewingMilestone.title}
 					</h3>
 				</div>
@@ -902,13 +902,13 @@
 					type="button"
 					onclick={() => (reviewingMilestone = null)}
 					aria-label="Cerrar modal"
-					class="cursor-pointer rounded-lg border border-border p-2 text-muted-foreground hover:bg-muted"
+					class="cursor-pointer rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted"
 				>
 					<X class="h-4 w-4" />
 				</button>
 			</div>
 
-			<div class="grid grid-cols-1 gap-6 overflow-y-auto p-6 lg:grid-cols-12">
+			<div class="grid grid-cols-1 gap-6 overflow-y-auto p-4 sm:p-6 lg:grid-cols-12 flex-1">
 				<div class="space-y-4 lg:col-span-7">
 					<div class="rounded-xl border border-border bg-muted/30 p-4">
 						<span class="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
@@ -1057,14 +1057,14 @@
 <!-- MODAL DE RADICACIÓN DE COBRO DE HITO (ROL CONSTRUCTORA) -->
 {#if submittingMilestone}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
+		class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-xs overflow-y-auto"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="flex w-[95vw] max-w-xl flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
-			<div class="flex items-center justify-between border-b border-border px-6 py-4">
+		<div class="flex max-h-[92dvh] w-full sm:w-[95vw] max-w-xl flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-0 sm:my-auto">
+			<div class="flex items-center justify-between border-b border-border px-4 sm:px-6 py-3.5 sm:py-4 shrink-0">
 				<div>
-					<h3 class="font-display text-base font-bold text-foreground">
+					<h3 class="font-display text-sm sm:text-base font-bold text-foreground">
 						Radicar solicitud formal de desembolso — Hito #{submittingMilestone.milestoneNumber}
 					</h3>
 					<p class="text-xs text-muted-foreground">
@@ -1080,7 +1080,7 @@
 				</button>
 			</div>
 
-			<form onsubmit={handleConstructorSubmitForm} class="space-y-4 p-6 text-xs">
+			<form onsubmit={handleConstructorSubmitForm} class="space-y-4 p-4 sm:p-6 text-xs overflow-y-auto flex-1">
 				<div class="rounded-xl border border-border bg-muted/30 p-3.5">
 					<div class="font-semibold text-foreground">{submittingMilestone.title}</div>
 					<div class="mt-1 flex justify-between text-muted-foreground">
@@ -1122,7 +1122,7 @@
 					></textarea>
 				</div>
 
-				<div class="flex items-center justify-end gap-2 border-t border-border pt-4">
+				<div class="flex items-center justify-end gap-2 border-t border-border pt-4 shrink-0">
 					<button
 						type="button"
 						onclick={() => (submittingMilestone = null)}
@@ -1145,28 +1145,28 @@
 <!-- MODAL DE ACTA OFICIAL EJECUTIVA DE COMITÉ FIDUCIARIO (IMPRIMIBLE) -->
 {#if showExecutiveReportModal}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs"
+		class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 p-0 sm:p-4 backdrop-blur-xs overflow-y-auto"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="flex max-h-[92vh] w-[96vw] max-w-4xl flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
-			<div class="flex items-center justify-between border-b border-border px-6 py-4">
+		<div class="flex max-h-[94dvh] w-full sm:w-[96vw] max-w-4xl flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-0 sm:my-auto">
+			<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-border px-4 sm:px-6 py-3.5 sm:py-4 shrink-0">
 				<div>
 					<span class="font-mono text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase">
 						Documento auditable de comité fiduciario
 					</span>
-					<h3 class="font-display text-base font-bold text-foreground">
+					<h3 class="font-display text-sm sm:text-base font-bold text-foreground">
 						Acta ejecutiva de verificación de obra y desembolsos — {activeCut.projectName}
 					</h3>
 				</div>
-				<div class="flex items-center gap-2">
+				<div class="flex items-center gap-2 self-end sm:self-auto">
 					<button
 						type="button"
 						onclick={printExecutiveReport}
 						class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-foreground px-3.5 py-1.5 text-xs font-medium text-background hover:opacity-90"
 					>
 						<Printer class="h-3.5 w-3.5" />
-						<span>Imprimir / Guardar PDF</span>
+						<span>Imprimir / PDF</span>
 					</button>
 					<button
 						type="button"
@@ -1178,7 +1178,7 @@
 				</div>
 			</div>
 
-			<div class="space-y-5 overflow-y-auto p-6 text-xs">
+			<div class="space-y-5 overflow-y-auto p-4 sm:p-6 text-xs flex-1">
 				<div class="rounded-xl border border-border bg-background p-6 space-y-5">
 					<div class="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-4">
 						<div>
@@ -1241,17 +1241,17 @@
 <!-- MODAL AMPLIO DE COMPROBANTE OFICIAL DE GIRO FIDUCIARIO -->
 {#if selectedVoucher}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
+		class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-xs overflow-y-auto"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="flex w-[95vw] max-w-3xl flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
-			<div class="flex items-center justify-between border-b border-border bg-slate-900 px-6 py-4 text-white">
+		<div class="flex max-h-[92dvh] w-full sm:w-[95vw] max-w-3xl flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-0 sm:my-auto">
+			<div class="flex items-center justify-between border-b border-border bg-slate-900 px-4 sm:px-6 py-3.5 sm:py-4 text-white shrink-0">
 				<div>
 					<span class="font-mono text-[11px] text-emerald-400 uppercase">
 						Comprobante oficial de desembolso fiduciario
 					</span>
-					<h3 class="mt-0.5 font-display text-lg font-bold">
+					<h3 class="mt-0.5 font-display text-sm sm:text-base font-bold">
 						Hito #{selectedVoucher.milestoneNumber} · {selectedVoucher.title}
 					</h3>
 				</div>
@@ -1265,8 +1265,8 @@
 				</button>
 			</div>
 
-			<div class="space-y-5 p-6">
-				<div class="grid grid-cols-1 gap-4 rounded-xl border border-border bg-muted/30 p-4 sm:grid-cols-3">
+			<div class="space-y-4 sm:space-y-5 p-4 sm:p-6 overflow-y-auto flex-1">
+				<div class="grid grid-cols-1 gap-3 rounded-xl border border-border bg-muted/30 p-3 sm:p-4 sm:grid-cols-3">
 					<div>
 						<span class="text-[11px] text-muted-foreground">Referencia ACH</span>
 						<p class="mt-0.5 font-mono text-xs font-bold text-foreground">{selectedVoucher.achReference}</p>
@@ -1281,12 +1281,12 @@
 					</div>
 				</div>
 
-				<div class="space-y-2.5 rounded-xl border border-border p-4 text-xs">
-					<div class="flex justify-between">
+				<div class="space-y-2.5 rounded-xl border border-border p-3.5 sm:p-4 text-xs">
+					<div class="flex justify-between gap-2">
 						<span class="text-muted-foreground">Constructora beneficiaria:</span>
-						<span class="font-semibold text-foreground">{ficha.developerProfile.name} ({ficha.developerProfile.nit})</span>
+						<span class="font-semibold text-foreground text-right">{ficha.developerProfile.name} ({ficha.developerProfile.nit})</span>
 					</div>
-					<div class="flex justify-between">
+					<div class="flex justify-between gap-2">
 						<span class="text-muted-foreground">Cuenta bancaria destino:</span>
 						<span class="font-mono text-foreground">{selectedVoucher.beneficiaryAccount}</span>
 					</div>
@@ -1304,12 +1304,12 @@
 					</div>
 				</div>
 
-				<div class="rounded-xl border border-border bg-muted/30 px-4 py-3 font-mono text-xs break-all text-muted-foreground">
+				<div class="rounded-xl border border-border bg-muted/30 px-3.5 py-2.5 font-mono text-xs break-all text-muted-foreground">
 					Hash de auditoría Stellar Soroban: <strong class="text-foreground">{selectedVoucher.stellarTxHash || activeCut.stellarTxHash}</strong>
 				</div>
 			</div>
 
-			<div class="flex items-center justify-end gap-2 border-t border-border bg-muted/20 px-6 py-4">
+			<div class="flex items-center justify-end gap-2 border-t border-border bg-muted/20 px-4 sm:px-6 py-3 sm:py-4 shrink-0">
 				<button
 					type="button"
 					onclick={() => (selectedVoucher = null)}

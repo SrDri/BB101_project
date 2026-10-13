@@ -485,9 +485,9 @@
 
 <!-- Modal de detalles de cuenta -->
 {#if projectStore.isAccountModalOpen}
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-    <div class="w-full max-w-lg rounded-xl border border-border bg-card text-card-foreground shadow-xl overflow-hidden">
-      <div class="p-5 border-b border-border flex items-center justify-between">
+  <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs p-0 sm:p-4 overflow-y-auto">
+    <div class="w-full sm:max-w-lg max-h-[92dvh] sm:max-h-none rounded-t-2xl sm:rounded-xl border border-border bg-card text-card-foreground shadow-xl overflow-hidden flex flex-col">
+      <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between shrink-0">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-lg bg-muted border border-border text-foreground flex items-center justify-center font-semibold text-sm">
             {projectStore.currentUser.avatarInitials}
@@ -500,14 +500,14 @@
         <button
           type="button"
           onclick={() => projectStore.closeAccountModal()}
-          class="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer"
+          class="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer shrink-0"
         >
           <X class="w-4 h-4" />
         </button>
       </div>
 
-      <div class="p-5 space-y-4 text-xs">
-        <div class="grid grid-cols-2 gap-3 p-3.5 rounded-lg bg-muted/30 border border-border">
+      <div class="p-4 sm:p-5 space-y-4 text-xs overflow-y-auto flex-1">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-lg bg-muted/30 border border-border">
           <div>
             <span class="text-[11px] text-muted-foreground block">Titular</span>
             <span class="font-medium text-foreground">{projectStore.currentUser.fullName}</span>
@@ -518,7 +518,7 @@
           </div>
           <div>
             <span class="text-[11px] text-muted-foreground block">Correo corporativo</span>
-            <span class="text-foreground">{projectStore.currentUser.email}</span>
+            <span class="text-foreground break-all">{projectStore.currentUser.email}</span>
           </div>
           <div>
             <span class="text-[11px] text-muted-foreground block">Registro / NIT</span>
@@ -554,7 +554,7 @@
         </div>
       </div>
 
-      <div class="p-4 border-t border-border bg-muted/20 flex items-center justify-between">
+      <div class="p-4 border-t border-border bg-muted/20 flex items-center justify-between shrink-0">
         <Button
           variant="outline"
           size="sm"

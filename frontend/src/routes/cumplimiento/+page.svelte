@@ -487,14 +487,14 @@
 <!-- MODAL PARA RADICAR NUEVO DOCUMENTO OBLIGATORIO -->
 {#if showUploadModal}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
+		class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-xs overflow-y-auto"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="flex w-[95vw] max-w-xl flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
-			<div class="flex items-center justify-between border-b border-border px-6 py-4">
+		<div class="flex max-h-[92dvh] w-full sm:w-[95vw] max-w-xl flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-0 sm:my-auto">
+			<div class="flex items-center justify-between border-b border-border px-4 sm:px-6 py-3.5 sm:py-4 shrink-0">
 				<div>
-					<h3 class="font-display text-base font-bold text-foreground">
+					<h3 class="font-display text-sm sm:text-base font-bold text-foreground">
 						Radicar documento obligatorio
 					</h3>
 					<p class="text-xs text-muted-foreground">
@@ -511,7 +511,7 @@
 				</button>
 			</div>
 
-			<form onsubmit={handleUploadDocument} class="space-y-4 p-6 text-xs">
+			<form onsubmit={handleUploadDocument} class="space-y-4 p-4 sm:p-6 text-xs overflow-y-auto flex-1">
 				<div>
 					<label for="doc-title" class="block font-semibold text-foreground">
 						Título del documento obligatorio *
@@ -598,7 +598,7 @@
 					></textarea>
 				</div>
 
-				<div class="flex items-center justify-end gap-2.5 border-t border-border pt-4">
+				<div class="flex items-center justify-end gap-2.5 border-t border-border pt-4 shrink-0">
 					<button
 						type="button"
 						onclick={() => (showUploadModal = false)}

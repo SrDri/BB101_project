@@ -545,14 +545,14 @@
 <!-- MODAL PARA REGISTRAR NUEVO HALLAZGO TÉCNICO / NCR -->
 {#if showFindingModal}
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
+    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-xs overflow-y-auto"
     role="dialog"
     aria-modal="true"
   >
-    <div class="flex w-[95vw] max-w-lg flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
-      <div class="flex items-center justify-between border-b border-border px-6 py-4">
+    <div class="flex max-h-[92dvh] w-full sm:w-[95vw] max-w-lg flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-0 sm:my-auto">
+      <div class="flex items-center justify-between border-b border-border px-4 sm:px-6 py-3.5 sm:py-4 shrink-0">
         <div>
-          <h3 class="font-display text-base font-bold text-foreground">
+          <h3 class="font-display text-sm sm:text-base font-bold text-foreground">
             Registrar hallazgo técnico o no conformidad (NCR)
           </h3>
           <p class="text-xs text-muted-foreground">
@@ -568,7 +568,7 @@
         </button>
       </div>
 
-      <form onsubmit={handleCreateFinding} class="space-y-4 p-6 text-xs">
+      <form onsubmit={handleCreateFinding} class="space-y-4 p-4 sm:p-6 text-xs overflow-y-auto flex-1">
         <div>
           <label for="ncr-title" class="block font-semibold text-foreground">
             Título del hallazgo técnico *
@@ -583,7 +583,7 @@
           />
         </div>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div>
             <label for="ncr-floor" class="block font-semibold text-foreground">Piso / Nivel</label>
             <input
@@ -642,7 +642,7 @@
           ></textarea>
         </div>
 
-        <div class="flex items-center justify-end gap-2 border-t border-border pt-4">
+        <div class="flex items-center justify-end gap-2 border-t border-border pt-4 shrink-0">
           <button
             type="button"
             onclick={() => (showFindingModal = false)}

@@ -5,7 +5,7 @@
   import { projectStore } from '$lib/stores/projectState.svelte';
 </script>
 
-<div class="relative min-h-screen w-full flex flex-col items-center justify-center px-3.5 pt-14 pb-6 sm:p-6 md:p-10 bg-background overflow-hidden">
+<div class="relative min-h-[100dvh] w-full flex flex-col items-center justify-center p-3.5 sm:p-6 md:p-10 bg-background overflow-x-hidden overflow-y-auto">
   <!-- Capa 1: Lienzo Mesh Aurora en movimiento continuo -->
   <div class="pointer-events-none absolute inset-0 ambient-aurora-canvas"></div>
 
@@ -47,7 +47,7 @@
     </Button>
   </div>
 
-  <div class="relative z-10 w-full max-w-4xl">
+  <div class="relative z-10 w-full max-w-4xl my-auto">
     <LoginForm />
   </div>
 </div>

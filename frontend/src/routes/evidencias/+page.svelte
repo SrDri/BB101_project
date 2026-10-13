@@ -242,38 +242,38 @@
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-6"
+    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-xs p-0 sm:p-4 overflow-y-auto"
     onclick={() => (activeModalPhoto = null)}
   >
     <div
-      class="w-[95vw] xl:w-[88vw] max-w-6xl rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden"
+      class="w-full sm:w-[95vw] xl:w-[88vw] max-w-6xl max-h-[94dvh] sm:max-h-[90vh] rounded-t-2xl sm:rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden flex flex-col"
       onclick={(e) => e.stopPropagation()}
     >
-      <div class="px-6 py-4 border-b border-border flex items-center justify-between gap-4 bg-muted/20">
-        <div>
-          <h3 class="text-base font-semibold text-foreground">{activeModalPhoto.title}</h3>
-          <p class="text-xs text-muted-foreground">{activeModalPhoto.location} • {cut.projectName}</p>
+      <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-border flex items-center justify-between gap-4 bg-muted/20 shrink-0">
+        <div class="min-w-0">
+          <h3 class="text-sm sm:text-base font-semibold text-foreground truncate">{activeModalPhoto.title}</h3>
+          <p class="text-xs text-muted-foreground truncate">{activeModalPhoto.location} • {cut.projectName}</p>
         </div>
         <button
           type="button"
           onclick={() => (activeModalPhoto = null)}
-          class="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer"
+          class="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer shrink-0"
         >
           <X class="w-4 h-4" />
         </button>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12">
-        <div class="lg:col-span-8 bg-black flex items-center justify-center max-h-[540px] overflow-hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 overflow-y-auto flex-1">
+        <div class="lg:col-span-8 bg-black flex items-center justify-center min-h-[220px] max-h-[360px] lg:max-h-[540px] overflow-hidden">
           <img
             src={activeModalPhoto.fullUrl}
             alt={activeModalPhoto.title}
             referrerpolicy="no-referrer"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-contain lg:object-cover"
           />
         </div>
 
-        <div class="lg:col-span-4 p-6 space-y-4 text-xs flex flex-col justify-between">
+        <div class="lg:col-span-4 p-4 sm:p-6 space-y-4 text-xs flex flex-col justify-between">
           <div class="space-y-4">
             <div class="space-y-2 p-3 rounded-lg bg-muted/30 border border-border tabular-nums">
               <div class="flex justify-between">

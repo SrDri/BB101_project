@@ -1126,9 +1126,9 @@
 
 <!-- MODAL DE EDICIÓN COMERCIAL (CONSTRUCTORA / ADMIN) -->
 {#if isCommercialModalOpen}
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-xs p-4">
-    <div class="w-full max-w-xl rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden">
-      <div class="p-5 border-b border-border flex items-center justify-between">
+  <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/65 backdrop-blur-xs p-0 sm:p-4 overflow-y-auto">
+    <div class="w-full max-w-xl max-h-[92dvh] flex flex-col rounded-t-2xl sm:rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden my-0 sm:my-auto">
+      <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between shrink-0">
         <div>
           <h3 class="text-sm font-semibold text-foreground">
             Editar ficha comercial y absorción de ventas
@@ -1146,7 +1146,7 @@
         </button>
       </div>
 
-      <form onsubmit={handleSaveCommercial} class="p-5 space-y-4 text-xs">
+      <form onsubmit={handleSaveCommercial} class="p-4 sm:p-5 space-y-4 text-xs overflow-y-auto flex-1">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div class="space-y-1.5">
             <label for="ed-type" class="font-medium text-foreground">Tipología inmobiliaria</label>
@@ -1229,7 +1229,7 @@
           </div>
         </div>
 
-        <div class="pt-3 border-t border-border flex items-center justify-end gap-2">
+        <div class="pt-3 border-t border-border flex items-center justify-end gap-2 shrink-0">
           <Button
             type="button"
             variant="outline"
@@ -1254,9 +1254,9 @@
 
 <!-- MODAL DE PARÁMETROS DEL FIDEICOMISO (FIDUCIARIA / ADMIN) -->
 {#if isFiduciaryModalOpen}
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-xs p-4">
-    <div class="w-full max-w-lg rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden">
-      <div class="p-5 border-b border-border flex items-center justify-between">
+  <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/65 backdrop-blur-xs p-0 sm:p-4 overflow-y-auto">
+    <div class="w-full max-w-lg max-h-[92dvh] flex flex-col rounded-t-2xl sm:rounded-xl border border-border bg-card text-card-foreground shadow-2xl overflow-hidden my-0 sm:my-auto">
+      <div class="p-4 sm:p-5 border-b border-border flex items-center justify-between shrink-0">
         <div>
           <h3 class="text-sm font-semibold text-foreground">
             Parámetros del Fideicomiso y Punto de Equilibrio
@@ -1274,7 +1274,7 @@
         </button>
       </div>
 
-      <form onsubmit={handleSaveFiduciary} class="p-5 space-y-4 text-xs">
+      <form onsubmit={handleSaveFiduciary} class="p-4 sm:p-5 space-y-4 text-xs overflow-y-auto flex-1">
         <div class="space-y-3.5">
           <div class="space-y-1.5">
             <label for="fid-code" class="font-medium text-foreground">Código del Encargo Fiduciario / Patrimonio Autónomo</label>
@@ -1328,7 +1328,7 @@
           </div>
         </div>
 
-        <div class="pt-3 border-t border-border flex items-center justify-end gap-2">
+        <div class="pt-3 border-t border-border flex items-center justify-end gap-2 shrink-0">
           <Button
             type="button"
             variant="outline"
@@ -1354,34 +1354,34 @@
 <!-- MODAL AMPLIO DE PLANO ARQUITECTÓNICO DE TIPOLOGÍA -->
 {#if isBlueprintModalOpen}
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs"
+    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 p-0 sm:p-4 backdrop-blur-xs overflow-y-auto"
     role="dialog"
     aria-modal="true"
   >
-    <div class="flex max-h-[92vh] w-[96vw] max-w-6xl flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
-      <div class="flex items-center justify-between border-b border-border px-6 py-4">
+    <div class="flex max-h-[94dvh] w-full sm:w-[96vw] max-w-6xl flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-0 sm:my-auto">
+      <div class="flex items-center justify-between border-b border-border px-4 sm:px-6 py-3.5 sm:py-4 shrink-0">
         <div>
           <div class="flex items-center gap-2">
             <span class="rounded-md bg-foreground px-2.5 py-0.5 font-mono text-xs font-bold text-background">
               {activeTypology.code}
             </span>
-            <span class="text-xs text-muted-foreground">{typologyBlueprintSpec.scaleLabel}</span>
+            <span class="text-xs text-muted-foreground truncate">{typologyBlueprintSpec.scaleLabel}</span>
           </div>
-          <h3 class="mt-1 font-display text-lg font-bold text-foreground">
-            Plano arquitectónico detallado — {activeTypology.name} ({activeTypology.areaBuiltM2} m² construidos / {activeTypology.areaPrivateM2} m² privados)
+          <h3 class="mt-1 font-display text-sm sm:text-base font-bold text-foreground">
+            Plano arquitectónico detallado — {activeTypology.name} ({activeTypology.areaBuiltM2} m²)
           </h3>
         </div>
         <button
           type="button"
           onclick={() => (isBlueprintModalOpen = false)}
-          class="cursor-pointer rounded-lg border border-border p-2 text-muted-foreground hover:bg-muted"
+          class="cursor-pointer rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted"
         >
           <X class="h-4 w-4" />
         </button>
       </div>
 
-      <div class="overflow-y-auto p-6">
-        <div class="rounded-xl border border-border bg-background p-4">
+      <div class="overflow-y-auto p-4 sm:p-6 flex-1">
+        <div class="rounded-xl border border-border bg-background p-3 sm:p-4">
           <svg viewBox="0 0 750 455" class="h-auto w-full select-none">
             <rect width="750" height="455" fill="url(#typ-cad-grid)" />
             {#each typologyBlueprintSpec.zones as z, idx (z.id)}
@@ -1410,9 +1410,9 @@
         </div>
       </div>
 
-      <div class="flex items-center justify-between border-t border-border bg-muted/20 px-6 py-4">
-        <div class="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-          <span>Valor de referencia desde: <strong class="font-mono text-foreground">{formatCOP(activeTypology.priceFromCOP)}</strong></span>
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-border bg-muted/20 px-4 sm:px-6 py-3.5 sm:py-4 shrink-0">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-muted-foreground">
+          <span>Valor desde: <strong class="font-mono text-foreground">{formatCOP(activeTypology.priceFromCOP)}</strong></span>
           <span>•</span>
           <span>Niveles: <strong class="text-foreground">{activeTypology.floorRange}</strong></span>
         </div>
