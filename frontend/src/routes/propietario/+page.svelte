@@ -41,6 +41,8 @@
   let loadingProgress = $state(0);
   let errorMsg = $state('');
   let showTaxCertModal = $state(false);
+  let showHandoverActaModal = $state(false);
+  let selectedInstallmentReceipt = $state<{ num: string; date: string; amount: number; status: string; ref: string } | null>(null);
   let showAddSnagModal = $state(false);
   let newSnagRoom = $state('Sala-Comedor y Balcón');
   let newSnagCategory = $state<UnitSnagItem['category']>('acabados');
@@ -1462,9 +1464,15 @@
                       </td>
                       <td class="px-4 py-2.5 text-right whitespace-nowrap">
                         {#if inst.status === 'pagado'}
-                          <span class="inline-flex items-center gap-1 rounded bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium whitespace-nowrap text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 class="w-3 h-3" /> Recaudado
-                          </span>
+                          <button
+                            type="button"
+                            onclick={() => (selectedInstallmentReceipt = inst)}
+                            class="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium whitespace-nowrap text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 cursor-pointer transition-colors"
+                            title="Ver e imprimir recibo oficial de recaudo fiduciario"
+                          >
+                            <CheckCircle2 class="w-3 h-3 shrink-0" />
+                            <span>Recaudado · Recibo</span>
+                          </button>
                         {:else if inst.status === 'proximo'}
                           <span class="inline-flex items-center gap-1 rounded bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium whitespace-nowrap text-amber-600 dark:text-amber-400">
                             Próximo vencimiento
@@ -1653,16 +1661,27 @@
       </div>
 
       {#if handoverRecord}
-        <div class="border-t border-emerald-500/30 bg-emerald-500/10 px-6 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+        <div class="border-t border-emerald-500/30 bg-emerald-500/10 px-6 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-medium">
             <ShieldCheck class="w-4 h-4 shrink-0" />
             <span>
               Acta Digital de Recibo del Apartamento {ownerUnit.unitNumber} sellada en Stellar el {handoverRecord.signedAt}.
             </span>
           </div>
-          <span class="font-mono text-[11px] text-foreground truncate max-w-xs">
-            Tx: {handoverRecord.txHash}
-          </span>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="font-mono text-[11px] text-foreground truncate max-w-[140px] hidden sm:inline" title="Hash de transacción en Stellar">
+              Tx: {handoverRecord.txHash.slice(0, 14)}...
+            </span>
+            <button
+              type="button"
+              onclick={() => (showHandoverActaModal = true)}
+              class="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3 py-1 font-mono text-xs font-medium text-background hover:opacity-90 shadow-xs cursor-pointer"
+              title="Ver e imprimir Acta Oficial de Entrega Inmobiliaria y Recibo a Satisfacción"
+            >
+              <Printer class="w-3.5 h-3.5" />
+              <span>Imprimir Acta de Entrega</span>
+            </button>
+          </div>
         </div>
       {/if}
     </Card>
@@ -2567,6 +2586,269 @@
   </div>
 {/if}
 
+<!-- MODAL: RECIBO OFICIAL DE RECAUDO EN ENCARGO FIDUCIARIO (IMPRIMIBLE) -->
+{#if selectedInstallmentReceipt && ownerUnit && ownerProject}
+  <div
+    class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto print:p-0 print:bg-white print:fixed print:inset-0"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      class="bg-card border border-border rounded-2xl max-w-lg w-full flex flex-col shadow-2xl overflow-hidden my-auto print:max-w-none print:border-none print:shadow-none print:rounded-none"
+    >
+      <div class="px-5 py-3.5 border-b border-border flex items-center justify-between bg-muted/40 shrink-0 print:hidden">
+        <div class="flex items-center gap-2">
+          <img src="/isotipo_tramo.svg" alt="TRAMO" class="w-5 h-5 object-contain" />
+          <span class="text-xs font-bold text-foreground">Comprobante de Recaudo Fiduciario</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <Button
+            size="sm"
+            onclick={() => window.print()}
+            class="h-7 text-xs gap-1.5 font-mono cursor-pointer bg-foreground text-background hover:opacity-90 shadow-sm"
+          >
+            <Printer class="w-3 h-3" />
+            <span>Imprimir</span>
+          </Button>
+          <button
+            onclick={() => (selectedInstallmentReceipt = null)}
+            class="p-1 rounded-lg text-muted-foreground hover:bg-muted cursor-pointer"
+          >
+            <X class="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      <div id="printable-installment-receipt" class="p-6 sm:p-8 space-y-4 text-xs bg-background print:bg-white print:p-8 print:text-black print:overflow-visible">
+        <div class="flex items-start justify-between border-b-2 border-foreground pb-4 print:border-black">
+          <div class="space-y-1">
+            <img src="/black_logo_ui_v1.svg" alt="TRAMO" class="h-6 w-auto object-contain dark:invert print:filter-none" />
+            <h3 class="font-bold text-sm text-foreground print:text-black">RECIBO OFICIAL DE RECAUDO FIDUCIARIO</h3>
+            <p class="text-[10px] text-muted-foreground print:text-black">{ownerUnit.fiduciaryEntity} · {ownerProject.projectName}</p>
+          </div>
+          <div class="text-right font-mono text-[10px] rounded bg-muted/30 p-2 print:border print:border-black print:bg-white">
+            <div class="font-bold text-foreground print:text-black">REF: {selectedInstallmentReceipt.ref}</div>
+            <div class="text-muted-foreground print:text-black">Fecha: {selectedInstallmentReceipt.date}</div>
+            <div class="text-emerald-600 font-bold print:text-black">Conciliado ✓</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 rounded-lg border border-border p-3 bg-muted/20 print:border-black print:bg-white text-xs">
+          <div class="flex justify-between">
+            <span class="text-muted-foreground print:text-black">Titular Fideicomitente:</span>
+            <span class="font-bold text-foreground print:text-black">{ownerUnit.ownerName}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-muted-foreground print:text-black">Unidad Inmobiliaria:</span>
+            <span class="font-semibold text-foreground print:text-black">Apto {ownerUnit.unitNumber} (Piso {ownerUnit.floorLevel})</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-muted-foreground print:text-black">Encargo Fiduciario:</span>
+            <span class="font-mono text-foreground print:text-black">{ownerUnit.fiduciaryContractCode}</span>
+          </div>
+          <div class="flex justify-between border-t border-border/60 pt-2 print:border-black">
+            <span class="text-muted-foreground print:text-black">Concepto de Pago:</span>
+            <span class="font-semibold text-foreground print:text-black">{selectedInstallmentReceipt.num} · Cuota Inicial</span>
+          </div>
+          <div class="flex justify-between border-t-2 border-foreground pt-2 text-sm print:border-black">
+            <span class="font-bold text-foreground print:text-black">Valor Acreditado:</span>
+            <span class="font-mono font-bold text-emerald-600 print:text-black">{formatCOP(selectedInstallmentReceipt.amount)}</span>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3 flex items-center justify-between gap-2 text-[10px] print:border-black print:bg-white">
+          <div class="space-y-0.5">
+            <span class="font-bold text-emerald-700 dark:text-emerald-400 print:text-black flex items-center gap-1">
+              <ShieldCheck class="w-3.5 h-3.5 text-emerald-600 print:text-black" />
+              Sello Criptográfico Inmutable Stellar
+            </span>
+            <div class="font-mono text-muted-foreground break-all print:text-black text-[9px]">
+              Hash: {ownerProject.sha256Hash}
+            </div>
+          </div>
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data={encodeURIComponent('https://stellar.expert/explorer/testnet/contract/CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T')}"
+            alt="QR"
+            class="w-12 h-12 border border-border rounded print:border-black shrink-0"
+          />
+        </div>
+
+        <div class="pt-2 border-t border-border flex items-center justify-between text-[9px] text-muted-foreground print:border-black print:text-black">
+          <span>Tramo Protocol · Fe Pública Inmobiliaria</span>
+          <span>Custodia vigilada por Superintendencia Financiera de Colombia</span>
+        </div>
+      </div>
+
+      <div class="px-5 py-3 border-t border-border bg-muted/20 flex justify-end print:hidden">
+        <Button variant="outline" size="sm" onclick={() => (selectedInstallmentReceipt = null)} class="h-7 text-xs cursor-pointer">
+          Cerrar
+        </Button>
+      </div>
+    </div>
+  </div>
+{/if}
+
+<!-- MODAL: ACTA OFICIAL DE ENTREGA INMOBILIARIA Y RECIBO A SATISFACCIÓN (IMPRIMIBLE) -->
+{#if showHandoverActaModal && handoverRecord && ownerUnit && ownerProject}
+  <div
+    class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto print:p-0 print:bg-white print:fixed print:inset-0"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      class="bg-card border border-border rounded-2xl max-w-3xl w-full max-h-[94dvh] flex flex-col shadow-2xl overflow-hidden my-auto print:max-w-none print:max-h-none print:border-none print:shadow-none print:rounded-none"
+    >
+      <div class="px-6 py-3.5 border-b border-border flex items-center justify-between bg-muted/40 shrink-0 print:hidden">
+        <div class="flex items-center gap-2.5">
+          <img src="/isotipo_tramo.svg" alt="TRAMO" class="w-6 h-6 object-contain" />
+          <div>
+            <span class="font-mono text-[10px] font-bold text-emerald-600 uppercase">Documento Legal Inmobiliario</span>
+            <h3 class="font-bold text-sm text-foreground">Acta Oficial de Entrega Material y Recibo a Satisfacción</h3>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <Button
+            size="sm"
+            onclick={() => window.print()}
+            class="h-8 text-xs gap-1.5 font-mono cursor-pointer bg-foreground text-background hover:opacity-90 shadow-sm"
+          >
+            <Printer class="w-3.5 h-3.5" />
+            <span>Imprimir / Guardar PDF</span>
+          </Button>
+          <button
+            onclick={() => (showHandoverActaModal = false)}
+            class="p-1.5 rounded-lg text-muted-foreground hover:bg-muted cursor-pointer"
+          >
+            <X class="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      <div id="printable-handover-acta" class="p-6 sm:p-10 space-y-6 text-xs bg-background print:bg-white print:p-8 print:text-black print:overflow-visible">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b-2 border-foreground pb-4 print:border-black">
+          <div class="space-y-1.5">
+            <img src="/black_logo_ui_v1.svg" alt="TRAMO" class="h-8 w-auto object-contain dark:invert print:filter-none" />
+            <h2 class="text-base sm:text-lg font-bold text-foreground print:text-black">
+              ACTA OFICIAL DE ENTREGA MATERIAL Y RECIBO A SATISFACCIÓN
+            </h2>
+            <p class="text-[11px] text-muted-foreground print:text-black">
+              Conforme a la <strong>Ley 1796 de 2016</strong> (Vivienda Segura), Código de Comercio y Estatuto del Consumidor (Ley 1480 de 2011).
+            </p>
+          </div>
+          <div class="rounded-lg border border-border bg-muted/20 p-2.5 font-mono text-[10px] text-right shrink-0 print:border-black print:bg-white">
+            <div class="font-bold text-foreground print:text-black">ACTA #{ownerUnit.unitNumber}-2026</div>
+            <div class="text-muted-foreground print:text-black">Fecha: {handoverRecord.signedAt}</div>
+            <div class="text-emerald-600 font-bold print:text-black">Stellar Soroban Ledger</div>
+          </div>
+        </div>
+
+        <!-- Partes Intervinientes y Unidad -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div class="p-3.5 rounded-lg border border-border bg-muted/20 space-y-1 print:border-black print:bg-white">
+            <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold print:text-black">Parte Vendedora / Constructora</span>
+            <div class="font-bold text-foreground print:text-black">{ownerProject.projectName} · Constructora Metrópolis S.A.S.</div>
+            <div class="text-[11px] text-muted-foreground print:text-black">NIT: 900.842.193-2 • Licencia de Construcción Curaduría #2</div>
+          </div>
+          <div class="p-3.5 rounded-lg border border-border bg-muted/20 space-y-1 print:border-black print:bg-white">
+            <span class="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold print:text-black">Parte Compradora / Adquirente</span>
+            <div class="font-bold text-foreground print:text-black">{ownerUnit.ownerName}</div>
+            <div class="text-[11px] text-muted-foreground print:text-black">Cédula de Ciudadanía: {searchedCedula || '1020482910'}</div>
+          </div>
+        </div>
+
+        <!-- Descripción del Inmueble -->
+        <div class="rounded-xl border border-border p-4 space-y-2 print:border-black">
+          <div class="font-bold text-xs uppercase tracking-wider text-foreground print:text-black">1. Identificación del Inmueble Entregado</div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+            <div class="p-2 rounded bg-muted/30 border border-border print:border-black print:bg-white">
+              <span class="text-[10px] text-muted-foreground block print:text-black">Unidad</span>
+              <span class="font-bold text-foreground print:text-black">Apto {ownerUnit.unitNumber}</span>
+            </div>
+            <div class="p-2 rounded bg-muted/30 border border-border print:border-black print:bg-white">
+              <span class="text-[10px] text-muted-foreground block print:text-black">Ubicación</span>
+              <span class="font-bold text-foreground print:text-black">Piso {ownerUnit.floorLevel} · Torre {ownerUnit.tower}</span>
+            </div>
+            <div class="p-2 rounded bg-muted/30 border border-border print:border-black print:bg-white">
+              <span class="text-[10px] text-muted-foreground block print:text-black">Área Construida</span>
+              <span class="font-bold text-foreground print:text-black">{ownerUnit.areaM2} m²</span>
+            </div>
+            <div class="p-2 rounded bg-muted/30 border border-border print:border-black print:bg-white">
+              <span class="text-[10px] text-muted-foreground block print:text-black">Parqueadero / Depósito</span>
+              <span class="font-bold text-foreground print:text-black">{ownerUnit.parkingSpot}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Declaración de Conformidad Técnica -->
+        <div class="rounded-xl border border-border p-4 space-y-2 print:border-black text-xs leading-relaxed">
+          <div class="font-bold text-xs uppercase tracking-wider text-foreground print:text-black">2. Declaración de Recibo a Entera Satisfacción</div>
+          <p class="text-muted-foreground print:text-black">
+            En la fecha <strong>{handoverRecord.signedAt}</strong>, se reunieron en la obra las partes intervinientes y procedieron a la inspección exhaustiva de la unidad inmobiliaria. Se deja constancia de que los <strong>acabados arquitectónicos, redes eléctricas, aparatos sanitarios, griferías, puertas, ventanas, cerraduras e impermeabilización</strong> fueron verificados y recibidos en óptimo estado funcional y estético, encontrándose subsanado el 100% de la lista de chequeo (Snag list).
+          </p>
+          <p class="text-muted-foreground print:text-black">
+            Con la firma digital de la presente acta y su sellado inmutable en la red Stellar Soroban, se autoriza formalmente a la sociedad fiduciaria <strong>{ownerUnit.fiduciaryEntity}</strong> a liberar la retención de garantía (5%) retenida durante la etapa constructiva conforme a la reglamentación aplicable.
+          </p>
+        </div>
+
+        <!-- Sello Soroban con QR -->
+        <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 print:border-black print:bg-white">
+          <div class="space-y-1 text-xs">
+            <span class="font-bold text-emerald-700 dark:text-emerald-400 print:text-black flex items-center gap-1.5">
+              <ShieldCheck class="w-4 h-4 text-emerald-600 print:text-black" />
+              Sello Criptográfico de Fe Pública en Stellar Soroban
+            </span>
+            <div class="font-mono text-[9px] text-muted-foreground break-all print:text-black">
+              Hash de Entrega: {handoverRecord.txHash}
+            </div>
+            <div class="text-[10px] text-muted-foreground print:text-black">
+              Smart Contract: CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T
+            </div>
+          </div>
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={encodeURIComponent('https://stellar.expert/explorer/testnet/tx/' + handoverRecord.txHash)}"
+            alt="QR Entrega"
+            class="w-16 h-16 border border-border rounded print:border-black shrink-0"
+          />
+        </div>
+
+        <!-- Firmas -->
+        <div class="grid grid-cols-2 gap-6 border-t-2 border-foreground pt-4 text-center print:border-black">
+          <div class="p-3 border border-border rounded-lg space-y-1 print:border-black">
+            <div class="h-8 border-b border-dashed border-border mb-1.5 flex items-end justify-center font-serif italic text-xs text-foreground print:text-black">
+              {ownerUnit.ownerName}
+            </div>
+            <div class="font-bold text-foreground text-xs print:text-black">{ownerUnit.ownerName}</div>
+            <div class="text-[10px] text-muted-foreground print:text-black">Comprador / Adjudicatario</div>
+            <div class="font-mono text-[9px] text-emerald-600 print:text-black font-semibold">C.C. {searchedCedula || '1020482910'}</div>
+          </div>
+          <div class="p-3 border border-border rounded-lg space-y-1 print:border-black">
+            <div class="h-8 border-b border-dashed border-border mb-1.5 flex items-end justify-center font-serif italic text-xs text-foreground print:text-black">
+              Arq. Carlos Mendoza
+            </div>
+            <div class="font-bold text-foreground text-xs print:text-black">Constructora Metrópolis S.A.S.</div>
+            <div class="text-[10px] text-muted-foreground print:text-black">Representante Legal Promotor</div>
+            <div class="font-mono text-[9px] text-muted-foreground print:text-black font-semibold">NIT: 900.842.193-2</div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground print:border-black print:text-black">
+          <div class="flex items-center gap-1.5">
+            <img src="/isotipo_tramo.svg" alt="TRAMO" class="w-3.5 h-3.5 object-contain" />
+            <span>Tramo Protocol · Protocolo de Fe Pública y Entrega Inmobiliaria Inmutable</span>
+          </div>
+          <span class="font-mono">Página 1 de 1 • Registro Notarial y Fiduciario</span>
+        </div>
+      </div>
+
+      <div class="px-6 py-3.5 border-t border-border bg-muted/20 flex justify-end print:hidden">
+        <Button variant="outline" size="sm" onclick={() => (showHandoverActaModal = false)} class="h-8 text-xs cursor-pointer">
+          Cerrar
+        </Button>
+      </div>
+    </div>
+  </div>
+{/if}
+
 <style>
   @media print {
     :global(body) {
@@ -2579,7 +2861,9 @@
     :global(.print\:hidden) {
       display: none !important;
     }
-    #printable-propietario-tax-cert {
+    #printable-propietario-tax-cert,
+    #printable-installment-receipt,
+    #printable-handover-acta {
       width: 100% !important;
       max-width: 100% !important;
       margin: 0 !important;
@@ -2592,5 +2876,6 @@
     }
   }
 </style>
+
 
 

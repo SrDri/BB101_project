@@ -16,7 +16,11 @@
     Compass,
     Ruler,
     CheckCircle2,
-    X
+    X,
+    Printer,
+    ShieldCheck,
+    FileText,
+    Download
   } from '@lucide/svelte';
 
   const cut = $derived(projectStore.activeCut);
@@ -28,6 +32,7 @@
   );
 
   let isBlueprintModalOpen = $state(false);
+  let showFactsheetModal = $state(false);
   let hoveredZoneId = $state<string | null>(null);
 
   // Architectural blueprint metadata per typology (supports Tipo A, Tipo B, Tipo C, Penthouse, and any custom typology)
@@ -516,6 +521,17 @@
           class="h-8 border-border bg-background/90 text-xs backdrop-blur-md hover:bg-background"
         >
           Cumplimiento y documentos
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onclick={() => (showFactsheetModal = true)}
+          class="h-8 gap-1.5 border-border bg-background/90 text-xs backdrop-blur-md hover:bg-background cursor-pointer font-mono"
+          title="Ver e imprimir Dossier Ejecutivo Oficial del Proyecto"
+        >
+          <Printer class="w-3.5 h-3.5" />
+          <span>Dossier PDF</span>
         </Button>
         <Button
           href="/gemelo"
@@ -1427,3 +1443,224 @@
     </div>
   </div>
 {/if}
+
+<!-- MODAL: DOSSIER EJECUTIVO Y FICHA TÉCNICO-COMERCIAL DEL PROYECTO (IMPRIMIBLE) -->
+{#if showFactsheetModal}
+  <div
+    class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto print:p-0 print:bg-white print:fixed print:inset-0"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      class="bg-card border border-border rounded-2xl max-w-4xl w-full max-h-[94dvh] flex flex-col shadow-2xl overflow-hidden my-auto print:max-w-none print:max-h-none print:border-none print:shadow-none print:rounded-none"
+    >
+      <!-- Barra de Acciones (Oculta en impresión) -->
+      <div class="px-6 py-3.5 border-b border-border flex items-center justify-between bg-muted/40 shrink-0 print:hidden">
+        <div class="flex items-center gap-2.5">
+          <img src="/isotipo_tramo.svg" alt="TRAMO" class="w-6 h-6 object-contain" />
+          <div>
+            <span class="font-mono text-[10px] font-bold text-emerald-600 uppercase">Dossier Institucional de Proyecto</span>
+            <h3 class="font-bold text-sm text-foreground">Ficha Ejecutiva Técnico-Comercial y Fiduciaria — {cut.projectName}</h3>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <Button
+            size="sm"
+            onclick={() => window.print()}
+            class="h-8 text-xs gap-1.5 font-mono cursor-pointer bg-foreground text-background hover:opacity-90 shadow-sm"
+          >
+            <Printer class="w-3.5 h-3.5" />
+            <span>Imprimir / Guardar PDF</span>
+          </Button>
+          <button
+            onclick={() => (showFactsheetModal = false)}
+            class="p-1.5 rounded-lg text-muted-foreground hover:bg-muted cursor-pointer"
+          >
+            <X class="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Documento Imprimible del Factsheet -->
+      <div id="printable-project-factsheet" class="p-6 sm:p-10 space-y-6 text-xs bg-background print:bg-white print:p-8 print:text-black print:overflow-visible">
+        <!-- Membrete con Logo TRAMO -->
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b-2 border-foreground pb-4 print:border-black">
+          <div class="space-y-1.5">
+            <img src="/black_logo_ui_v1.svg" alt="TRAMO" class="h-8 w-auto object-contain dark:invert print:filter-none" />
+            <h2 class="text-base sm:text-lg font-bold text-foreground print:text-black">
+              DOSSIER EJECUTIVO Y FICHA TÉCNICO-COMERCIAL DE PROYECTO
+            </h2>
+            <p class="text-[11px] text-muted-foreground print:text-black">
+              Fideicomiso Inmobiliario · Vigilado Superintendencia Financiera de Colombia · Conforme a Ley 1796/2016 y NSR-10.
+            </p>
+          </div>
+          <div class="rounded-lg border border-border bg-muted/20 p-2.5 font-mono text-[10px] text-right shrink-0 print:border-black print:bg-white">
+            <div class="font-bold text-foreground print:text-black">REF: FACTSHEET-{cut.code}-2026</div>
+            <div class="text-muted-foreground print:text-black">Fecha Actualización: 18 Octubre 2026</div>
+            <div class="text-emerald-600 font-bold print:text-black">Stellar Soroban Ledger</div>
+          </div>
+        </div>
+
+        <!-- 4 Indicadores Clave del Proyecto -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          <div class="p-3 rounded-lg border border-border bg-muted/20 print:border-black print:bg-white">
+            <span class="text-[10px] text-muted-foreground uppercase tracking-wider block print:text-black">Presupuesto de Obra</span>
+            <span class="font-mono text-xs font-bold text-foreground print:text-black block mt-0.5">{formatCOP(cut.totalBudgetCOP)}</span>
+          </div>
+          <div class="p-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 print:border-black print:bg-white">
+            <span class="text-[10px] text-emerald-700 dark:text-emerald-300 uppercase tracking-wider block font-semibold print:text-black">Punto de Equilibrio</span>
+            <span class="font-mono text-xs font-bold text-emerald-600 print:text-black block mt-0.5">{ficha.equilibriumPointPercent}% Requerido · 78% Real ✓</span>
+          </div>
+          <div class="p-3 rounded-lg border border-border bg-muted/20 print:border-black print:bg-white">
+            <span class="text-[10px] text-muted-foreground uppercase tracking-wider block print:text-black">Absorción Comercial</span>
+            <span class="font-mono text-xs font-bold text-foreground print:text-black block mt-0.5">94 / 120 Unidades (78.3%)</span>
+          </div>
+          <div class="p-3 rounded-lg border border-border bg-muted/20 print:border-black print:bg-white">
+            <span class="text-[10px] text-muted-foreground uppercase tracking-wider block print:text-black">Avance Físico Certificado</span>
+            <span class="font-mono text-xs font-bold text-emerald-600 print:text-black block mt-0.5">{cut.certifiedPhysicalProgress}% en Soroban</span>
+          </div>
+        </div>
+
+        <!-- Ficha de Identificación General y Fiduciaria -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div class="rounded-xl border border-border p-3.5 space-y-1.5 print:border-black">
+            <div class="font-bold text-xs uppercase tracking-wider text-foreground print:text-black">1. Localización y Ficha Urbanística</div>
+            <div class="space-y-1 text-muted-foreground print:text-black">
+              <div>Proyecto: <strong class="text-foreground print:text-black">{cut.projectName}</strong></div>
+              <div>Ubicación: <strong class="text-foreground print:text-black">{cut.city} · Carrera 43 #108-50</strong></div>
+              <div>Tipología y Uso: <strong class="text-foreground print:text-black">{ficha.propertyType} • {ficha.stratum}</strong></div>
+              <div>Licencia Urbanística: <strong class="text-foreground print:text-black">Curaduría Urbana #2 · Radicado 2024-LC-1029</strong></div>
+              <div>Póliza Decenal Ley 1796: <strong class="text-foreground print:text-black">Seguros del Estado P-940291 (Vigente)</strong></div>
+            </div>
+          </div>
+          <div class="rounded-xl border border-border p-3.5 space-y-1.5 print:border-black">
+            <div class="font-bold text-xs uppercase tracking-wider text-foreground print:text-black">2. Estructura Fiduciaria y Operativa</div>
+            <div class="space-y-1 text-muted-foreground print:text-black">
+              <div>Patrimonio Autónomo: <strong class="text-foreground print:text-black">{cut.fiduciaryTrustCode}</strong></div>
+              <div>Sociedad Fiduciaria: <strong class="text-foreground print:text-black">{cut.fiduciaryEntity}</strong></div>
+              <div>Constructora / Promotora: <strong class="text-foreground print:text-black">{ficha.developerProfile.name} (NIT {ficha.developerProfile.nit})</strong></div>
+              <div>Interventoría Independiente: <strong class="text-foreground print:text-black">{ficha.supervisorProfile.companyName} ({ficha.supervisorProfile.copniaLicense})</strong></div>
+              <div>Entrega Proyectada: <strong class="text-foreground print:text-black">{ficha.estimatedDelivery}</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inventario de Tipologías Arquitectónicas -->
+        <div class="rounded-xl border border-border overflow-hidden print:border-black">
+          <div class="bg-muted/40 px-4 py-2 border-b border-border font-bold text-xs uppercase tracking-wider text-foreground print:border-black print:bg-white print:text-black">
+            3. Portafolio de Tipologías y Unidades Disponibles
+          </div>
+          <table class="w-full text-left border-collapse text-xs">
+            <thead class="bg-muted/20 border-b border-border print:border-black text-[11px] text-muted-foreground print:text-black uppercase">
+              <tr>
+                <th class="py-2 pl-3">Tipología</th>
+                <th class="py-2">Área Construida</th>
+                <th class="py-2">Distribución</th>
+                <th class="py-2">Rango Niveles</th>
+                <th class="py-2 text-right pr-3">Precio Desde</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border print:divide-black">
+              {#each ficha.typologies as typo}
+                <tr>
+                  <td class="py-2 pl-3 font-semibold text-foreground print:text-black">{typo.name} ({typo.code})</td>
+                  <td class="py-2 font-mono">{typo.areaBuiltM2} m²</td>
+                  <td class="py-2 text-muted-foreground print:text-black">{typo.bedrooms} Alcobas · {typo.bathrooms} Baños · Balcón</td>
+                  <td class="py-2 font-mono text-[11px]">{typo.floorRange}</td>
+                  <td class="py-2 pr-3 text-right font-mono font-bold text-emerald-600 print:text-black">{formatCOP(typo.priceFromCOP)}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Sello Soroban y Auditoría Digital -->
+        <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 flex flex-col sm:flex-row items-center justify-between gap-4 print:border-black print:bg-white">
+          <div class="space-y-1 text-xs">
+            <span class="font-bold text-emerald-700 dark:text-emerald-400 print:text-black flex items-center gap-1.5">
+              <ShieldCheck class="w-4 h-4 text-emerald-600 print:text-black" />
+              Certificación Notarial y Sello de Fe Pública en Stellar Soroban
+            </span>
+            <div class="font-mono text-[9px] text-muted-foreground break-all print:text-black">
+              Contrato: CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T
+            </div>
+            <div class="text-[10px] text-muted-foreground print:text-black">
+              Garantía de Fondos y No-Repudio Digital · Red Pública Stellar Testnet
+            </div>
+          </div>
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data={encodeURIComponent('https://stellar.expert/explorer/testnet/contract/CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T')}"
+            alt="QR Stellar"
+            class="w-16 h-16 border border-border rounded print:border-black shrink-0"
+          />
+        </div>
+
+        <!-- Firmas Oficiales -->
+        <div class="grid grid-cols-3 gap-4 border-t-2 border-foreground pt-4 text-center print:border-black">
+          <div class="p-2 border border-border rounded-lg space-y-1 print:border-black">
+            <div class="h-7 border-b border-dashed border-border mb-1 flex items-end justify-center font-serif italic text-xs text-foreground print:text-black">
+              Arq. Carlos Mendoza
+            </div>
+            <div class="font-semibold text-foreground text-[11px] print:text-black">{ficha.developerProfile.legalRepresentative}</div>
+            <div class="text-[9px] text-muted-foreground print:text-black">Gerencia General Constructora</div>
+          </div>
+          <div class="p-2 border border-border rounded-lg space-y-1 print:border-black">
+            <div class="h-7 border-b border-dashed border-border mb-1 flex items-end justify-center font-serif italic text-xs text-foreground print:text-black">
+              Ing. Juan José Carabalí
+            </div>
+            <div class="font-semibold text-foreground text-[11px] print:text-black">{ficha.supervisorProfile.name}</div>
+            <div class="text-[9px] text-muted-foreground print:text-black">Interventoría (COPNIA {ficha.supervisorProfile.copniaLicense})</div>
+          </div>
+          <div class="p-2 border border-border rounded-lg space-y-1 print:border-black">
+            <div class="h-7 border-b border-dashed border-border mb-1 flex items-end justify-center font-serif italic text-xs text-foreground print:text-black">
+              Dra. Patricia Gómez
+            </div>
+            <div class="font-semibold text-foreground text-[11px] print:text-black">Comité Fiduciario</div>
+            <div class="text-[9px] text-muted-foreground print:text-black">{cut.fiduciaryEntity}</div>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground print:border-black print:text-black">
+          <div class="flex items-center gap-1">
+            <img src="/isotipo_tramo.svg" alt="TRAMO" class="w-3.5 h-3.5 object-contain" />
+            <span>Tramo Protocol · Ficha Integral de Proyecto Inmobiliario</span>
+          </div>
+          <span class="font-mono">Página 1 de 1 • Consulta abierta en blockchain</span>
+        </div>
+      </div>
+
+      <div class="px-6 py-3.5 border-t border-border bg-muted/20 flex justify-end print:hidden">
+        <Button variant="outline" size="sm" onclick={() => (showFactsheetModal = false)} class="h-8 text-xs cursor-pointer">
+          Cerrar
+        </Button>
+      </div>
+    </div>
+  </div>
+{/if}
+
+<style>
+  @media print {
+    :global(body) {
+      background: white !important;
+      color: black !important;
+    }
+    :global(header),
+    :global(aside),
+    :global(nav),
+    :global(.print\:hidden) {
+      display: none !important;
+    }
+    #printable-project-factsheet {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: visible !important;
+    }
+    @page {
+      size: letter portrait;
+      margin: 10mm 12mm;
+    }
+  }
+</style>
+

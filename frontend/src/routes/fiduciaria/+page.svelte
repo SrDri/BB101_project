@@ -1358,78 +1358,159 @@
 	</div>
 {/if}
 
-<!-- MODAL AMPLIO DE COMPROBANTE OFICIAL DE GIRO FIDUCIARIO -->
+<!-- MODAL AMPLIO DE COMPROBANTE OFICIAL DE GIRO FIDUCIARIO (IMPRIMIBLE) -->
 {#if selectedVoucher}
 	<div
-		class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-xs overflow-y-auto"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-2 sm:p-4 backdrop-blur-xs overflow-y-auto print:p-0 print:bg-white print:fixed print:inset-0"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="flex max-h-[92dvh] w-full sm:w-[95vw] max-w-3xl flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-0 sm:my-auto">
-			<div class="flex items-center justify-between border-b border-border bg-slate-900 px-4 sm:px-6 py-3.5 sm:py-4 text-white shrink-0">
-				<div>
-					<span class="font-mono text-[11px] text-emerald-400 uppercase">
-						Comprobante oficial de desembolso fiduciario
-					</span>
-					<h3 class="mt-0.5 font-display text-sm sm:text-base font-bold">
-						Hito #{selectedVoucher.milestoneNumber} · {selectedVoucher.title}
-					</h3>
-				</div>
-				<button
-					type="button"
-					onclick={() => (selectedVoucher = null)}
-					aria-label="Cerrar comprobante"
-					class="cursor-pointer rounded-lg border border-slate-700 p-1.5 text-slate-300 hover:bg-slate-800"
-				>
-					<X class="h-4 w-4" />
-				</button>
-			</div>
-
-			<div class="space-y-4 sm:space-y-5 p-4 sm:p-6 overflow-y-auto flex-1">
-				<div class="grid grid-cols-1 gap-3 rounded-xl border border-border bg-muted/30 p-3 sm:p-4 sm:grid-cols-3">
+		<div class="flex max-h-[94dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-auto print:max-w-none print:max-h-none print:border-none print:shadow-none print:rounded-none">
+			<!-- Barra de Acciones (Oculta en impresión) -->
+			<div class="flex items-center justify-between border-b border-border bg-muted/40 px-4 sm:px-6 py-3.5 shrink-0 print:hidden">
+				<div class="flex items-center gap-2.5">
+					<img src="/isotipo_tramo.svg" alt="TRAMO" class="w-6 h-6 object-contain" />
 					<div>
-						<span class="text-[11px] text-muted-foreground">Referencia ACH</span>
-						<p class="mt-0.5 font-mono text-xs font-bold text-foreground">{selectedVoucher.achReference}</p>
-					</div>
-					<div>
-						<span class="text-[11px] text-muted-foreground">Fecha efectiva de giro</span>
-						<p class="mt-0.5 font-mono text-xs font-bold text-foreground">{selectedVoucher.disbursedDate}</p>
-					</div>
-					<div>
-						<span class="text-[11px] text-muted-foreground">Fideicomiso emisor</span>
-						<p class="mt-0.5 text-xs font-bold text-foreground">{activeCut.fiduciaryEntity}</p>
+						<span class="font-mono text-[10px] font-bold text-emerald-600 uppercase">
+							Comprobante Oficial de Desembolso Fiduciario
+						</span>
+						<h3 class="font-display text-xs sm:text-sm font-bold text-foreground">
+							Hito #{selectedVoucher.milestoneNumber} · {selectedVoucher.title}
+						</h3>
 					</div>
 				</div>
-
-				<div class="space-y-2.5 rounded-xl border border-border p-3.5 sm:p-4 text-xs">
-					<div class="flex justify-between gap-2">
-						<span class="text-muted-foreground">Constructora beneficiaria:</span>
-						<span class="font-semibold text-foreground text-right">{ficha.developerProfile.name} ({ficha.developerProfile.nit})</span>
-					</div>
-					<div class="flex justify-between gap-2">
-						<span class="text-muted-foreground">Cuenta bancaria destino:</span>
-						<span class="font-mono text-foreground">{selectedVoucher.beneficiaryAccount}</span>
-					</div>
-					<div class="flex justify-between border-t border-border pt-2">
-						<span class="text-muted-foreground">Valor bruto certificado:</span>
-						<span class="font-mono font-semibold text-foreground">{formatCOP(selectedVoucher.grossAmountCOP)}</span>
-					</div>
-					<div class="flex justify-between">
-						<span class="text-muted-foreground">Retención de garantía fiduciaria (5%):</span>
-						<span class="font-mono text-rose-500">-{formatCOP(selectedVoucher.retentionFivePercentCOP)}</span>
-					</div>
-					<div class="flex justify-between border-t border-border pt-2.5 text-sm">
-						<span class="font-bold text-foreground">Valor neto desembolsado:</span>
-						<span class="font-mono font-bold text-emerald-600">{formatCOP(selectedVoucher.netDisbursementCOP)}</span>
-					</div>
-				</div>
-
-				<div class="rounded-xl border border-border bg-muted/30 px-3.5 py-2.5 font-mono text-xs break-all text-muted-foreground">
-					Hash de auditoría Stellar Soroban: <strong class="text-foreground">{selectedVoucher.stellarTxHash || activeCut.stellarTxHash}</strong>
+				<div class="flex items-center gap-2">
+					<button
+						type="button"
+						onclick={() => window.print()}
+						class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-foreground px-3 py-1.5 text-xs font-mono font-medium text-background hover:opacity-90 shadow-sm"
+					>
+						<Printer class="h-3.5 w-3.5" />
+						<span>Imprimir Comprobante</span>
+					</button>
+					<button
+						type="button"
+						onclick={() => (selectedVoucher = null)}
+						aria-label="Cerrar comprobante"
+						class="cursor-pointer rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted"
+					>
+						<X class="h-4 w-4" />
+					</button>
 				</div>
 			</div>
 
-			<div class="flex items-center justify-end gap-2 border-t border-border bg-muted/20 px-4 sm:px-6 py-3 sm:py-4 shrink-0">
+			<!-- Documento del Comprobante Imprimible -->
+			<div id="printable-voucher-document" class="space-y-5 p-6 sm:p-8 overflow-y-auto flex-1 text-xs bg-background print:bg-white print:p-8 print:text-black print:overflow-visible">
+				<!-- Membrete con Logo TRAMO y Datos de Emisión -->
+				<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b-2 border-foreground pb-4 print:border-black">
+					<div class="space-y-1.5">
+						<img
+							src="/black_logo_ui_v1.svg"
+							alt="TRAMO"
+							class="h-7 w-auto object-contain dark:invert print:filter-none"
+						/>
+						<h2 class="text-sm sm:text-base font-bold text-foreground print:text-black">
+							COMPROBANTE DE LIQUIDACIÓN Y TRANSFERENCIA BANCARIA ACH
+						</h2>
+						<p class="text-[11px] text-muted-foreground print:text-black">
+							Fideicomiso: <strong>{activeCut.fiduciaryTrustCode}</strong> · Vocera: <strong>{activeCut.fiduciaryEntity}</strong>
+						</p>
+					</div>
+					<div class="rounded-lg border border-border bg-muted/20 p-2.5 font-mono text-[10px] text-right shrink-0 print:border-black print:bg-white">
+						<div class="font-bold text-foreground print:text-black">REF ACH #{selectedVoucher.achReference}</div>
+						<div class="text-muted-foreground print:text-black">Fecha Valor: {selectedVoucher.disbursedDate}</div>
+						<div class="text-emerald-600 font-bold print:text-black">Stellar Soroban Testnet</div>
+					</div>
+				</div>
+
+				<!-- Cuadro de Datos de Transferencia -->
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+					<div class="p-3 rounded-lg bg-muted/20 border border-border space-y-1 print:border-black print:bg-white">
+						<span class="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold print:text-black">Beneficiario del Giro</span>
+						<div class="font-bold text-foreground print:text-black">{ficha.developerProfile.name}</div>
+						<div class="text-[11px] text-muted-foreground print:text-black">NIT: {ficha.developerProfile.nit}</div>
+					</div>
+					<div class="p-3 rounded-lg bg-muted/20 border border-border space-y-1 print:border-black print:bg-white">
+						<span class="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold print:text-black">Cuenta Destino y Entidad</span>
+						<div class="font-mono font-bold text-foreground print:text-black">{selectedVoucher.beneficiaryAccount}</div>
+						<div class="text-[11px] text-muted-foreground print:text-black">Transferencia Interbancaria Inmediata ACH</div>
+					</div>
+				</div>
+
+				<!-- Desglose Financiero -->
+				<div class="rounded-xl border border-border overflow-hidden print:border-black">
+					<div class="bg-muted/40 px-4 py-2 border-b border-border font-bold text-xs uppercase tracking-wider text-foreground print:border-black print:bg-white print:text-black">
+						Liquidación Financiera del Hito
+					</div>
+					<div class="p-4 space-y-2 text-xs">
+						<div class="flex justify-between">
+							<span class="text-muted-foreground print:text-black">Concepto de Obra:</span>
+							<span class="font-semibold text-foreground print:text-black">Hito #{selectedVoucher.milestoneNumber} — {selectedVoucher.title}</span>
+						</div>
+						<div class="flex justify-between border-t border-border/60 pt-2 print:border-black">
+							<span class="text-muted-foreground print:text-black">Valor Bruto Certificado por Interventoría:</span>
+							<span class="font-mono font-semibold text-foreground print:text-black">{formatCOP(selectedVoucher.grossAmountCOP)}</span>
+						</div>
+						<div class="flex justify-between">
+							<span class="text-muted-foreground print:text-black">Retención Legal de Garantía (5% Ley 1796):</span>
+							<span class="font-mono font-semibold text-amber-600 print:text-black">-{formatCOP(selectedVoucher.retentionFivePercentCOP)}</span>
+						</div>
+						<div class="flex justify-between border-t-2 border-foreground pt-2.5 text-sm print:border-black">
+							<span class="font-bold text-foreground print:text-black">Total Neto Acreditado ACH:</span>
+							<span class="font-mono font-bold text-emerald-600 print:text-black">{formatCOP(selectedVoucher.netDisbursementCOP)}</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Sello Criptográfico Soroban con QR -->
+				<div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3.5 print:border-black print:bg-white flex flex-col sm:flex-row items-center justify-between gap-3">
+					<div class="space-y-1 text-[11px]">
+						<span class="font-bold text-emerald-700 dark:text-emerald-400 print:text-black flex items-center gap-1.5">
+							<ShieldCheck class="w-4 h-4 text-emerald-600 print:text-black shrink-0" />
+							Sello Criptográfico Inmutable en Stellar Soroban
+						</span>
+						<div class="font-mono text-[9px] text-muted-foreground break-all select-all print:text-black">
+							Hash Transacción: {selectedVoucher.stellarTxHash || activeCut.stellarTxHash}
+						</div>
+						<div class="text-[10px] text-muted-foreground print:text-black">
+							Contrato: CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T
+						</div>
+					</div>
+					<img
+						src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data={encodeURIComponent('https://stellar.expert/explorer/testnet/tx/' + (selectedVoucher.stellarTxHash || activeCut.stellarTxHash))}"
+						alt="QR Stellar"
+						class="w-16 h-16 border border-border rounded print:border-black shrink-0"
+					/>
+				</div>
+
+				<!-- Firmas de Tesorería -->
+				<div class="grid grid-cols-2 gap-4 border-t border-border pt-4 text-center print:border-black">
+					<div class="p-2 border border-border rounded-lg space-y-1 print:border-black">
+						<div class="h-7 border-b border-dashed border-border mb-1 flex items-end justify-center font-serif italic text-xs text-foreground print:text-black">
+							Dra. Patricia Gómez
+						</div>
+						<div class="font-semibold text-foreground text-[11px] print:text-black">Dirección de Tesorería Fiduciaria</div>
+						<div class="text-[10px] text-muted-foreground print:text-black">{activeCut.fiduciaryEntity}</div>
+					</div>
+					<div class="p-2 border border-border rounded-lg space-y-1 print:border-black">
+						<div class="h-7 border-b border-dashed border-border mb-1 flex items-end justify-center font-serif italic text-xs text-foreground print:text-black">
+							Ing. Juan José Carabalí
+						</div>
+						<div class="font-semibold text-foreground text-[11px] print:text-black">Director Interventoría Técnica</div>
+						<div class="text-[10px] text-muted-foreground print:text-black">COPNIA: {ficha.supervisorProfile.copniaLicense}</div>
+					</div>
+				</div>
+
+				<div class="pt-2 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground print:border-black print:text-black">
+					<div class="flex items-center gap-1">
+						<img src="/isotipo_tramo.svg" alt="TRAMO" class="w-3.5 h-3.5 object-contain" />
+						<span>Tramo Protocol · Comprobante Fiduciario de Desembolso</span>
+					</div>
+					<span>Auditoría abierta en Stellar.Expert</span>
+				</div>
+			</div>
+
+			<div class="flex items-center justify-end gap-2 border-t border-border bg-muted/20 px-4 sm:px-6 py-3 shrink-0 print:hidden">
 				<button
 					type="button"
 					onclick={() => (selectedVoucher = null)}
@@ -1456,7 +1537,8 @@
 		:global(.print\:hidden) {
 			display: none !important;
 		}
-		#printable-acta-document {
+		#printable-acta-document,
+		#printable-voucher-document {
 			width: 100% !important;
 			max-width: 100% !important;
 			margin: 0 !important;
