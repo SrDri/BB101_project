@@ -373,7 +373,7 @@ def build_official_pdf(output_path: str):
     print(f"[OK] Documento PDF oficial generado exitosamente en: {output_path}")
 
 if __name__ == "__main__":
-    out_dir = os.path.join(os.path.dirname(__file__), "..", "docs", "semana4")
+    out_dir = os.path.join(os.path.dirname(__file__), "..", "local")
     os.makedirs(out_dir, exist_ok=True)
     target_pdf = os.path.join(out_dir, "Reporte_Oficial_Tramo_Corte4.pdf")
     build_official_pdf(target_pdf)
