@@ -1180,28 +1180,37 @@
 <!-- MODAL DE ACTA OFICIAL EJECUTIVA DE COMITÉ FIDUCIARIO (IMPRIMIBLE) -->
 {#if showExecutiveReportModal}
 	<div
-		class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 p-0 sm:p-4 backdrop-blur-xs overflow-y-auto"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-2 sm:p-4 backdrop-blur-xs overflow-y-auto print:p-0 print:bg-white print:fixed print:inset-0"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="flex max-h-[94dvh] w-full sm:w-[96vw] max-w-4xl flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-0 sm:my-auto">
-			<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-border px-4 sm:px-6 py-3.5 sm:py-4 shrink-0">
-				<div>
-					<span class="font-mono text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase">
-						Documento auditable de comité fiduciario
-					</span>
-					<h3 class="font-display text-sm sm:text-base font-bold text-foreground">
-						Acta ejecutiva de verificación de obra y desembolsos — {activeCut.projectName}
-					</h3>
+		<div class="flex max-h-[94dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl my-auto print:max-w-none print:max-h-none print:border-none print:shadow-none print:rounded-none">
+			<!-- Barra de Acciones del Modal (Oculta en impresión) -->
+			<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-border px-4 sm:px-6 py-3.5 bg-muted/40 shrink-0 print:hidden">
+				<div class="flex items-center gap-2.5">
+					<img src="/isotipo_tramo.svg" alt="TRAMO" class="w-6 h-6 object-contain" />
+					<div>
+						<div class="flex items-center gap-2">
+							<span class="font-mono text-[11px] font-bold text-emerald-600 uppercase">
+								Documento Oficial de Comité Fiduciario
+							</span>
+							<span class="rounded bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-600">
+								Stellar Soroban Testnet
+							</span>
+						</div>
+						<h3 class="font-display text-sm font-bold text-foreground">
+							Acta Ejecutiva de Verificación y Orden de Giro ACH — {activeCut.projectName}
+						</h3>
+					</div>
 				</div>
 				<div class="flex items-center gap-2 self-end sm:self-auto">
 					<button
 						type="button"
 						onclick={printExecutiveReport}
-						class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-foreground px-3.5 py-1.5 text-xs font-medium text-background hover:opacity-90"
+						class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-foreground px-3.5 py-1.5 text-xs font-medium text-background hover:opacity-90 font-mono shadow-sm"
 					>
 						<Printer class="h-3.5 w-3.5" />
-						<span>Imprimir / PDF</span>
+						<span>Imprimir / Guardar PDF</span>
 					</button>
 					<button
 						type="button"
@@ -1213,60 +1222,136 @@
 				</div>
 			</div>
 
-			<div class="space-y-5 overflow-y-auto p-4 sm:p-6 text-xs flex-1">
-				<div class="rounded-xl border border-border bg-background p-6 space-y-5">
-					<div class="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-4">
-						<div>
-							<div class="text-sm font-bold text-foreground">{activeCut.fiduciaryEntity}</div>
-							<div class="text-muted-foreground">Patrimonio Autónomo: {activeCut.fiduciaryTrustCode}</div>
-							<div class="text-muted-foreground">Proyecto: {activeCut.projectName} ({activeCut.city})</div>
-						</div>
-						<div class="text-right font-mono">
-							<div class="font-bold text-foreground">ACTA COMITÉ #{activeCut.number}-2026</div>
-							<div class="text-muted-foreground">Fecha: 12 Octubre 2026</div>
-							<div class="text-emerald-600 font-semibold">Red: Stellar Soroban Testnet</div>
-						</div>
-					</div>
-
-					<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-						<div class="rounded-lg border border-border p-3">
-							<span class="text-muted-foreground block text-[11px]">Avance físico certificado</span>
-							<span class="font-mono text-base font-bold text-emerald-600">{activeCut.certifiedPhysicalProgress}%</span>
-						</div>
-						<div class="rounded-lg border border-border p-3">
-							<span class="text-muted-foreground block text-[11px]">Total neto desembolsado</span>
-							<span class="font-mono text-base font-bold text-foreground">{formatCOP(totalNetTransferred)}</span>
-						</div>
-						<div class="rounded-lg border border-border p-3">
-							<span class="text-muted-foreground block text-[11px]">Retención garantía acumulada (5%)</span>
-							<span class="font-mono text-base font-bold text-foreground">{formatCOP(totalRetainedGuarantee)}</span>
-						</div>
-					</div>
-
+			<!-- Documento Imprimible del Acta -->
+			<div id="printable-acta-document" class="space-y-6 overflow-y-auto p-6 sm:p-10 text-xs flex-1 bg-background print:bg-white print:p-8 print:text-black print:overflow-visible">
+				<!-- Membrete con Logo TRAMO -->
+				<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b-2 border-foreground pb-6 print:border-black">
 					<div class="space-y-2">
-						<div class="font-semibold text-foreground">Dictamen de cumplimiento normativo (Ley 1796 de 2016 y NSR-10)</div>
-						<p class="leading-relaxed text-muted-foreground">
-							Se deja constancia en el comité fiduciario que la constructora <strong class="text-foreground">{ficha.developerProfile.name}</strong> mantiene vigentes las pólizas exigidas por ley y la seguridad social PILA de obra, y que la firma interventora independiente <strong class="text-foreground">{ficha.supervisorProfile.companyName}</strong> ({ficha.supervisorProfile.copniaLicense}) avaló satisfactoriamente los {labTests.length} ensayos de laboratorio ONAC y selló la huella criptográfica del corte en la red Stellar Soroban.
-						</p>
+						<div class="flex items-center gap-3">
+							<img
+								src="/black_logo_ui_v1.svg"
+								alt="TRAMO"
+								class="h-8 w-auto object-contain dark:invert print:filter-none"
+							/>
+							<div class="h-6 w-px bg-border print:bg-black hidden sm:block"></div>
+							<span class="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground print:text-black">
+								Supervisión Técnica y Custodia de Fondos Fiduciarios
+							</span>
+						</div>
+						<div>
+							<h1 class="text-base sm:text-lg font-bold text-foreground print:text-black">
+								ACTA ORDINARIA DE COMITÉ FIDUCIARIO N° {activeCut.number}-2026
+							</h1>
+							<p class="text-muted-foreground text-[11px] print:text-black">
+								Patrimonio Autónomo: <strong>{activeCut.fiduciaryTrustCode}</strong> • Entidad Vocera: <strong>{activeCut.fiduciaryEntity}</strong>
+							</p>
+						</div>
 					</div>
 
-					<div class="grid grid-cols-1 gap-4 border-t border-border pt-4 sm:grid-cols-3 text-center">
-						<div class="rounded-lg border border-border bg-muted/20 p-3">
-							<div class="font-semibold text-foreground">{ficha.developerProfile.legalRepresentative}</div>
-							<div class="text-[11px] text-muted-foreground">Representante Legal Constructora</div>
-							<div class="mt-1 font-mono text-[10px] text-emerald-600">Radicado Digital Verificado</div>
-						</div>
-						<div class="rounded-lg border border-border bg-muted/20 p-3">
-							<div class="font-semibold text-foreground">{ficha.supervisorProfile.name}</div>
-							<div class="text-[11px] text-muted-foreground">Director Interventoría ({ficha.supervisorProfile.copniaLicense})</div>
-							<div class="mt-1 font-mono text-[10px] text-emerald-600">Firma Criptográfica Soroban</div>
-						</div>
-						<div class="rounded-lg border border-border bg-muted/20 p-3">
-							<div class="font-semibold text-foreground">Comité de Giros Fiduciarios</div>
-							<div class="text-[11px] text-muted-foreground">{activeCut.fiduciaryEntity}</div>
-							<div class="mt-1 font-mono text-[10px] text-emerald-600">Auditoría Completa</div>
-						</div>
+					<div class="rounded-xl border border-border bg-muted/30 p-3 sm:text-right font-mono text-[11px] shrink-0 print:border-black print:bg-white">
+						<div class="font-bold text-foreground print:text-black">SESIÓN VIRTUAL CON VALIDEZ BLOCKCHAIN</div>
+						<div class="text-muted-foreground print:text-black">Fecha: 18 Octubre 2026</div>
+						<div class="text-emerald-600 font-bold print:text-black">Ledger Stellar #5264904</div>
+						<div class="text-[10px] text-muted-foreground print:text-black">Quórum: 100% Reglamentario</div>
 					</div>
+				</div>
+
+				<!-- NOTA EXPLICATIVA CIUDADANA Y PARA AUTORIDADES -->
+				<div class="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 space-y-2 print:border-black print:bg-muted/10">
+					<div class="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-amber-700 dark:text-amber-300 print:text-black">
+						<AlertTriangle class="w-4 h-4 text-amber-600 print:text-black shrink-0" />
+						<span>Garantía de Transparencia para Compradores, Bancos y Entidades de Control</span>
+					</div>
+					<p class="text-[11px] text-muted-foreground print:text-black leading-relaxed">
+						Esta acta certifica que el comité fiduciario verificó el cumplimiento estricto del <strong>Punto de Equilibrio Comercial (70%)</strong>, la vigencia ininterrumpida de las pólizas decenales de la <strong>Ley 1796 de 2016</strong> y los ensayos sismorresistentes <strong>NSR-10 de laboratorio acreditado ONAC</strong>. Bajo ninguna circunstancia se liberan recursos del encargo fiduciario a la constructora sin el aval técnico previo de la interventoría sellado de forma inmutable en la red Stellar Soroban.
+					</p>
+				</div>
+
+				<!-- Métricas Principales -->
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-3 text-center">
+					<div class="rounded-lg border border-border bg-muted/20 p-3 print:border-black print:bg-white">
+						<span class="text-muted-foreground block text-[11px] print:text-black">Avance Físico Certificado</span>
+						<span class="font-mono text-base font-bold text-emerald-600 print:text-black">{activeCut.certifiedPhysicalProgress}%</span>
+						<span class="text-[10px] text-muted-foreground block">Losas completadas hasta piso 5</span>
+					</div>
+					<div class="rounded-lg border border-border bg-muted/20 p-3 print:border-black print:bg-white">
+						<span class="text-muted-foreground block text-[11px] print:text-black">Total Neto Desembolsado</span>
+						<span class="font-mono text-base font-bold text-foreground print:text-black">{formatCOP(totalNetTransferred)}</span>
+						<span class="text-[10px] text-emerald-600 block print:text-black">Giro ACH Autorizado</span>
+					</div>
+					<div class="rounded-lg border border-border bg-muted/20 p-3 print:border-black print:bg-white">
+						<span class="text-muted-foreground block text-[11px] print:text-black">Retención Legal de Garantía (5%)</span>
+						<span class="font-mono text-base font-bold text-amber-600 print:text-black">{formatCOP(totalRetainedGuarantee)}</span>
+						<span class="text-[10px] text-muted-foreground block">Custodia en Encargo Fiduciario</span>
+					</div>
+				</div>
+
+				<!-- Orden del Día y Resoluciones del Comité -->
+				<div class="space-y-3 rounded-xl border border-border p-4 print:border-black">
+					<div class="font-bold text-xs uppercase tracking-wider text-foreground print:text-black">
+						Resoluciones y Acuerdos Aprobados por Unanimidad
+					</div>
+					<ul class="space-y-2 text-muted-foreground print:text-black text-[11px] leading-relaxed list-disc pl-5">
+						<li>
+							<strong>Aprobación de Avance Físico:</strong> Se da por recibido a entera satisfacción el avance acumulado del <strong>{activeCut.certifiedPhysicalProgress}%</strong> certificado por la firma interventora independiente <strong class="text-foreground print:text-black">{ficha.supervisorProfile.companyName}</strong> ({ficha.supervisorProfile.copniaLicense}).
+						</li>
+						<li>
+							<strong>Ensayos de Concreto NSR-10:</strong> Se verificó que los {labTests.length} ensayos de rotura de cilindros de concreto de laboratorio acreditado ONAC arrojaron resistencias promedio de <strong>4250 PSI</strong>, superando el diseño sismorresistente exigido de 4000 PSI.
+						</li>
+						<li>
+							<strong>Orden de Giro ACH Bancario:</strong> Se instruye al área de tesorería fiduciaria transferir el 95% del valor certificado a la constructora <strong class="text-foreground print:text-black">{ficha.developerProfile.name}</strong>, reteniendo el 5% estatutario como fondo de contingencia por 10 años conforme a la Ley de Vivienda Segura.
+						</li>
+					</ul>
+				</div>
+
+				<!-- Bloque Criptográfico Soroban -->
+				<div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3.5 print:border-black print:bg-white flex flex-col sm:flex-row items-center justify-between gap-4">
+					<div class="space-y-1 font-mono text-[10px] text-muted-foreground print:text-black">
+						<div class="font-bold text-emerald-700 dark:text-emerald-400 print:text-black">REGISTRO DE AUDITORÍA CRIPTOGRÁFICA EN RED STELLAR SOROBAN</div>
+						<div>Smart Contract: <strong class="text-foreground select-all break-all print:text-black">CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T</strong></div>
+						<div>Tx Hash: <strong class="text-foreground select-all break-all print:text-black">{activeCut.stellarTxHash}</strong></div>
+					</div>
+					<img
+						src="https://api.qrserver.com/v1/create-qr-code/?size=85x85&data={encodeURIComponent('https://stellar.expert/explorer/testnet/tx/' + activeCut.stellarTxHash)}"
+						alt="QR Stellar"
+						class="w-20 h-20 border border-border rounded print:border-black shrink-0"
+					/>
+				</div>
+
+				<!-- Cuadro de Firmas Oficiales -->
+				<div class="grid grid-cols-1 gap-4 border-t-2 border-foreground pt-4 sm:grid-cols-3 text-center print:border-black">
+					<div class="rounded-lg border border-border bg-muted/20 p-3 print:border-black print:bg-white">
+						<div class="h-8 border-b border-dashed border-border mb-1.5 flex items-end justify-center font-serif italic text-xs text-foreground print:text-black">
+							Arq. Carlos Mendoza
+						</div>
+						<div class="font-semibold text-foreground print:text-black">{ficha.developerProfile.legalRepresentative}</div>
+						<div class="text-[10px] text-muted-foreground print:text-black">Representante Legal Constructora</div>
+						<div class="mt-1 font-mono text-[9px] text-emerald-600 print:text-black">Radicado Digital Aprobado</div>
+					</div>
+					<div class="rounded-lg border border-border bg-muted/20 p-3 print:border-black print:bg-white">
+						<div class="h-8 border-b border-dashed border-border mb-1.5 flex items-end justify-center font-serif italic text-xs text-foreground print:text-black">
+							Ing. Juan José Carabalí
+						</div>
+						<div class="font-semibold text-foreground print:text-black">{ficha.supervisorProfile.name}</div>
+						<div class="text-[10px] text-muted-foreground print:text-black">Director Interventoría ({ficha.supervisorProfile.copniaLicense})</div>
+						<div class="mt-1 font-mono text-[10px] text-emerald-600 print:text-black">Firma Criptográfica Soroban</div>
+					</div>
+					<div class="rounded-lg border border-border bg-muted/20 p-3 print:border-black print:bg-white">
+						<div class="h-8 border-b border-dashed border-border mb-1.5 flex items-end justify-center font-serif italic text-xs text-foreground print:text-black">
+							Dra. Patricia Gómez
+						</div>
+						<div class="font-semibold text-foreground print:text-black">Comité de Giros Fiduciarios</div>
+						<div class="text-[10px] text-muted-foreground print:text-black">{activeCut.fiduciaryEntity}</div>
+						<div class="mt-1 font-mono text-[10px] text-emerald-600 print:text-black">Liberación ACH 95%</div>
+					</div>
+				</div>
+
+				<div class="pt-3 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground print:border-black print:text-black">
+					<div class="flex items-center gap-1.5">
+						<img src="/isotipo_tramo.svg" alt="TRAMO" class="w-3.5 h-3.5 object-contain" />
+						<span>Tramo Protocol · Acta Oficial de Desembolso y Supervisión Fiduciaria</span>
+					</div>
+					<span class="font-mono">Página 1 de 1 • Conforme a Ley 1796/2016 y Circular Básica Jurídica Superfinanciera</span>
 				</div>
 			</div>
 		</div>
@@ -1358,3 +1443,29 @@
 {/if}
 
 <CertificatePdfModal bind:isOpen={showPdfModal} />
+
+<style>
+	@media print {
+		:global(body) {
+			background: white !important;
+			color: black !important;
+		}
+		:global(header),
+		:global(aside),
+		:global(nav),
+		:global(.print\:hidden) {
+			display: none !important;
+		}
+		#printable-acta-document {
+			width: 100% !important;
+			max-width: 100% !important;
+			margin: 0 !important;
+			padding: 0 !important;
+			overflow: visible !important;
+		}
+		@page {
+			size: letter portrait;
+			margin: 10mm 12mm;
+		}
+	}
+</style>

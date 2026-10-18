@@ -30,7 +30,8 @@
     FileText,
     Printer,
     ClipboardCheck,
-    Plus
+    Plus,
+    Info
   } from '@lucide/svelte';
 
   let cedulaInput = $state('');
@@ -2378,32 +2379,35 @@
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto"
+    class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto print:p-0 print:bg-white print:fixed print:inset-0"
     onclick={() => (showTaxCertModal = false)}
+    role="dialog"
+    aria-modal="true"
   >
     <div
-      class="bg-card border border-border rounded-t-2xl sm:rounded-xl max-w-2xl w-full max-h-[92dvh] flex flex-col shadow-2xl overflow-hidden my-0 sm:my-auto"
+      class="bg-card border border-border rounded-2xl max-w-2xl w-full max-h-[92dvh] flex flex-col shadow-2xl overflow-hidden my-auto print:max-w-none print:max-h-none print:border-none print:shadow-none print:rounded-none"
       onclick={(e) => e.stopPropagation()}
     >
-      <div class="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-muted/20 shrink-0">
+      <div class="px-4 sm:px-6 py-3.5 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-muted/40 shrink-0 print:hidden">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-lg bg-muted border border-border flex items-center justify-center text-foreground shrink-0">
-            <FileText class="w-4 h-4" />
-          </div>
+          <img src="/isotipo_tramo.svg" alt="TRAMO" class="w-6 h-6 object-contain" />
           <div>
-            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <Badge variant="outline" class="text-[10px] font-mono">CERT-DIAN-2026-{ownerUnit.unitNumber}</Badge>
-              <Badge variant="outline" class="text-[10px] text-emerald-500 border-emerald-500/30 bg-emerald-500/10">Firmado Fiduciaria</Badge>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="rounded bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-600">
+                CERT-DIAN-2026-{ownerUnit.unitNumber}
+              </span>
+              <span class="rounded bg-sky-500/10 px-2 py-0.5 font-mono text-[10px] font-bold text-sky-600">
+                Firmado Fiduciaria
+              </span>
             </div>
-            <h3 class="text-xs sm:text-sm font-semibold text-foreground mt-0.5">Certificación de Aportes a Encargo Fiduciario</h3>
+            <h3 class="text-xs sm:text-sm font-semibold text-foreground mt-0.5">Certificación Oficial de Aportes a Encargo Fiduciario</h3>
           </div>
         </div>
         <div class="flex items-center gap-2 self-end sm:self-auto">
           <Button
-            variant="outline"
             size="sm"
             onclick={() => window.print()}
-            class="h-8 text-xs gap-1.5 cursor-pointer"
+            class="h-8 text-xs gap-1.5 font-mono cursor-pointer bg-foreground text-background hover:opacity-90 shadow-sm"
           >
             <Printer class="w-3.5 h-3.5" />
             <span>Imprimir / PDF</span>
@@ -2417,79 +2421,133 @@
         </div>
       </div>
 
-      <div class="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto flex-1 text-xs">
-        <div class="p-4 rounded-xl bg-muted/20 border border-border space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
-            <div>
-              <div class="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Entidad Certificadora</div>
-              <div class="text-sm font-semibold text-foreground">{ownerUnit.fiduciaryEntity}</div>
-              <div class="text-[11px] text-muted-foreground">Patrimonio Autónomo {ownerProject.projectName} · NIT 901.482.391-4</div>
-            </div>
-            <div class="text-right">
-              <div class="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Encargo Fiduciario Individual</div>
-              <div class="text-sm font-mono font-bold text-foreground">{ownerUnit.fiduciaryContractCode}</div>
-              <div class="text-[11px] text-muted-foreground">Año Gravable Vigente · Corte 2026</div>
-            </div>
+      <!-- Contenido del Certificado Imprimible -->
+      <div id="printable-propietario-tax-cert" class="p-6 sm:p-8 space-y-5 overflow-y-auto flex-1 text-xs bg-background print:bg-white print:p-8 print:text-black print:overflow-visible">
+        <!-- Membrete con Logo TRAMO y Datos Fiduciarios -->
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b-2 border-foreground pb-4 print:border-black">
+          <div class="space-y-1.5">
+            <img
+              src="/black_logo_ui_v1.svg"
+              alt="TRAMO"
+              class="h-7 w-auto object-contain dark:invert print:filter-none"
+            />
+            <h2 class="text-sm sm:text-base font-bold text-foreground print:text-black">
+              CERTIFICADO DE APORTES INDIVIDUALES Y ESTADO DE CUENTA FIDUCIARIO
+            </h2>
+            <p class="text-[11px] text-muted-foreground print:text-black">
+              Válido para Declaración de Renta ante la DIAN, trámite de Crédito Hipotecario y Escrituración Notarial.
+            </p>
           </div>
+          <div class="rounded-lg border border-border bg-muted/20 p-2.5 font-mono text-[10px] text-right shrink-0 print:border-black print:bg-white">
+            <div class="font-bold text-foreground print:text-black">RADICADO DIAN #{ownerUnit.fiduciaryContractCode}</div>
+            <div class="text-muted-foreground print:text-black">Año Gravable: 2026</div>
+            <div class="text-emerald-600 font-bold print:text-black">Stellar Soroban Testnet</div>
+          </div>
+        </div>
 
-          <p class="text-muted-foreground leading-relaxed">
-            La sociedad fiduciaria certifica que el adherente / fideicomitente de vinculación <strong class="text-foreground">{ownerUnit.ownerName}</strong>,
-            vinculado a la unidad inmobiliaria <strong class="text-foreground">{ownerUnit.unitNumber} (Piso {ownerUnit.floorLevel})</strong> del proyecto
-            <strong class="text-foreground">{ownerProject.projectName}</strong> ({ownerProject.city}), presenta el siguiente saldo consolidado de aportes:
+        <!-- NOTA EXPLICATIVA PARA EL PROPIETARIO, BANCO Y NOTARÍA -->
+        <div class="rounded-xl border border-sky-500/30 bg-sky-500/5 p-3.5 space-y-1.5 print:border-black print:bg-muted/10">
+          <div class="font-bold text-[11px] text-sky-800 dark:text-sky-300 print:text-black flex items-center gap-1.5">
+            <Info class="w-3.5 h-3.5 text-sky-600 print:text-black shrink-0" />
+            <span>Finalidad del Documento para Personas y Entidades Financieras</span>
+          </div>
+          <p class="text-[11px] text-muted-foreground print:text-black leading-relaxed">
+            Este certificado da fe pública ante entidades bancarias y la DIAN de que el comprador ha consignado sus cuotas iniciales en la cuenta del encargo fiduciario del proyecto, protegidas bajo supervisión de la Superintendencia Financiera de Colombia.
           </p>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div class="p-3 rounded-lg bg-muted/15 border border-border">
-            <span class="text-[10px] text-muted-foreground block">Valor Total Unidad</span>
-            <span class="text-xs font-bold text-foreground font-mono tabular-nums mt-0.5 block">{formatCOP(ownerFinancialPlan.totalUnitValueCOP)}</span>
+        <!-- Datos del Fideicomitente y la Unidad -->
+        <div class="rounded-xl bg-muted/20 border border-border p-4 space-y-3 print:border-black print:bg-white">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3 print:border-black">
+            <div>
+              <div class="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold print:text-black">Entidad Fiduciaria Vocera</div>
+              <div class="text-sm font-semibold text-foreground print:text-black">{ownerUnit.fiduciaryEntity}</div>
+              <div class="text-[11px] text-muted-foreground print:text-black">Patrimonio Autónomo {ownerProject.projectName} · NIT 901.482.391-4</div>
+            </div>
+            <div class="text-right">
+              <div class="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold print:text-black">Encargo Fiduciario Individual</div>
+              <div class="text-sm font-mono font-bold text-foreground print:text-black">{ownerUnit.fiduciaryContractCode}</div>
+              <div class="text-[11px] text-muted-foreground print:text-black">Unidad {ownerUnit.unitNumber} (Piso {ownerUnit.floorLevel})</div>
+            </div>
           </div>
-          <div class="p-3 rounded-lg bg-muted/15 border border-border">
-            <span class="text-[10px] text-muted-foreground block">Cuota Inicial (30%)</span>
-            <span class="text-xs font-bold text-foreground font-mono tabular-nums mt-0.5 block">{formatCOP(ownerFinancialPlan.initialQuotaTotalCOP)}</span>
+
+          <p class="text-muted-foreground print:text-black leading-relaxed">
+            La sociedad fiduciaria certifica que el beneficiario / fideicomitente adherente <strong class="text-foreground print:text-black">{ownerUnit.ownerName}</strong>,
+            vinculado a la unidad inmobiliaria <strong class="text-foreground print:text-black">{ownerUnit.unitNumber}</strong> del proyecto
+            <strong class="text-foreground print:text-black">{ownerProject.projectName}</strong> ({ownerProject.city}), presenta el siguiente saldo consolidado y validado en la red Stellar:
+          </p>
+        </div>
+
+        <!-- Resumen Financiero de la Unidad -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          <div class="p-2.5 rounded-lg bg-muted/15 border border-border print:border-black print:bg-white">
+            <span class="text-[10px] text-muted-foreground block print:text-black">Valor Total Unidad</span>
+            <span class="text-xs font-bold text-foreground font-mono tabular-nums mt-0.5 block print:text-black">{formatCOP(ownerFinancialPlan.totalUnitValueCOP)}</span>
           </div>
-          <div class="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-            <span class="text-[10px] text-emerald-500 block">Aportes Recaudados</span>
-            <span class="text-xs font-bold text-emerald-500 font-mono tabular-nums mt-0.5 block">{formatCOP(ownerFinancialPlan.paidInitialQuotaCOP)}</span>
+          <div class="p-2.5 rounded-lg bg-muted/15 border border-border print:border-black print:bg-white">
+            <span class="text-[10px] text-muted-foreground block print:text-black">Cuota Inicial (30%)</span>
+            <span class="text-xs font-bold text-foreground font-mono tabular-nums mt-0.5 block print:text-black">{formatCOP(ownerFinancialPlan.initialQuotaTotalCOP)}</span>
           </div>
-          <div class="p-3 rounded-lg bg-muted/20 border border-border">
-            <span class="text-[10px] text-muted-foreground block">Rendimientos Fiduciarios</span>
-            <span class="text-xs font-bold text-foreground font-mono tabular-nums mt-0.5 block">+{formatCOP(ownerFinancialPlan.fiduciaryYieldsCOP)}</span>
+          <div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 print:border-black print:bg-white">
+            <span class="text-[10px] text-emerald-700 dark:text-emerald-300 block font-semibold print:text-black">Aportes Recaudados</span>
+            <span class="text-xs font-bold text-emerald-600 font-mono tabular-nums mt-0.5 block print:text-black">{formatCOP(ownerFinancialPlan.paidInitialQuotaCOP)}</span>
+          </div>
+          <div class="p-2.5 rounded-lg bg-muted/20 border border-border print:border-black print:bg-white">
+            <span class="text-[10px] text-muted-foreground block print:text-black">Rendimientos Fiduciarios</span>
+            <span class="text-xs font-bold text-foreground font-mono tabular-nums mt-0.5 block print:text-black">+{formatCOP(ownerFinancialPlan.fiduciaryYieldsCOP)}</span>
           </div>
         </div>
 
-        <div class="rounded-lg border border-border overflow-hidden">
-          <div class="px-3.5 py-2 bg-muted/30 border-b border-border font-semibold text-foreground">
-            Relación de recaudos conciliados en el encargo
+        <!-- Relación de Pagos Conciliados -->
+        <div class="rounded-lg border border-border overflow-hidden print:border-black">
+          <div class="px-3.5 py-2 bg-muted/30 border-b border-border font-semibold text-foreground text-[11px] print:border-black print:bg-white print:text-black">
+            Relación de cuotas conciliadas en el encargo individual
           </div>
-          <div class="divide-y divide-border/60">
+          <div class="divide-y divide-border/60 print:divide-black">
             {#each ownerFinancialPlan.installments.filter((i) => i.status === 'pagado') as inst}
-              <div class="px-3.5 py-2 flex items-center justify-between">
+              <div class="px-3.5 py-2 flex items-center justify-between text-[11px]">
                 <div>
-                  <span class="font-medium text-foreground">{inst.num}</span>
-                  <span class="text-[11px] text-muted-foreground block">Fecha: {inst.date} · Ref: {inst.ref}</span>
+                  <span class="font-medium text-foreground print:text-black">{inst.num}</span>
+                  <span class="text-[10px] text-muted-foreground block print:text-black">Fecha: {inst.date} · Ref Bancaria: {inst.ref}</span>
                 </div>
-                <span class="font-mono font-semibold text-emerald-500 tabular-nums">{formatCOP(inst.amount)}</span>
+                <span class="font-mono font-semibold text-emerald-600 tabular-nums print:text-black">{formatCOP(inst.amount)}</span>
               </div>
             {/each}
           </div>
         </div>
 
-        <div class="p-3.5 rounded-lg bg-muted/25 border border-border space-y-1">
-          <div class="flex items-center justify-between text-[11px]">
-            <span class="text-muted-foreground flex items-center gap-1.5">
-              <ShieldCheck class="w-3.5 h-3.5 text-emerald-500" />
-              Sello de Integridad Documental en Stellar Soroban
+        <!-- Sello de Integridad Soroban con QR -->
+        <div class="p-3.5 rounded-lg bg-emerald-500/5 border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 print:border-black print:bg-white">
+          <div class="space-y-1 text-[11px]">
+            <span class="text-muted-foreground flex items-center gap-1.5 font-semibold text-foreground print:text-black">
+              <ShieldCheck class="w-4 h-4 text-emerald-600 print:text-black" />
+              Sello de Integridad y Fe Pública en Stellar Soroban
             </span>
-            <span class="font-mono text-emerald-500">VERIFICADO</span>
+            <div class="font-mono text-[9px] text-muted-foreground break-all select-all print:text-black">
+              Hash: {ownerProject.sha256Hash}
+            </div>
+            <div class="text-[10px] text-muted-foreground print:text-black">
+              Contrato: CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T
+            </div>
           </div>
-          <div class="font-mono text-[10px] text-foreground break-all">
-            {ownerProject.sha256Hash}
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=75x75&data={encodeURIComponent('https://stellar.expert/explorer/testnet/contract/CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T')}"
+            alt="QR Verificación"
+            class="w-16 h-16 border border-border rounded print:border-black shrink-0"
+          />
+        </div>
+
+        <!-- Pie de Página -->
+        <div class="pt-3 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground print:border-black print:text-black">
+          <div class="flex items-center gap-1">
+            <img src="/isotipo_tramo.svg" alt="TRAMO" class="w-3.5 h-3.5 object-contain" />
+            <span>Tramo Protocol · Certificación Fiduciaria Individual</span>
           </div>
+          <span>Documento emitido conforme a normas DIAN y Superintendencia Financiera</span>
         </div>
       </div>
 
-      <div class="px-6 py-3.5 border-t border-border bg-muted/20 flex items-center justify-end gap-2">
+      <div class="px-6 py-3.5 border-t border-border bg-muted/20 flex items-center justify-end gap-2 print:hidden">
         <Button
           variant="outline"
           onclick={() => (showTaxCertModal = false)}
@@ -2499,7 +2557,7 @@
         </Button>
         <Button
           onclick={() => window.print()}
-          class="h-8 text-xs bg-foreground text-background hover:bg-foreground/90 gap-1.5 cursor-pointer"
+          class="h-8 text-xs bg-foreground text-background hover:bg-foreground/90 gap-1.5 cursor-pointer font-mono shadow-sm"
         >
           <Printer class="w-3.5 h-3.5" />
           Imprimir Certificado
@@ -2508,4 +2566,31 @@
     </div>
   </div>
 {/if}
+
+<style>
+  @media print {
+    :global(body) {
+      background: white !important;
+      color: black !important;
+    }
+    :global(header),
+    :global(aside),
+    :global(nav),
+    :global(.print\:hidden) {
+      display: none !important;
+    }
+    #printable-propietario-tax-cert {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: visible !important;
+    }
+    @page {
+      size: letter portrait;
+      margin: 10mm 12mm;
+    }
+  }
+</style>
+
 
