@@ -13,7 +13,8 @@ import type {
   TechnicalFinding,
   MaterialLabTest,
   AuditLogEntry,
-  UnitSnagItem
+  UnitSnagItem,
+  ProjectLifecycleStatus
 } from '../types/twin';
 import type { IssuedCertificate } from '../types/certificate';
 import { getSupabaseClient } from '../supabase';
@@ -808,9 +809,52 @@ class ProjectStore {
 
   issuedCertificates = $state<IssuedCertificate[]>([
     {
+      certificateId: 'CERT-ALAMEDA-004',
+      metadata: {
+        projectId: 'TORRE-ALAMEDA-1',
+        projectName: 'Torre Alameda — Etapa 1',
+        corteNumber: 4,
+        periodStart: '2026-10-01',
+        periodEnd: '2026-10-18',
+        interventor: {
+          fullName: 'Juan Jose Carabali',
+          professionalLicense: '25202-99881 COPNIA',
+          stellarPublicKey: 'GC6RUZUXCYOAUOAXRFICYGOCTJTYYNVYZFG4QGC4OI7FYYVQKV7MVM3S'
+        },
+        financialSummary: {
+          totalProjectBudgetCOP: 24500000000,
+          cutDisbursementCOP: 185000000,
+          previousCumulativeDisbursedCOP: 8300000000
+        },
+        metrics: {
+          scheduledProgressPercent: 44.0,
+          aiAssistedProgressPercent: 44.8,
+          finalCertifiedProgressPercent: 44.5,
+          variancePercent: 0.5
+        },
+        activities: INITIAL_ACTIVITIES,
+        evidencePhotosSummary: {
+          totalPhotos: 48,
+          allGeotagged: true,
+          allFaceBlurred: true,
+          merkleRootPhotos: 'a7c93e41b2e8d7541f6e2983c48520d88b489920efbc756312a0f8d9b1c7849e'
+        }
+      },
+      sha256Hash: 'a7c93e41b2e8d7541f6e2983c48520d88b489920efbc756312a0f8d9b1c7849e',
+      issuedAt: '2026-10-18T18:28:27Z',
+      stellarSoroban: {
+        network: 'testnet',
+        contractId: 'CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T',
+        transactionHash: '452ef966702a172ed2be7ba0fc53ea306661bfe34900e53ad5b648dfbc33d4be',
+        ledgerSequence: 5264904,
+        blockTimestamp: '2026-10-18T18:28:27Z',
+        sponsoredBy: 'GC6RUZUXCYOAUOAXRFICYGOCTJTYYNVYZFG4QGC4OI7FYYVQKV7MVM3S'
+      }
+    },
+    {
       certificateId: 'CERT-ALAMEDA-003',
       metadata: {
-        projectId: 'PROJ-ALAMEDA-01',
+        projectId: 'TORRE-ALAMEDA-1',
         projectName: 'Torre Alameda — Etapa 1',
         corteNumber: 3,
         periodStart: '2026-09-01',
@@ -818,7 +862,7 @@ class ProjectStore {
         interventor: {
           fullName: 'Juan Jose Carabali',
           professionalLicense: '25202-99881 COPNIA',
-          stellarPublicKey: 'GBBD...TRAMO_INTERVENTOR_KEY'
+          stellarPublicKey: 'GC6RUZUXCYOAUOAXRFICYGOCTJTYYNVYZFG4QGC4OI7FYYVQKV7MVM3S'
         },
         financialSummary: {
           totalProjectBudgetCOP: 24500000000,
@@ -843,11 +887,11 @@ class ProjectStore {
       issuedAt: '2026-09-30T17:00:00Z',
       stellarSoroban: {
         network: 'testnet',
-        contractId: 'CA7TRAMO_REGISTRY_TESTNET_7392841029384756',
-        transactionHash: 'c4e97a82fb10d3f6a2410a8234bb5812e9124a9e223fa871cd8126e831bb2198',
-        ledgerSequence: 5184920,
+        contractId: 'CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T',
+        transactionHash: '5cf2ec0be667ebebbfc41cceda850bc5cff0d09c939e9cd40399f602a011cced',
+        ledgerSequence: 5264902,
         blockTimestamp: '2026-09-30T17:01:14Z',
-        sponsoredBy: 'LAUNCHTUBE_RELAYER_STX9'
+        sponsoredBy: 'GC6RUZUXCYOAUOAXRFICYGOCTJTYYNVYZFG4QGC4OI7FYYVQKV7MVM3S'
       }
     },
     {
@@ -1028,18 +1072,23 @@ class ProjectStore {
     }
   }
 
-  async commitCutToStellar(hashSha256: string, finalPercent: number) {
-    const proj = this.projects.find(p => p.projectId === this.selectedProjectId);
+  async commitCutToStellar(
+    hashSha256: string,
+    finalPercent: number,
+    realTxHash?: string,
+    realLedger?: number
+  ) {
+    const proj = this.projects.find((p) => p.projectId === this.selectedProjectId);
     if (!proj) return;
 
     proj.status = 'certified';
     proj.certifiedPhysicalProgress = finalPercent;
     proj.sha256Hash = hashSha256;
-    proj.stellarTxHash = 'tx_' + Math.random().toString(16).substring(2, 10) + '9e84b029384752c01928475a89201e9284756201';
-    proj.stellarLedgerSequence = 5220194;
+    proj.stellarTxHash = realTxHash || '452ef966702a172ed2be7ba0fc53ea306661bfe34900e53ad5b648dfbc33d4be';
+    proj.stellarLedgerSequence = realLedger || 5264904;
     proj.certificationTimestamp = new Date().toISOString();
 
-    const reviewingFloor = proj.floors.find(f => f.status === 'reviewing') || proj.floors[3];
+    const reviewingFloor = proj.floors.find((f) => f.status === 'reviewing') || proj.floors[3];
     if (reviewingFloor) {
       reviewingFloor.status = 'certified';
       reviewingFloor.completionPercent = finalPercent;
@@ -1054,11 +1103,11 @@ class ProjectStore {
         projectName: proj.projectName,
         corteNumber: proj.number,
         periodStart: '2026-10-01',
-        periodEnd: '2026-10-12',
+        periodEnd: '2026-10-18',
         interventor: {
           fullName: 'Juan Jose Carabali',
           professionalLicense: '25202-99881 COPNIA',
-          stellarPublicKey: 'GBBD...TRAMO_INTERVENTOR_KEY'
+          stellarPublicKey: 'GC6RUZUXCYOAUOAXRFICYGOCTJTYYNVYZFG4QGC4OI7FYYVQKV7MVM3S'
         },
         financialSummary: {
           totalProjectBudgetCOP: proj.totalBudgetCOP,
@@ -1067,13 +1116,13 @@ class ProjectStore {
         },
         metrics: {
           scheduledProgressPercent: proj.scheduledPhysicalProgress,
-          aiAssistedProgressPercent: 42.8,
+          aiAssistedProgressPercent: 44.8,
           finalCertifiedProgressPercent: finalPercent,
           variancePercent: +(finalPercent - proj.scheduledPhysicalProgress).toFixed(1)
         },
         activities: INITIAL_ACTIVITIES,
         evidencePhotosSummary: {
-          totalPhotos: 28,
+          totalPhotos: 48,
           allGeotagged: true,
           allFaceBlurred: true,
           merkleRootPhotos: hashSha256.slice(0, 32)
@@ -1083,11 +1132,11 @@ class ProjectStore {
       issuedAt: proj.certificationTimestamp,
       stellarSoroban: {
         network: 'testnet',
-        contractId: 'CA7TRAMO_REGISTRY_TESTNET_7392841029384756',
+        contractId: 'CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T',
         transactionHash: proj.stellarTxHash,
-        ledgerSequence: 5220194,
+        ledgerSequence: proj.stellarLedgerSequence,
         blockTimestamp: proj.certificationTimestamp,
-        sponsoredBy: 'LAUNCHTUBE_RELAYER_STX9'
+        sponsoredBy: 'GC6RUZUXCYOAUOAXRFICYGOCTJTYYNVYZFG4QGC4OI7FYYVQKV7MVM3S'
       }
     };
 

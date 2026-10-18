@@ -12,6 +12,7 @@
     computedHash: string;
     onchainHash: string;
     ledgerSequence?: number;
+    contractId?: string;
   }
 
   let {
@@ -20,7 +21,8 @@
     interventorName,
     blockTimestamp,
     onchainHash,
-    ledgerSequence = 5220194
+    ledgerSequence = 5264904,
+    contractId = 'CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T'
   }: Props = $props();
 </script>
 
@@ -77,8 +79,9 @@
       <div class="flex items-center justify-between text-muted-foreground text-[11px]">
         <span>Huella SHA-256 inscrita en el contrato Soroban</span>
         <a
-          href="https://stellar.expert/explorer/testnet/contract/CA7TRAMO_REGISTRY_TESTNET_7392841029384756"
+          href="https://stellar.expert/explorer/testnet/contract/{contractId}"
           target="_blank"
+          rel="noopener noreferrer"
           class="text-foreground underline underline-offset-4 hover:text-[#F5A400] flex items-center gap-1"
         >
           <span>Ver en explorador</span>

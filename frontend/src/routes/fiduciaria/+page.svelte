@@ -411,8 +411,17 @@
 					Total neto girado: {formatCOP(totalNetTransferred)}
 				</span>
 			{:else if activeLedgerTab === 'certificados'}
-				<span class="font-mono text-xs whitespace-nowrap text-muted-foreground">
-					Contrato Soroban: <strong class="text-foreground">corte_registry</strong>
+				<span class="font-mono text-xs whitespace-nowrap text-muted-foreground flex items-center gap-1.5">
+					<span>Contrato Soroban:</span>
+					<a
+						href="https://stellar.expert/explorer/testnet/contract/CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="text-foreground font-bold hover:text-emerald-500 underline underline-offset-2 inline-flex items-center gap-1"
+					>
+						<span>CB5L2J...H44T</span>
+						<ExternalLink class="h-3 w-3" />
+					</a>
 				</span>
 			{:else}
 				<span class="rounded-md bg-amber-500/10 px-2.5 py-1 font-mono text-xs font-semibold whitespace-nowrap text-amber-600 dark:text-amber-400">
@@ -635,13 +644,28 @@
 									{formatCOP(cert.metadata.financialSummary.cutDisbursementCOP)}
 								</td>
 								<td class="py-4 pl-4 pr-6 text-right whitespace-nowrap">
-									<a
-										href="/verificar"
-										class="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 font-mono text-xs font-medium whitespace-nowrap text-foreground hover:bg-muted"
-									>
-										<span>{cert.sha256Hash.slice(0, 10)}...</span>
-										<ExternalLink class="h-3 w-3" />
-									</a>
+									<div class="inline-flex items-center gap-2 justify-end">
+										{#if cert.stellarSoroban?.transactionHash}
+											<a
+												href="https://stellar.expert/explorer/testnet/tx/{cert.stellarSoroban.transactionHash}"
+												target="_blank"
+												rel="noopener noreferrer"
+												class="inline-flex shrink-0 items-center gap-1 rounded-lg border border-border bg-muted/40 px-2.5 py-1.5 font-mono text-xs font-medium text-muted-foreground hover:text-emerald-500 hover:bg-muted"
+												title="Ver transacción en Stellar.Expert"
+											>
+												<span>Tx Stellar</span>
+												<ExternalLink class="h-3 w-3" />
+											</a>
+										{/if}
+										<a
+											href="/verificar"
+											class="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 font-mono text-xs font-medium whitespace-nowrap text-foreground hover:bg-muted"
+											title="Verificar huella SHA-256 en el portal público"
+										>
+											<span>{cert.sha256Hash.slice(0, 10)}...</span>
+											<ExternalLink class="h-3 w-3" />
+										</a>
+									</div>
 								</td>
 							</tr>
 						{/each}
@@ -658,7 +682,7 @@
 								Fondo de Retención en Garantía (5%): {formatCOP(totalRetainedGuarantee)}
 							</span>
 							<span class="rounded-md border border-border bg-background px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-muted-foreground">
-								Actas de entrega firmadas: <strong class="text-foreground">{projectStore.signedHandoverUnits.join(', ')}</strong>
+								Actas de entrega firmadas: <strong class="text-foreground">{Object.keys(projectStore.signedHandoverUnits).join(', ')}</strong>
 							</span>
 						</div>
 						<p class="text-xs text-muted-foreground">
@@ -705,11 +729,12 @@
 					</thead>
 					<tbody class="divide-y divide-border text-sm">
 						{#each snagItems as snag (snag.id)}
-							{@const isUnitSigned = projectStore.signedHandoverUnits.includes(snag.unitCode)}
+							{@const unitKey = snag.unitCode || snag.unitNumber}
+							{@const isUnitSigned = Boolean(unitKey && projectStore.signedHandoverUnits[unitKey])}
 							<tr class="transition-colors hover:bg-muted/30">
 								<td class="py-4 pl-6 pr-4 whitespace-nowrap">
-									<div class="font-semibold text-foreground">{snag.unitCode}</div>
-									<div class="text-xs text-muted-foreground">{snag.zone} · {snag.reportedAt}</div>
+									<div class="font-semibold text-foreground">{unitKey}</div>
+									<div class="text-xs text-muted-foreground">{snag.zone || snag.roomZone} · {snag.reportedAt || snag.reportedDate}</div>
 								</td>
 								<td class="px-4 py-4 max-w-md">
 									<div class="font-medium text-foreground">{snag.title}</div>

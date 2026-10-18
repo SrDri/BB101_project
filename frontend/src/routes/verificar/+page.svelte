@@ -15,6 +15,8 @@
     blockTimestamp: string;
     computedHash: string;
     onchainHash: string;
+    ledgerSequence?: number;
+    contractId?: string;
   }
 
   let result = $state<VerificationResult | null>(null);
@@ -113,6 +115,8 @@
             blockTimestamp={result.blockTimestamp}
             computedHash={result.computedHash}
             onchainHash={result.onchainHash}
+            ledgerSequence={result.ledgerSequence}
+            contractId={result.contractId}
           />
         </div>
       {/if}

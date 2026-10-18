@@ -22,15 +22,31 @@ Cada módulo del proyecto cuenta con su propia documentación y guía específic
 
 ```text
 BB101_project/
+├── contracts/             # Smart Contract en Rust para Stellar Soroban (corte_registry)
+│   ├── corte_registry/    # Crate de Rust (lib.rs, tests unitarios, WASM release)
+│   └── deployed_contract.json # Metadatos de despliegue en Stellar Testnet
 ├── docs/                  # Documentación de negocio, arquitectura y entregables por semana
 │   ├── semana1/           # Problem Brief y definición del caso de uso blockchain
 │   ├── semana2/           # Product Blueprint, Lean Canvas y diseño de arquitectura
-│   └── semana3/           # Especificación funcional y flujo técnico-fiduciario
-├── frontend/              # Aplicación web interactiva (SvelteKit + Three.js + Chart.js + Soroban)
+│   ├── semana3/           # Especificación funcional y flujo técnico-fiduciario
+│   └── semana4/           # Entregable 4: MVP Functional (aprendizajes, riesgos, validación)
+├── frontend/              # Aplicación web interactiva (SvelteKit + Three.js + Chart.js + Stellar SDK)
+│   ├── src/lib/server/    # Servicio relayer y puente RPC a Soroban Testnet
+│   ├── src/routes/api/    # Endpoints REST de sellado (/seal) y verificación (/verify)
 │   └── README.md          # Guía de instalación, comandos, rutas y arquitectura del frontend
 ├── .gitignore             # Reglas de exclusión del repositorio
 └── README.md              # Visión general e índice maestro del proyecto
 ```
+
+---
+
+## Smart Contract en Stellar Testnet
+
+| Recurso | Identificador / Enlace | Descripción |
+| :--- | :--- | :--- |
+| **Contract ID** | [`CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T`](https://stellar.expert/explorer/testnet/contract/CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T) | Contrato en Soroban Rust con inmutabilidad estricta por corte |
+| **Tx Despliegue** | [`5cf2ec0b...`](https://stellar.expert/explorer/testnet/tx/5cf2ec0be667ebebbfc41cceda850bc5cff0d09c939e9cd40399f602a011cced) | Transacción de instanciación en el ledger 5264902 |
+| **Tx Corte #4 Sellado** | [`452ef966...`](https://stellar.expert/explorer/testnet/tx/452ef966702a172ed2be7ba0fc53ea306661bfe34900e53ad5b648dfbc33d4be) | Certificado real del Corte #4 de Torre Alameda en ledger 5264904 |
 
 ---
 
@@ -40,5 +56,7 @@ BB101_project/
 | :--- | :--- | :--- |
 | **Semana 1 — Problem Brief** | [`docs/semana1/ProblemBrief.md`](./docs/semana1/ProblemBrief.md) | Problemática del sector fiduciario/inmobiliario y tesis de solución |
 | **Semana 2 — Product Blueprint** | [`docs/semana2/ProductBlueprint.md`](./docs/semana2/ProductBlueprint.md) | Modelo de negocio, arquitectura y flujo de datos on-chain / off-chain |
-| **Semana 3 — Documentación** | [`docs/semana3/Documentacion.md`](./docs/semana3/Documentacion.md) | Profundización funcional, contratos y trazabilidad de cortes de obra |
+| **Semana 3 — Functional Proof** | [`docs/semana3/Documentacion.md`](./docs/semana3/Documentacion.md) | Especificación funcional y trazabilidad de cortes de obra |
+| **Semana 4 — MVP Functional** | [`docs/semana4/MVPFunctional.md`](./docs/semana4/MVPFunctional.md) | **Documentación oficial del MVP, evidencias Testnet, aprendizajes y validación** |
+| **Guión del Video Pitch** | [`docs/semana4/VideoPitchGuide.md`](./docs/semana4/VideoPitchGuide.md) | **Estructura minuto a minuto para la grabación del video de 3 minutos** |
 | **Aplicación Web (Frontend)** | [`frontend/README.md`](./frontend/README.md) | **Requisitos, guía de instalación (`npm install` / `npm run dev`), rutas y arquitectura** |

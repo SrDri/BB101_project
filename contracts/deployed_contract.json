@@ -1,0 +1,28 @@
+{
+  "network": "testnet",
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "rpcUrl": "https://soroban-testnet.stellar.org",
+  "contractId": "CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T",
+  "wasmHash": "4aac0c4823d7eebca85eea50523ff984574e3d70e9c2aa0889b6b366f80c11e0",
+  "relayerPublicKey": "GC6RUZUXCYOAUOAXRFICYGOCTJTYYNVYZFG4QGC4OI7FYYVQKV7MVM3S",
+  "relayerSecretKey": "SAVQIMPYL4KGOP34SWYJGM43VTNG7Z3AF7NUWZEV4VPWYNT2LA3JAQ7B",
+  "transactions": {
+    "uploadWasm": "60dd4955e3cbf4e3ab603b1de5898668ef3bb421c2bf4f3c01519d063a7a012e",
+    "createContract": "5cf2ec0be667ebebbfc41cceda850bc5cff0d09c939e9cd40399f602a011cced",
+    "initContract": "75fc5f8dd3646935564a2350cffed8b48627df6799bfff95bde91ca004e62b95",
+    "registerCorte4": "452ef966702a172ed2be7ba0fc53ea306661bfe34900e53ad5b648dfbc33d4be"
+  },
+  "corte4Sample": {
+    "projectId": "TORRE-ALAMEDA-1",
+    "corteNumber": 4,
+    "sha256": "a7c93e41b2e8d7541f6e2983c48520d88b489920efbc756312a0f8d9b1c7849e",
+    "ledger": 5264904,
+    "txHash": "452ef966702a172ed2be7ba0fc53ea306661bfe34900e53ad5b648dfbc33d4be"
+  },
+  "deployedAt": "2026-10-18T18:28:27.029Z",
+  "links": {
+    "contractExplorer": "https://stellar.expert/explorer/testnet/contract/CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T",
+    "createTxExplorer": "https://stellar.expert/explorer/testnet/tx/5cf2ec0be667ebebbfc41cceda850bc5cff0d09c939e9cd40399f602a011cced",
+    "corte4TxExplorer": "https://stellar.expert/explorer/testnet/tx/452ef966702a172ed2be7ba0fc53ea306661bfe34900e53ad5b648dfbc33d4be"
+  }
+}

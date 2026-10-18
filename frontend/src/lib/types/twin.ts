@@ -1,4 +1,4 @@
-export type FloorStatus = 'certified' | 'reviewing' | 'in_progress' | 'planned';
+export type FloorStatus = 'certified' | 'reviewing' | 'in_progress' | 'planned' | 'pending';
 
 export type UserRole = 'admin' | 'fiduciaria' | 'constructor' | 'interventor';
 
@@ -125,6 +125,8 @@ export interface PropertyOwnerUnit {
   typology: string;
   parkingSpot: string;
   estimatedDeliveryDate: string;
+  estimatedDelivery?: string;
+  fiduciaryContractCode?: string;
   unitStatus: 'estructura_completada' | 'en_acabados' | 'listo_entrega' | 'en_cimentacion';
   unitProgressPercent: number;
   financialPlan: {
@@ -225,10 +227,12 @@ export interface LegalComplianceItem {
   entityType: 'constructora' | 'interventor';
   requirement: string;
   regulationRef: string;
-  status: 'cumple' | 'en_revision' | 'pendiente';
+  status: 'cumple' | 'en_revision' | 'pendiente' | 'proximo_a_vencer';
   verificationDate: string;
   verifiedBy: string;
   notes: string;
+  entity?: string;
+  expirationDate?: string;
 }
 
 export interface ProjectCalendarEvent {
@@ -272,11 +276,13 @@ export interface TechnicalFinding {
   code: string;
   floorLevel: number;
   locationAxis: string;
+  location?: string;
   severity: 'critica' | 'moderada' | 'menor';
   title: string;
   description: string;
   correctiveAction: string;
   reportedDate: string;
+  reportedBy?: string;
   resolvedDate?: string;
   status: 'abierto' | 'subsanado';
   blocksDisbursement: boolean;
@@ -299,12 +305,12 @@ export interface MaterialLabTest {
 export interface AuditLogEntry {
   id: string;
   timestamp: string;
-  category: 'desembolso' | 'interventoria' | 'cumplimiento' | 'hallazgo_ncr' | 'blockchain_soroban' | 'comercial';
+  category: 'desembolso' | 'interventoria' | 'cumplimiento' | 'hallazgo_ncr' | 'blockchain_soroban' | 'comercial' | 'corte_interventoria' | 'cumplimiento_legal';
   severity: 'alta' | 'media' | 'informativa';
   actionTitle: string;
   summary: string;
   actorName: string;
-  actorRole: 'fiduciaria' | 'interventor' | 'constructor' | 'sistema';
+  actorRole: 'fiduciaria' | 'interventor' | 'constructor' | 'sistema' | 'admin' | UserRole;
   actorCompany: string;
   actorDocument: string;
   moduleRoute: string;
@@ -312,23 +318,28 @@ export interface AuditLogEntry {
   newState?: string;
   amountCOP?: number;
   sha256Hash: string;
-  stellarTxHash: string;
-  ledgerSequence: number;
+  stellarTxHash?: string;
+  ledgerSequence?: number;
   geofenceOrIp: string;
   signatureMethod: string;
+  entityRef?: string;
 }
 
 export interface UnitSnagItem {
   id: string;
   code: string;
   unitNumber: string;
+  unitCode?: string;
   floorLevel: number;
   ownerName: string;
   roomZone: string;
+  zone?: string;
   category: 'acabados' | 'carpinteria' | 'hidrosanitario' | 'ventaneria';
   title: string;
   description: string;
-  status: 'pendiente_constructora' | 'corregido_por_validar' | 'validado_propietario';
+  status: 'pendiente_constructora' | 'corregido_por_validar' | 'validado_propietario' | 'corregido_obra';
   reportedDate: string;
+  reportedAt?: string;
   resolvedDate?: string;
+  contractorNote?: string;
 }

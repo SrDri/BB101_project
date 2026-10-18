@@ -14,6 +14,8 @@
       blockTimestamp: string;
       computedHash: string;
       onchainHash: string;
+      ledgerSequence?: number;
+      contractId?: string;
     }) => void;
   }
 
@@ -27,7 +29,7 @@
     errorMessage = null;
     try {
       const computedHash = await computeSha256FromFile(file);
-      verifyHashAgainstStore(computedHash);
+      await verifyHashOnChainOrStore(computedHash);
     } catch {
       errorMessage = 'No se pudo procesar el archivo. Intenta de nuevo.';
     }
@@ -41,11 +43,37 @@
     }
   }
 
-  function handleManualSearch(e?: SubmitEvent) {
+  async function handleManualSearch(e?: SubmitEvent) {
     if (e) e.preventDefault();
     if (!inputQuery.trim()) return;
     errorMessage = null;
-    verifyHashAgainstStore(inputQuery.trim().toLowerCase());
+    await verifyHashOnChainOrStore(inputQuery.trim().toLowerCase());
+  }
+
+  async function verifyHashOnChainOrStore(hashOrId: string) {
+    if (hashOrId.length === 64) {
+      try {
+        const res = await fetch(`/api/soroban/verify?hash=${encodeURIComponent(hashOrId)}`);
+        const data = await res.json();
+        if (data.isValid && data.certificate) {
+          onVerificationResult({
+            isValid: true,
+            corteNumber: data.certificate.corteNumber,
+            projectName: data.certificate.projectId,
+            interventorName: `${data.certificate.copniaLicense} • Ing. Juan Jose Carabali`,
+            blockTimestamp: data.certificate.timestamp,
+            computedHash: hashOrId,
+            onchainHash: data.certificate.sha256Hash,
+            ledgerSequence: 5264904,
+            contractId: data.contractId
+          });
+          return;
+        }
+      } catch (err) {
+        console.warn('Verificación en Soroban Testnet con fallback local:', err);
+      }
+    }
+    verifyHashAgainstStore(hashOrId);
   }
 
   function verifyHashAgainstStore(hashOrId: string) {

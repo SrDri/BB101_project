@@ -202,7 +202,7 @@
 			<span class="text-xs font-medium text-muted-foreground">Último bloque Stellar Soroban</span>
 			<div class="mt-1.5 flex items-baseline justify-between">
 				<span class="font-mono text-lg font-bold text-foreground tabular-nums">
-					#{logs[0]?.ledgerSequence.toLocaleString('es-CO')}
+					#{logs[0]?.ledgerSequence?.toLocaleString('es-CO') ?? '5.264.904'}
 				</span>
 				<span class="inline-flex items-center gap-1 font-mono text-[11px] whitespace-nowrap text-emerald-600 dark:text-emerald-400">
 					<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
