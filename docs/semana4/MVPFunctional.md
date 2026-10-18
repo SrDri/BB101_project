@@ -74,3 +74,4 @@ Para comprobar la adopción y el valor de Tramo en el sector fiduciario e inmobi
    *Criterio de éxito:* El 100% de los interventores completa el sellado en un solo intento sin asistencia en menos de 2 minutos.
 3. **Hipótesis de Confianza del Comprador:** Los compradores valoran consultar el gemelo digital y comprobar la autenticidad del avance físico de su apartamento.  
    *Criterio de éxito:* Al menos el 80% de los usuarios manifiesta que Tramo incrementa su tranquilidad sobre la entrega de su vivienda.
+

@@ -58,5 +58,4 @@ BB101_project/
 | **Semana 2 — Product Blueprint** | [`docs/semana2/ProductBlueprint.md`](./docs/semana2/ProductBlueprint.md) | Modelo de negocio, arquitectura y flujo de datos on-chain / off-chain |
 | **Semana 3 — Functional Proof** | [`docs/semana3/Documentacion.md`](./docs/semana3/Documentacion.md) | Especificación funcional y trazabilidad de cortes de obra |
 | **Semana 4 — MVP Functional** | [`docs/semana4/MVPFunctional.md`](./docs/semana4/MVPFunctional.md) | **Documentación oficial del MVP, evidencias Testnet, aprendizajes y validación** |
-| **Guión del Video Pitch** | [`docs/semana4/VideoPitchGuide.md`](./docs/semana4/VideoPitchGuide.md) | **Estructura minuto a minuto para la grabación del video de 3 minutos** |
 | **Aplicación Web (Frontend)** | [`frontend/README.md`](./frontend/README.md) | **Requisitos, guía de instalación (`npm install` / `npm run dev`), rutas y arquitectura** |
