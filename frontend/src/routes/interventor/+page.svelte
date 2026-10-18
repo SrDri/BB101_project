@@ -5,6 +5,7 @@
   import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
+  import CertificatePdfModal from '$lib/components/reports/CertificatePdfModal.svelte';
   import {
     Camera,
     Cpu,
@@ -16,7 +17,9 @@
     FlaskConical,
     Plus,
     X,
-    ExternalLink
+    ExternalLink,
+    Printer,
+    FileText
   } from '@lucide/svelte';
 
   let activities = $state([...INITIAL_ACTIVITIES]);
@@ -38,6 +41,7 @@
   // Modal state for registering a new technical finding
   let activeQualityTab = $state<'hallazgos' | 'laboratorio'>('hallazgos');
   let showFindingModal = $state(false);
+  let showPdfModal = $state(false);
 
   let newFindingFloor = $state(4);
   let newFindingAxis = $state('Eje B-3 • Viga sísmica');
@@ -149,6 +153,15 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        onclick={() => (showPdfModal = true)}
+        class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-xs font-medium text-foreground transition-colors hover:bg-accent"
+      >
+        <Printer class="w-3.5 h-3.5 text-emerald-500" />
+        <span>Reporte Oficial PDF</span>
+      </button>
+
       <button
         type="button"
         onclick={() => (showFindingModal = true)}
@@ -376,12 +389,19 @@
                 </div>
               </div>
 
-              <div class="flex flex-col sm:flex-row gap-2.5">
+              <div class="flex flex-col sm:flex-row gap-2">
+                <Button
+                  onclick={() => (showPdfModal = true)}
+                  class="flex-1 bg-foreground text-background hover:opacity-90 font-mono text-xs gap-1.5 cursor-pointer shadow-sm"
+                >
+                  <Printer class="w-3.5 h-3.5" />
+                  <span>Expediente PDF</span>
+                </Button>
                 <Button
                   href="/fiduciaria"
                   class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs gap-1.5"
                 >
-                  <span>Ir a panel fiduciario</span>
+                  <span>Ir a fiduciaria</span>
                   <ArrowRight class="w-3.5 h-3.5" />
                 </Button>
                 <Button
@@ -390,7 +410,7 @@
                   class="flex-1 font-mono text-xs gap-1.5"
                 >
                   <ShieldCheck class="w-3.5 h-3.5 text-[#F5A400]" />
-                  <span>Auditar público</span>
+                  <span>Auditar</span>
                 </Button>
               </div>
             </div>
@@ -698,3 +718,10 @@
     </div>
   </div>
 {/if}
+
+<!-- Modal de Certificado Oficial PDF Imprimible -->
+<CertificatePdfModal
+  bind:open={showPdfModal}
+  onClose={() => (showPdfModal = false)}
+  corteNumber={projectStore.activeCut.number}
+/>

@@ -3,6 +3,7 @@
 	import type { FiduciaryMilestone } from '$lib/types/twin';
 	import DisbursementActionPanel from '$lib/components/dashboard/DisbursementActionPanel.svelte';
 	import InteractiveSCurveChart from '$lib/components/dashboard/InteractiveSCurveChart.svelte';
+	import CertificatePdfModal from '$lib/components/reports/CertificatePdfModal.svelte';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
@@ -33,6 +34,7 @@
 
 	let activeLedgerTab = $state<'hitos' | 'historial' | 'certificados' | 'posventa'>('hitos');
 	let milestoneFilter = $state<'todos' | 'en_comite' | 'desembolsados'>('todos');
+	let showPdfModal = $state(false);
 
 	const filteredMilestones = $derived(
 		milestoneFilter === 'todos'
@@ -657,6 +659,14 @@
 												<ExternalLink class="h-3 w-3" />
 											</a>
 										{/if}
+										<button
+											onclick={() => (showPdfModal = true)}
+											class="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border bg-emerald-500/10 px-2.5 py-1.5 font-mono text-xs font-medium text-emerald-600 hover:bg-emerald-500/20 dark:text-emerald-400"
+											title="Generar expediente PDF oficial con sello Soroban"
+										>
+											<Printer class="h-3 w-3" />
+											<span>Expediente PDF</span>
+										</button>
 										<a
 											href="/verificar"
 											class="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 font-mono text-xs font-medium whitespace-nowrap text-foreground hover:bg-muted"
@@ -1346,3 +1356,5 @@
 		</div>
 	</div>
 {/if}
+
+<CertificatePdfModal bind:isOpen={showPdfModal} />

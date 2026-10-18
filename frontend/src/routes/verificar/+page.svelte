@@ -5,7 +5,8 @@
   import { Card, CardContent } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
-  import { ArrowLeft } from '@lucide/svelte';
+  import CertificatePdfModal from '$lib/components/reports/CertificatePdfModal.svelte';
+  import { ArrowLeft, Printer } from '@lucide/svelte';
 
   interface VerificationResult {
     isValid: boolean;
@@ -23,6 +24,7 @@
   let isVerifying = $state(false);
   let loadingStep = $state('');
   let loadingProgress = $state(0);
+  let showPdfModal = $state(false);
 
   async function handleVerificationResult(res: VerificationResult) {
     isVerifying = true;
@@ -95,7 +97,7 @@
         </Card>
       {:else}
         <div class="space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <Button
               variant="outline"
               size="sm"
@@ -104,6 +106,15 @@
             >
               <ArrowLeft class="w-3.5 h-3.5" />
               <span>Verificar otro certificado</span>
+            </Button>
+
+            <Button
+              size="sm"
+              onclick={() => (showPdfModal = true)}
+              class="h-8 text-xs gap-1.5 bg-foreground text-background hover:opacity-90 font-mono cursor-pointer shadow-xs"
+            >
+              <Printer class="w-3.5 h-3.5" />
+              <span>Descargar Dictamen Forense PDF</span>
             </Button>
           </div>
 
@@ -122,4 +133,12 @@
       {/if}
     </div>
   </div>
+{/if}
+
+{#if result}
+  <CertificatePdfModal
+    bind:open={showPdfModal}
+    onClose={() => (showPdfModal = false)}
+    corteNumber={result.corteNumber}
+  />
 {/if}
