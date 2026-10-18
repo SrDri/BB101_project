@@ -85,9 +85,9 @@
 
 <!-- 1. Menú lateral de escritorio (oculto en pantallas móviles < md) -->
 <aside
-  class="hidden md:flex h-screen sticky top-0 z-40 flex-col border-r border-border bg-sidebar text-sidebar-foreground transition-all duration-200 select-none shrink-0 {isCollapsed
-    ? 'w-[68px] overflow-visible'
-    : 'w-64 overflow-hidden'}"
+  class="hidden md:flex h-screen sticky top-0 z-40 flex-col border-r border-border bg-sidebar text-sidebar-foreground transition-all duration-200 select-none shrink-0 overflow-visible {isCollapsed
+    ? 'w-[68px]'
+    : 'w-64'}"
 >
   <!-- Cabecera del menú lateral de escritorio -->
   <div class="h-14 px-3 border-b border-border flex items-center {isCollapsed ? 'justify-center' : 'justify-between'}">
@@ -285,13 +285,15 @@
           </div>
         </button>
 
-        <div
-          role="tooltip"
-          class="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 hidden group-hover/tip:flex items-center px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-semibold shadow-xl border border-border whitespace-nowrap"
-        >
-          <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-popover border-l border-b border-border"></div>
-          <span class="relative z-10">{projectStore.currentUser.fullName} • {projectStore.currentUser.companyName}</span>
-        </div>
+        {#if !isUserMenuOpen}
+          <div
+            role="tooltip"
+            class="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 hidden group-hover/tip:flex items-center px-2.5 py-1.5 rounded-lg bg-popover text-popover-foreground text-xs font-semibold shadow-xl border border-border whitespace-nowrap"
+          >
+            <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-popover border-l border-b border-border"></div>
+            <span class="relative z-10">{projectStore.currentUser.fullName} • {projectStore.currentUser.companyName}</span>
+          </div>
+        {/if}
       </div>
     {:else}
       <button
@@ -323,12 +325,14 @@
         role="presentation"
       ></div>
       <div
-        class="absolute left-2.5 bottom-full mb-2 w-72 rounded-xl border border-border bg-popover text-popover-foreground shadow-xl z-50 p-1.5 space-y-1"
+        class="absolute z-50 rounded-xl border border-border bg-popover text-popover-foreground shadow-2xl p-1.5 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto {isCollapsed
+          ? 'left-full ml-3 bottom-1 w-72'
+          : 'left-2.5 right-2.5 bottom-full mb-2 w-auto'}"
       >
         <div class="px-2.5 py-2 border-b border-border/60">
           <div class="flex items-center justify-between gap-2">
             <span class="text-xs font-semibold text-foreground truncate">{projectStore.currentUser.fullName}</span>
-            <Badge variant="outline" class="text-[10px] font-normal bg-muted/50 border-border gap-1">
+            <Badge variant="outline" class="text-[10px] font-normal bg-muted/50 border-border gap-1 shrink-0">
               <span class="w-1.5 h-1.5 rounded-full {roleLabels[projectStore.effectiveRole].dot}"></span>
               <span>{roleLabels[projectStore.effectiveRole].label}</span>
             </Badge>
@@ -377,12 +381,12 @@
                 projectStore.loginWithProfile(prof);
                 isUserMenuOpen = false;
               }}
-              class="w-full px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between hover:bg-accent transition-colors cursor-pointer {projectStore.currentUser.id === prof.id
+              class="w-full px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between gap-2 hover:bg-accent transition-colors cursor-pointer {projectStore.currentUser.id === prof.id
                 ? 'bg-accent/60 font-medium text-foreground'
                 : 'text-muted-foreground'}"
             >
               <span class="truncate">{prof.fullName}</span>
-              <span class="text-[11px] capitalize text-muted-foreground">{prof.role}</span>
+              <span class="text-[11px] capitalize text-muted-foreground shrink-0">{prof.role}</span>
             </button>
           {/each}
         </div>
