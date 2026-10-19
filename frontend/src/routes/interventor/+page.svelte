@@ -42,6 +42,9 @@
   let activeQualityTab = $state<'hallazgos' | 'laboratorio'>('hallazgos');
   let showFindingModal = $state(false);
   let showPdfModal = $state(false);
+  let showSigningModal = $state(false);
+
+  import StellarSigningModal from '$lib/components/modals/StellarSigningModal.svelte';
 
   let newFindingFloor = $state(4);
   let newFindingAxis = $state('Eje B-3 • Viga sísmica');
@@ -350,7 +353,7 @@
             {/if}
 
             <Button
-              onclick={handleSealCertificate}
+              onclick={() => (showSigningModal = true)}
               disabled={isSealing}
               class="w-full py-5 bg-[#F5A400] hover:bg-[#E09400] text-[#121212] font-bold text-sm cursor-pointer gap-2 shadow-amber-glow"
             >
@@ -391,26 +394,26 @@
 
               <div class="flex flex-col sm:flex-row gap-2">
                 <Button
+                  onclick={() => (showSigningModal = true)}
+                  class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs gap-1.5 cursor-pointer"
+                >
+                  <Cpu class="w-3.5 h-3.5" />
+                  <span>Sello Soroban</span>
+                </Button>
+                <Button
                   onclick={() => (showPdfModal = true)}
-                  class="flex-1 bg-foreground text-background hover:opacity-90 font-mono text-xs gap-1.5 cursor-pointer shadow-sm"
+                  variant="outline"
+                  class="flex-1 font-mono text-xs gap-1.5 cursor-pointer shadow-sm"
                 >
                   <Printer class="w-3.5 h-3.5" />
                   <span>Expediente PDF</span>
                 </Button>
                 <Button
                   href="/fiduciaria"
-                  class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs gap-1.5"
+                  class="flex-1 bg-foreground text-background hover:opacity-90 font-mono text-xs gap-1.5"
                 >
                   <span>Ir a fiduciaria</span>
                   <ArrowRight class="w-3.5 h-3.5" />
-                </Button>
-                <Button
-                  href="/verificar"
-                  variant="outline"
-                  class="flex-1 font-mono text-xs gap-1.5"
-                >
-                  <ShieldCheck class="w-3.5 h-3.5 text-[#F5A400]" />
-                  <span>Auditar</span>
                 </Button>
               </div>
             </div>
@@ -724,4 +727,26 @@
   bind:open={showPdfModal}
   onClose={() => (showPdfModal = false)}
   corteNumber={projectStore.activeCut.number}
+/>
+
+<!-- Modal de Firma Digital y Sellado en Stellar Soroban -->
+<StellarSigningModal
+  open={showSigningModal}
+  projectName={projectStore.activeCut.projectName}
+  corteNumber={projectStore.activeCut.number}
+  interventorName={projectStore.activeCut.interventorName}
+  copniaLicense="25202-99881 COPNIA"
+  physicalPercent={calculatedPercent}
+  disbursementCOP={projectStore.activeCut.cutDisbursementCOP}
+  computedHash={computedHash}
+  sealedTxHash={sealedTxHash}
+  isSealing={isSealing}
+  isSealed={isSealed}
+  sealStep={sealStep}
+  onSign={handleSealCertificate}
+  onClose={() => (showSigningModal = false)}
+  onOpenPdf={() => {
+    showSigningModal = false;
+    showPdfModal = true;
+  }}
 />
