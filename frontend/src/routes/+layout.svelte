@@ -42,7 +42,8 @@
   const isIsolatedPublicRoute = $derived(
     page.url.pathname.startsWith('/verificar') || page.url.pathname.startsWith('/propietario')
   );
-  const isProtectedCorporateRoute = $derived(!isLoginRoute && !isIsolatedPublicRoute);
+  const isAnimacionLogoRoute = $derived(page.url.pathname.startsWith('/animacion-logo'));
+  const isProtectedCorporateRoute = $derived(!isLoginRoute && !isIsolatedPublicRoute && !isAnimacionLogoRoute);
 
   $effect(() => {
     projectStore.initAuth();
@@ -198,8 +199,8 @@
   });
 </script>
 
-{#if isLoginRoute}
-  <!-- 1. Ruta de login aislada (sin header ni sidebar) -->
+{#if isLoginRoute || isAnimacionLogoRoute}
+  <!-- 1. Ruta aislada (login o vista de grabación de logo, sin header ni sidebar) -->
   <div class="min-h-screen w-full bg-background text-foreground font-sans">
     {@render children()}
   </div>
