@@ -47,6 +47,7 @@ BB101_project/
 | **Contract ID** | [`CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T`](https://stellar.expert/explorer/testnet/contract/CB5L2JGJIAXUUORKHBJFGLS5Y3BOW6LE44WEQ23JEK3KTIN2I252H44T) | Contrato en Soroban Rust con inmutabilidad estricta por corte |
 | **Tx Despliegue** | [`5cf2ec0b...`](https://stellar.expert/explorer/testnet/tx/5cf2ec0be667ebebbfc41cceda850bc5cff0d09c939e9cd40399f602a011cced) | Transacción de instanciación en el ledger 5264902 |
 | **Tx Corte #4 Sellado** | [`452ef966...`](https://stellar.expert/explorer/testnet/tx/452ef966702a172ed2be7ba0fc53ea306661bfe34900e53ad5b648dfbc33d4be) | Certificado real del Corte #4 de Torre Alameda en ledger 5264904 |
+| **Video Demostrativo** | [`youtu.be/L6EbGD2vWms`](https://youtu.be/L6EbGD2vWms) | Video demo y pitch oficial de extremo a extremo del MVP funcional |
 
 ---
 

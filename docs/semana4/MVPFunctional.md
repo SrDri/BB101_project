@@ -15,7 +15,7 @@
 | **Transacción de Inicialización (`init`)** | [Tx `75fc5f8d...` en Stellar.Expert](https://stellar.expert/explorer/testnet/tx/75fc5f8dd3646935564a2350cffed8b48627df6799bfff95bde91ca004e62b95) | Inicialización con cuenta administradora en el ledger 5264903. |
 | **Transacción de Sellado de Corte #4** | [Tx `452ef966...` en Stellar.Expert](https://stellar.expert/explorer/testnet/tx/452ef966702a172ed2be7ba0fc53ea306661bfe34900e53ad5b648dfbc33d4be) | Certificado real del Corte #4 de Torre Alameda sellado en el ledger 5264904. |
 | **Cuenta Patrocinadora Relayer** | [`GC6RUZUX...` en Stellar.Expert](https://stellar.expert/explorer/testnet/account/GC6RUZUXCYOAUOAXRFICYGOCTJTYYNVYZFG4QGC4OI7FYYVQKV7MVM3S) | Cuenta pagadora para transacciones sin fricción Web3. |
-| **Video Demostrativo y Pitch (máx. 3 min)** | [Video Oficial en YouTube](https://youtu.be/SEMANA4_TRAMO_DEMO_PLACEHOLDER) | Demostración funcional del MVP de extremo a extremo y pitch de negocio. |
+| **Video Demostrativo y Pitch (máx. 3 min)** | [Video Oficial en YouTube](https://youtu.be/L6EbGD2vWms) | Demostración funcional del MVP de extremo a extremo y pitch de negocio. |
 | **Producto en Línea (Front + Back)** | [Repositorio y Guía de Ejecución Local / Vercel](https://github.com/SrDri/BB101_project) | Front en SvelteKit 5 conectado a los endpoints `/api/soroban/*`. |
 
 ---
