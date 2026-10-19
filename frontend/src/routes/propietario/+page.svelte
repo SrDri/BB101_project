@@ -34,6 +34,9 @@
     Info
   } from '@lucide/svelte';
 
+  // Flag para alternar accesos de demostración (oculto para tomas de producción)
+  const SHOW_DEMO_OWNERS = false;
+
   let cedulaInput = $state('');
   let searchedCedula = $state<string | null>(null);
   let isSearching = $state(false);
@@ -450,52 +453,54 @@
           {/if}
 
           <!-- Selector de titulares de demostración con badges en 1 sola fila -->
-          <div class="pt-5 border-t border-border space-y-3">
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-[11px] font-medium text-muted-foreground">
-                Accesos rápidos de demostración (3 inmuebles vinculados):
-              </span>
-              <span class="text-[10px] font-mono text-muted-foreground whitespace-nowrap shrink-0">Clic para ingresar</span>
-            </div>
+          {#if SHOW_DEMO_OWNERS}
+            <div class="pt-5 border-t border-border space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[11px] font-medium text-muted-foreground">
+                  Accesos rápidos de demostración (3 inmuebles vinculados):
+                </span>
+                <span class="text-[10px] font-mono text-muted-foreground whitespace-nowrap shrink-0">Clic para ingresar</span>
+              </div>
 
-            <div class="grid grid-cols-1 gap-2">
-              {#each PROPERTY_OWNERS as demo}
-                {@const initials = demo.ownerName
-                  .split(' ')
-                  .slice(0, 2)
-                  .map((n) => n[0])
-                  .join('')}
-                <button
-                  type="button"
-                  onclick={() => selectDemoCedula(demo.cedula)}
-                  class="group w-full px-3.5 py-2.5 rounded-xl border border-border bg-muted/25 hover:bg-muted/60 hover:border-foreground/25 text-left flex items-center justify-between gap-3 transition-all cursor-pointer"
-                >
-                  <div class="flex items-center gap-3 min-w-0 flex-1">
-                    <div class="w-8 h-8 rounded-lg bg-background border border-border flex items-center justify-center text-xs font-semibold text-foreground shrink-0 group-hover:border-foreground/30 transition-colors">
-                      {initials}
-                    </div>
-                    <div class="min-w-0 flex-1">
-                      <div class="text-xs font-semibold text-foreground truncate">
-                        {demo.ownerName}
+              <div class="grid grid-cols-1 gap-2">
+                {#each PROPERTY_OWNERS as demo}
+                  {@const initials = demo.ownerName
+                    .split(' ')
+                    .slice(0, 2)
+                    .map((n) => n[0])
+                    .join('')}
+                  <button
+                    type="button"
+                    onclick={() => selectDemoCedula(demo.cedula)}
+                    class="group w-full px-3.5 py-2.5 rounded-xl border border-border bg-muted/25 hover:bg-muted/60 hover:border-foreground/25 text-left flex items-center justify-between gap-3 transition-all cursor-pointer"
+                  >
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                      <div class="w-8 h-8 rounded-lg bg-background border border-border flex items-center justify-center text-xs font-semibold text-foreground shrink-0 group-hover:border-foreground/30 transition-colors">
+                        {initials}
                       </div>
-                      <div class="text-[11px] text-muted-foreground truncate">
-                        {demo.unitNumber} (Piso {demo.floorLevel}) • {demo.projectName}
+                      <div class="min-w-0 flex-1">
+                        <div class="text-xs font-semibold text-foreground truncate">
+                          {demo.ownerName}
+                        </div>
+                        <div class="text-[11px] text-muted-foreground truncate">
+                          {demo.unitNumber} (Piso {demo.floorLevel}) • {demo.projectName}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div class="flex items-center gap-2 shrink-0">
-                    <span class="hidden sm:inline-flex items-center rounded-md bg-background px-2 py-1 text-[11px] font-mono font-medium text-muted-foreground border border-border whitespace-nowrap shrink-0 tabular-nums">
-                      {demo.unitProgressPercent}%
-                    </span>
-                    <span class="inline-flex items-center text-xs font-mono font-medium tabular-nums text-foreground bg-background px-2.5 py-1 rounded-md border border-border whitespace-nowrap shrink-0 group-hover:bg-foreground group-hover:text-background group-hover:border-foreground transition-colors">
-                      CC {demo.cedula}
-                    </span>
-                  </div>
-                </button>
-              {/each}
+                    <div class="flex items-center gap-2 shrink-0">
+                      <span class="hidden sm:inline-flex items-center rounded-md bg-background px-2 py-1 text-[11px] font-mono font-medium text-muted-foreground border border-border whitespace-nowrap shrink-0 tabular-nums">
+                        {demo.unitProgressPercent}%
+                      </span>
+                      <span class="inline-flex items-center text-xs font-mono font-medium tabular-nums text-foreground bg-background px-2.5 py-1 rounded-md border border-border whitespace-nowrap shrink-0 group-hover:bg-foreground group-hover:text-background group-hover:border-foreground transition-colors">
+                        CC {demo.cedula}
+                      </span>
+                    </div>
+                  </button>
+                {/each}
+              </div>
             </div>
-          </div>
+          {/if}
         </CardContent>
       </Card>
     </div>
