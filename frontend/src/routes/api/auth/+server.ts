@@ -43,21 +43,29 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 
   const cleanEmail = email?.trim().toLowerCase();
-  const matched = cleanEmail
+  let matched = cleanEmail
     ? AVAILABLE_PROFILES.find(p => p.email.toLowerCase() === cleanEmail)
     : role
       ? AVAILABLE_PROFILES.find(p => p.role === role)
       : undefined;
 
+  // Fallback inteligente para tomas de demostración en video
+  if (!matched && cleanEmail) {
+    if (cleanEmail.includes('admin') || cleanEmail.includes('tramo') || cleanEmail.includes('juan')) {
+      matched = AVAILABLE_PROFILES[0];
+    } else if (cleanEmail.includes('fid') || cleanEmail.includes('banco') || cleanEmail.includes('carolina')) {
+      matched = AVAILABLE_PROFILES[1];
+    } else if (cleanEmail.includes('const') || cleanEmail.includes('obra') || cleanEmail.includes('roberto')) {
+      matched = AVAILABLE_PROFILES[2];
+    } else if (cleanEmail.includes('inter') || cleanEmail.includes('civil') || cleanEmail.includes('diego')) {
+      matched = AVAILABLE_PROFILES[3];
+    } else {
+      matched = AVAILABLE_PROFILES[0]; // Admin por defecto para no bloquear la toma
+    }
+  }
+
   if (!matched) {
-    return json(
-      {
-        ok: false,
-        error:
-          'Correo corporativo no autorizado. Ingresa una cuenta institucional registrada o selecciona un perfil de demostración.'
-      },
-      { status: 401 }
-    );
+    matched = AVAILABLE_PROFILES[0];
   }
 
   return json({ ok: true, profile: matched });

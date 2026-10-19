@@ -20,6 +20,9 @@
 
   const id = $props.id();
 
+  // Flag para alternar accesos de demostración (oculto para tomas de producción)
+  const SHOW_DEMO_PROFILES = false;
+
   let email = $state('fiduciaria@bancolombia.com.co');
   let password = $state('Tramo2026*');
   let isLoading = $state(false);
@@ -76,7 +79,7 @@
               Iniciar sesión en Tramo
             </h1>
             <p class="text-xs text-muted-foreground">
-              Ingresa tus credenciales corporativas o selecciona un perfil de prueba para acceder a la consola.
+              Ingresa tus credenciales corporativas autorizadas para acceder a la consola institucional.
             </p>
           </div>
 
@@ -118,33 +121,35 @@
             </Button>
           </Field>
 
-          <FieldSeparator class="*:data-[slot=field-separator-content]:bg-card text-[11px] text-muted-foreground">
-            Acceso rápido de demostración
-          </FieldSeparator>
+          {#if SHOW_DEMO_PROFILES}
+            <FieldSeparator class="*:data-[slot=field-separator-content]:bg-card text-[11px] text-muted-foreground">
+              Acceso rápido de demostración
+            </FieldSeparator>
 
-          <!-- Selección sobria de perfiles sin bordes neón -->
-          <div class="grid grid-cols-2 gap-2">
-            {#each AVAILABLE_PROFILES as prof}
-              <button
-                type="button"
-                onclick={() => selectAndRedirect(prof)}
-                class="rounded-lg border border-border bg-muted/30 hover:bg-muted/70 px-3 py-2 text-left transition-colors cursor-pointer"
-              >
-                <div class="text-xs font-medium text-foreground capitalize">
-                  {prof.role === 'admin'
-                    ? 'Administrador'
-                    : prof.role === 'fiduciaria'
-                      ? 'Fiduciaria'
-                      : prof.role === 'constructor'
-                        ? 'Constructor'
-                        : 'Interventor'}
-                </div>
-                <div class="text-[11px] text-muted-foreground truncate">
-                  {prof.companyName}
-                </div>
-              </button>
-            {/each}
-          </div>
+            <!-- Selección sobria de perfiles sin bordes neón -->
+            <div class="grid grid-cols-2 gap-2">
+              {#each AVAILABLE_PROFILES as prof}
+                <button
+                  type="button"
+                  onclick={() => selectAndRedirect(prof)}
+                  class="rounded-lg border border-border bg-muted/30 hover:bg-muted/70 px-3 py-2 text-left transition-colors cursor-pointer"
+                >
+                  <div class="text-xs font-medium text-foreground capitalize">
+                    {prof.role === 'admin'
+                      ? 'Administrador'
+                      : prof.role === 'fiduciaria'
+                        ? 'Fiduciaria'
+                        : prof.role === 'constructor'
+                          ? 'Constructor'
+                          : 'Interventor'}
+                  </div>
+                  <div class="text-[11px] text-muted-foreground truncate">
+                    {prof.companyName}
+                  </div>
+                </button>
+              {/each}
+            </div>
+          {/if}
 
           <!-- Enlaces limpios sin iconos para propietarios y auditores -->
           <div class="pt-4 mt-1 border-t border-border/70 flex flex-col gap-1.5 text-xs text-muted-foreground">
