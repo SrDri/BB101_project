@@ -21,8 +21,6 @@
   let theme = $state<'dark' | 'light' | 'chroma'>('dark');
   let layout = $state<'horizontal' | 'vertical'>('horizontal');
   let sloganStyle = $state<'editorial' | 'caps'>('editorial');
-  let showUrl = $state(true);
-  let showStellarBadge = $state(true);
   let hideControls = $state(false);
   let mouseIdle = $state(false);
   let idleTimeout: any;
@@ -209,7 +207,7 @@
               <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-balance leading-tight {
                 theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'
               }">
-                Construyendo confianza, <span class="bg-gradient-to-r from-[#F5A400] via-[#FFB733] to-[#F5A400] bg-clip-text text-transparent font-bold">bloque a bloque</span>.
+                Construyendo confianza, <span class="bg-gradient-to-r from-[#F5A400] via-[#FFB733] to-[#F5A400] bg-clip-text text-transparent font-bold">bloque a bloque</span>
               </h1>
             {:else}
               <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold tracking-[0.25em] uppercase text-balance leading-snug {
@@ -226,34 +224,13 @@
               Infraestructura fiduciaria verificada en tiempo real
             </p>
 
-            <!-- Sellos de confianza y enlace web -->
-            <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
-              {#if showStellarBadge}
-                <div class="flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-md shadow-sm {
-                  theme === 'dark' 
-                    ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' 
-                    : 'border-emerald-600/30 bg-emerald-600/10 text-emerald-700'
-                }">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span class="text-[11px] font-mono font-semibold tracking-wider">
-                    RED STELLAR SOROBAN
-                  </span>
-                  <ShieldCheck class="w-3.5 h-3.5" />
-                </div>
-              {/if}
-
-              {#if showUrl}
-                <div class="flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-md shadow-sm {
-                  theme === 'dark' 
-                    ? 'border-white/10 bg-white/5 text-zinc-300' 
-                    : 'border-zinc-300 bg-white text-zinc-700'
-                }">
-                  <Sparkles class="w-3 h-3 text-[#F5A400]" />
-                  <span class="text-[12px] font-mono font-medium tracking-wider">
-                    tramo.co
-                  </span>
-                </div>
-              {/if}
+            <!-- Enlace web sin badge -->
+            <div class="mt-5 flex items-center justify-center">
+              <span class="text-sm sm:text-base md:text-lg font-mono font-medium tracking-[0.25em] {
+                theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
+              }">
+                www.tramo.finance
+              </span>
             </div>
           </div>
         </div>
@@ -325,16 +302,15 @@
             <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight {
               theme === 'dark' ? 'text-zinc-200' : 'text-zinc-800'
             }">
-              Construyendo confianza, <span class="text-[#F5A400] font-bold">bloque a bloque</span>.
+              Construyendo confianza, <span class="text-[#F5A400] font-bold">bloque a bloque</span>
             </h2>
 
-            <div class="mt-3 flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-mono {
-              theme === 'dark' 
-                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' 
-                : 'border-emerald-600/30 bg-emerald-600/10 text-emerald-700'
-            }">
-              <ShieldCheck class="w-3.5 h-3.5" />
-              <span>Stellar Soroban · tramo.co</span>
+            <div class="mt-4 flex items-center justify-center">
+              <span class="text-xs sm:text-sm md:text-base font-mono font-medium tracking-[0.25em] {
+                theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
+              }">
+                www.tramo.finance
+              </span>
             </div>
           </div>
         </div>
@@ -616,3 +592,4 @@
     animation: outroBreathe 6.5s ease-in-out infinite 2.4s;
   }
 </style>
+

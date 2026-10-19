@@ -213,20 +213,14 @@
               <h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight {
                 theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'
               }">
-                Construyendo confianza, <span class="text-[#F5A400] font-bold">bloque a bloque</span>.
+                Construyendo confianza, <span class="text-[#F5A400] font-bold">bloque a bloque</span>
               </h2>
 
-              <div class="flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-md shadow-sm {
-                theme === 'dark' 
-                  ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' 
-                  : 'border-emerald-600/30 bg-emerald-600/10 text-emerald-700'
+              <p class="text-sm sm:text-base md:text-lg font-mono font-medium tracking-[0.25em] {
+                theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
               }">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-[11px] font-mono font-semibold tracking-wider">
-                  RED STELLAR SOROBAN · TRAMO.CO
-                </span>
-                <ShieldCheck class="w-3.5 h-3.5" />
-              </div>
+                www.tramo.finance
+              </p>
             </div>
           {/if}
         </div>
