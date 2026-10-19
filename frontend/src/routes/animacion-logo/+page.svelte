@@ -15,7 +15,7 @@
   let isPlaying = $state(true);
   let speed = $state<number>(1); // 0.75, 1, 1.3
   let theme = $state<'dark' | 'light' | 'chroma'>('dark');
-  let variant = $state<'full' | 'hero' | 'minimal'>('full');
+  let variant = $state<'full' | 'hero' | 'minimal' | 'outro'>('full');
   let hideControls = $state(false);
   let mouseIdle = $state(false);
   let idleTimeout: any;
@@ -111,8 +111,8 @@
     <div 
       class="relative z-10 flex flex-col items-center justify-center px-6 transition-transform duration-700"
     >
-      <!-- VARIANTES 1 & 3: LOGO COMPLETO O MINIMAL (ISOTIPO + WORDMARK ALINEADOS) -->
-      {#if variant === 'full' || variant === 'minimal'}
+      <!-- VARIANTES 1, 3 & 4: LOGO COMPLETO, MINIMAL O OUTRO -->
+      {#if variant === 'full' || variant === 'minimal' || variant === 'outro'}
         <div class="flex flex-col items-center">
           <svg 
             viewBox="4 6 259 51" 
@@ -200,6 +200,30 @@
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span class="text-[11px] font-mono font-semibold tracking-wider">
                   CERTIFICADO EN RED STELLAR SOROBAN
+                </span>
+                <ShieldCheck class="w-3.5 h-3.5" />
+              </div>
+            </div>
+          {:else if variant === 'outro'}
+            <!-- VARIANTE OUTRO CON EL SLOGAN PEDIDO -->
+            <div 
+              class="mt-8 sm:mt-11 flex flex-col items-center gap-4 text-center anim-tagline"
+              style="animation-delay: {1.45 / speed}s;"
+            >
+              <h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight {
+                theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'
+              }">
+                Construyendo confianza, <span class="text-[#F5A400] font-bold">bloque a bloque</span>.
+              </h2>
+
+              <div class="flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-md shadow-sm {
+                theme === 'dark' 
+                  ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' 
+                  : 'border-emerald-600/30 bg-emerald-600/10 text-emerald-700'
+              }">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[11px] font-mono font-semibold tracking-wider">
+                  RED STELLAR SOROBAN · TRAMO.CO
                 </span>
                 <ShieldCheck class="w-3.5 h-3.5" />
               </div>
@@ -320,6 +344,13 @@
 
       <!-- Selector de Variante -->
       <div class="flex items-center gap-1 bg-black/30 p-1 rounded-xl">
+        <button 
+          onclick={() => { variant = 'outro'; restartAnimation(); }} 
+          class="px-2 py-1 rounded-lg transition-colors cursor-pointer {variant === 'outro' ? 'bg-[#F5A400] text-zinc-950 font-bold' : 'text-zinc-400 hover:text-white'}"
+          title="Outro Oficial con Slogan: Construyendo confianza bloque a bloque"
+        >
+          Outro Slogan
+        </button>
         <button 
           onclick={() => (variant = 'full')} 
           class="px-2 py-1 rounded-lg transition-colors cursor-pointer {variant === 'full' ? 'bg-white/20 text-white font-medium' : 'text-zinc-400 hover:text-white'}"
